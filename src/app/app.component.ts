@@ -1,31 +1,34 @@
-import {Component} from '@angular/core';
-import {BoatTypes} from '../shared/boat-types';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router, RoutesRecognized} from '@angular/router';
+import {Observable} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
 
-const defaultColors = [
-    '#FFD700',
-    '#C0C0C0',
-    '#cd7f32'
-];
 
-const defaultConfig = {
-    race: {
-        distance: 2000,
-        boatType: null,
-        rate: 36,
-        targets: [
-            { seconds: 400, colour: defaultColors[0] }
-        ]
-    }
-};
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    styleUrls: [ './app.component.scss' ]
 })
-export class AppComponent {
-    public boatTypes = BoatTypes;
-    public defaultColors = defaultColors;
+export class AppComponent implements OnInit {
+    public pageTitle = '';
 
-    public config = defaultConfig;
+    isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+        .pipe(
+            map(result => result.matches)
+        );
+
+    constructor(private breakpointObserver: BreakpointObserver,
+                private activatedRoute: ActivatedRoute,
+                private router: Router) {
+    }
+
+    ngOnInit() {
+        this.router.events
+            .pipe(filter(event => event instanceof RoutesRecognized))
+            .subscribe((event: RoutesRecognized) => {
+                this.pageTitle = event.state.root.firstChild.data.toolbarName;
+            });
+    }
 }

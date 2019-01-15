@@ -1,0 +1,114 @@
+<mat-horizontal-stepper *ngIf="isHandset$">
+    <mat-step [stepControl]="raceForm" label="Race">
+        <ng-template [ngTemplateOutlet]="raceParameters"></ng-template>
+    </mat-step>
+    <mat-step [stepControl]="trainForm" label="Train">
+    </mat-step>
+    <mat-step label="Paces">
+    </mat-step>
+</mat-horizontal-stepper>
+
+<ng-template #raceParameters>
+    <div class="row">
+        <mat-form-field class="col-xs-12">
+            <input matInput placeholder="Race Distance" type="number"
+                   min="1"
+                   step="1">
+            <span matSuffix>m</span>
+        </mat-form-field>
+        <mat-form-field class="col-xs-12">
+            <input matInput placeholder="Race Rate" type="number" min="1"
+                   step="1"
+                   max="47">
+            <span matSuffix>1/min</span>
+        </mat-form-field>
+        <mat-form-field class="col-xs-12">
+            <mat-select placeholder="Boat Type">
+                <mat-option *ngFor="let boatType of boatTypes" [value]="boatType">{{ boatType.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div class="row middle-xs col-xs-12" *ngFor="let targetGroup of raceTargetTimes.controls">
+            <div class="col-xs-3 row middle-xs center-xs">
+                <mcc-color-picker
+                        [hideHexForms]="false"
+                        [usedSizeColors]="6"
+                        [usedColorStart]="defaultColours"></mcc-color-picker>
+            </div>
+            <mat-form-field class="col-xs-9">
+                <app-duration-input placeholder="Target Time"></app-duration-input>
+                <span matSuffix>mm:ss</span>
+            </mat-form-field>
+        </div>
+        <button mat-button (click)="addTargetTime()">Add another target time</button>
+    </div>
+</ng-template>
+
+<!--<mat-toolbar color="primary">-->
+<!--<span>Training Piece Modelling</span>-->
+<!--</mat-toolbar>-->
+
+<!--<section>-->
+<!--<router-outlet></router-outlet>-->
+<!--</section>-->
+
+
+<!--<mat-card>-->
+<!--<mat-card-title-group>-->
+<!--<mat-card-title>Race Target(s)</mat-card-title>-->
+<!--<mat-card-subtitle>1x- 2000m @ r36</mat-card-subtitle>-->
+<!--</mat-card-title-group>-->
+<!--<mat-card-content>-->
+<!--<mat-list>-->
+<!--<mat-list-item>in 6:40</mat-list-item>-->
+<!--<mat-list-item>in 7:00</mat-list-item>-->
+<!--<mat-list-item>in 7:20</mat-list-item>-->
+<!--</mat-list>-->
+<!--</mat-card-content>-->
+<!--</mat-card>-->
+
+<!--<mat-expansion-panel expanded>-->
+    <!--<mat-expansion-panel-header>-->
+        <!--<mat-panel-title>Race</mat-panel-title>-->
+        <!--<mat-panel-description>Target distance, time, boat type and rate.</mat-panel-description>-->
+    <!--</mat-expansion-panel-header>-->
+    <!--<div>-->
+        <!--<div class="row">-->
+            <!--<mat-form-field class="col-xs-12">-->
+                <!--<input [(ngModel)]="config.race.distance" matInput placeholder="Race Distance (m)" type="number"-->
+                       <!--min="1">-->
+            <!--</mat-form-field>-->
+            <!--<mat-form-field class="col-xs-6">-->
+                <!--<input [(ngModel)]="config.race.rate" matInput placeholder="Race Rate (1/min)" type="number" min="1"-->
+                       <!--max="47" value="36">-->
+            <!--</mat-form-field>-->
+            <!--<mat-form-field class="col-xs-6">-->
+                <!--<mat-select [(ngModel)]="config.race.boatType" placeholder="Boat Type">-->
+                    <!--<mat-option *ngFor="let boatType of boatTypes" [value]="boatType">{{ boatType.name }}</mat-option>-->
+                <!--</mat-select>-->
+            <!--</mat-form-field>-->
+        <!--</div>-->
+        <!--<div class="row middle-xs" *ngFor="let target of config.race.targets">-->
+            <!--<div class="col-xs-3 row middle-xs center-xs">-->
+                <!--<mcc-color-picker-->
+                        <!--[hideHexForms]="false"-->
+                        <!--[usedSizeColors]="6"-->
+                        <!--[usedColorStart]="defaultColors"-->
+                        <!--[selectedColor]="target.colour"></mcc-color-picker>-->
+            <!--</div>-->
+            <!--<mat-form-field class="col-xs-9">-->
+                <!--<app-duration-input [(ngModel)]="target.seconds" placeholder="Target Time (mm:ss)"></app-duration-input>-->
+            <!--</mat-form-field>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</mat-expansion-panel>-->
+
+<!--<mat-expansion-panel expanded>-->
+<!--<mat-expansion-panel-header>-->
+<!--<mat-panel-title>Training</mat-panel-title>-->
+<!--<mat-panel-description>Training distance and conditions.</mat-panel-description>-->
+<!--</mat-expansion-panel-header>-->
+<!--<div>-->
+
+<!--</div>-->
+<!--</mat-expansion-panel>-->
+

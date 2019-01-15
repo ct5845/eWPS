@@ -1,50 +1,26 @@
-<mat-toolbar>
-    <span>Training Piece Modelling</span>
-</mat-toolbar>
-
-<mat-expansion-panel expanded>
-    <mat-expansion-panel-header>
-        <mat-panel-title>Race</mat-panel-title>
-        <mat-panel-description>Target distance, time, boat type and rate.</mat-panel-description>
-    </mat-expansion-panel-header>
-    <div>
-        <div class="row">
-            <mat-form-field class="col-xs-12">
-                <input [(ngModel)]="config.race.distance" matInput placeholder="Race Distance (m)" type="number"
-                       min="1">
-            </mat-form-field>
-            <mat-form-field class="col-xs-6">
-                <input [(ngModel)]="config.race.rate" matInput placeholder="Race Rate (1/min)" type="number" min="1"
-                       max="47" value="36">
-            </mat-form-field>
-            <mat-form-field class="col-xs-6">
-                <mat-select [(ngModel)]="config.race.boatType" placeholder="Boat Type">
-                    <mat-option *ngFor="let boatType of boatTypes" [value]="boatType">{{ boatType.name }}</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="row middle-xs" *ngFor="let target of config.race.targets">
-            <div class="col-xs-3 row middle-xs center-xs">
-                <mcc-color-picker
-                        [hideHexForms]="false"
-                        [usedSizeColors]="6"
-                        [usedColorStart]="defaultColors"
-                        [selectedColor]="target.colour"></mcc-color-picker>
-            </div>
-            <mat-form-field class="col-xs-9">
-                <app-duration-input [(ngModel)]="target.seconds" placeholder="Target Time (mm:ss)"></app-duration-input>
-            </mat-form-field>
-        </div>
-    </div>
-</mat-expansion-panel>
-
-<mat-expansion-panel expanded>
-    <mat-expansion-panel-header>
-        <mat-panel-title>Training</mat-panel-title>
-        <mat-panel-description>Training distance and conditions.</mat-panel-description>
-    </mat-expansion-panel-header>
-    <div>
-
-    </div>
-</mat-expansion-panel>
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
+                 [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+                 [mode]="(isHandset$ | async) ? 'over' : 'side'"
+                 [opened]="!(isHandset$ | async)">
+        <mat-toolbar>Menu</mat-toolbar>
+        <mat-nav-list>
+            <a mat-list-item href="training-speeds">Training Speeds</a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-toolbar color="primary">
+            <button
+                    type="button"
+                    aria-label="Toggle sidenav"
+                    mat-icon-button
+                    (click)="drawer.toggle()"
+                    *ngIf="isHandset$ | async">
+                <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+            </button>
+            <span>{{ pageTitle }}</span>
+        </mat-toolbar>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
 

@@ -8,8 +8,8 @@ import {coerceBooleanProperty} from '@angular/cdk/coercion';
 @Component({
     selector: 'app-duration-input',
     templateUrl: './duration-input.component.html',
-    styleUrls: ['./duration-input.component.scss'],
-    providers: [{provide: MatFormFieldControl, useExisting: DurationInputComponent}]
+    styleUrls: [ './duration-input.component.scss' ],
+    providers: [ {provide: MatFormFieldControl, useExisting: DurationInputComponent} ]
 })
 export class DurationInputComponent implements OnDestroy, MatFormFieldControl<number>, ControlValueAccessor {
     static nextId = 0;
@@ -29,30 +29,44 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
     }
 
     @HostBinding('class.label-floating')
-    get shouldLabelFloat() { return this.focused || !this.empty; }
+    get shouldLabelFloat() {
+        return this.focused || !this.empty;
+    }
 
     @Input()
-    get placeholder(): string { return this._placeholder; }
+    get placeholder(): string {
+        return this._placeholder;
+    }
+
     set placeholder(value: string) {
         this._placeholder = value;
         this.stateChanges.next();
     }
+
     private _placeholder: string;
 
     @Input()
-    get required(): boolean { return this._required; }
+    get required(): boolean {
+        return this._required;
+    }
+
     set required(value: boolean) {
         this._required = coerceBooleanProperty(value);
         this.stateChanges.next();
     }
+
     private _required = false;
 
     @Input()
-    get disabled(): boolean { return this._disabled; }
+    get disabled(): boolean {
+        return this._disabled;
+    }
+
     set disabled(value: boolean) {
         this._disabled = coerceBooleanProperty(value);
         this.stateChanges.next();
     }
+
     private _disabled = false;
 
     @Input()
@@ -63,11 +77,12 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
         // }
         return null;
     }
+
     set value(val: number | null) {
         const minutes = Math.floor((val || 0) / 60);
         const seconds = val - (minutes * 60);
 
-        this.parts.setValue({ minutes, seconds});
+        this.parts.setValue({minutes, seconds});
 
         this.stateChanges.next();
     }
@@ -84,7 +99,9 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
             this.stateChanges.next();
         });
 
-        this.ngControl.valueAccessor = this;
+        if (!!this.ngControl) {
+            this.ngControl.valueAccessor = this;
+        }
     }
 
     ngOnDestroy() {
