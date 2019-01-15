@@ -8,8 +8,8 @@ import {coerceBooleanProperty} from '@angular/cdk/coercion';
 @Component({
     selector: 'app-duration-input',
     templateUrl: './duration-input.component.html',
-    styleUrls: [ './duration-input.component.scss' ],
-    providers: [ {provide: MatFormFieldControl, useExisting: DurationInputComponent} ]
+    styleUrls: ['./duration-input.component.scss'],
+    providers: [{provide: MatFormFieldControl, useExisting: DurationInputComponent}]
 })
 export class DurationInputComponent implements OnDestroy, MatFormFieldControl<number>, ControlValueAccessor {
     static nextId = 0;
@@ -82,7 +82,10 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
         const minutes = Math.floor((val || 0) / 60);
         const seconds = val - (minutes * 60);
 
-        this.parts.setValue({minutes, seconds});
+        if (!!val) {
+
+        }
+        this.parts.setValue(val ? {minutes, seconds} : {minutes: null, seconds: null});
 
         this.stateChanges.next();
     }

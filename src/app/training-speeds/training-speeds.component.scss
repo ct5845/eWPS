@@ -1,0 +1,13 @@
+:host {
+  display: block;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .color-picker, .remove-target {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

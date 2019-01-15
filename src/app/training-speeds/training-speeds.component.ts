@@ -1,9 +1,10 @@
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {Component, OnInit} from '@angular/core';
-import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {BoatTypes} from '../../shared/boat-types';
+import {CustomValidators} from 'ngx-custom-validators';
 
 const defaultColours = [
     '#FFD700',
@@ -17,7 +18,7 @@ const defaultConfig = {
         boatType: null,
         rate: 36,
         targets: [
-            {seconds: 400, colour: defaultColours[ 0 ]}
+            {seconds: 400, colour: defaultColours[0]}
         ]
     }
 };
@@ -25,7 +26,7 @@ const defaultConfig = {
 @Component({
     selector: 'app-training-speeds',
     templateUrl: './training-speeds.component.html',
-    styleUrls: [ './training-speeds.component.scss' ]
+    styleUrls: ['./training-speeds.component.scss']
 })
 export class TrainingSpeedsComponent implements OnInit {
     public isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -33,12 +34,16 @@ export class TrainingSpeedsComponent implements OnInit {
             map(result => result.matches)
         );
 
-    public raceDistance = new FormControl();
-    public raceRate = new FormControl();
-    public raceBoatType = new FormControl();
+    public raceDistance = new FormControl(null, [Validators.required,
+        CustomValidators.number,
+        Validators.min(1)]);
+    public raceRate = new FormControl(null, [Validators.required,
+        CustomValidators.number,
+        Validators.min(1)]);
+    public raceBoatType = new FormControl(null, [Validators.required]);
     public raceTargetTimes = new FormArray([
-        TrainingSpeedsComponent.newTargetTime()
-    ]);
+        TrainingSpeedsComponent.newTargetTime(0)
+    ], []);
 
     public raceForm = new FormGroup({
         'distance': this.raceDistance,
@@ -51,10 +56,12 @@ export class TrainingSpeedsComponent implements OnInit {
     public boatTypes = BoatTypes;
     public defaultColours = defaultColours;
 
-    static newTargetTime(index: number = 0) {
+    static newTargetTime(color?: number) {
         return new FormGroup({
-            colour: new FormControl(),
-            seconds: new FormControl()
+            colour: new FormControl(defaultColours[color], [Validators.required]),
+            seconds: new FormControl(null, [Validators.required,
+                CustomValidators.number,
+                Validators.min(1)])
         });
     }
 
@@ -66,5 +73,9 @@ export class TrainingSpeedsComponent implements OnInit {
 
     addTargetTime() {
         this.raceTargetTimes.push(TrainingSpeedsComponent.newTargetTime());
+    }
+
+    removeTargetTime(index: number) {
+        this.raceTargetTimes.removeAt(index);
     }
 }
