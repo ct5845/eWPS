@@ -9,19 +9,21 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
     MatCardModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatListModule, MatSelectModule,
     MatToolbarModule,
-    MatStepperModule, MatButtonModule, MatSidenavModule, MatIconModule
+    MatStepperModule, MatButtonModule, MatSidenavModule, MatIconModule, MatSlideToggleModule, MatTableModule
 } from '@angular/material';
 import {MccColorPickerModule} from 'material-community-components';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {DurationInputComponent} from './duration-input/duration-input.component';
 import {TrainingSpeedsComponent} from './training-speeds/training-speeds.component';
 import {LayoutModule} from '@angular/cdk/layout';
+import { DurationPipe } from './duration/duration.pipe';
 
 @NgModule({
     declarations: [
         AppComponent,
         DurationInputComponent,
-        TrainingSpeedsComponent
+        TrainingSpeedsComponent,
+        DurationPipe
     ],
     imports: [
         BrowserModule,
@@ -35,7 +37,9 @@ import {LayoutModule} from '@angular/cdk/layout';
         MatFormFieldModule,
         MatStepperModule,
         MatSelectModule,
+        MatSlideToggleModule,
         MccColorPickerModule,
+        MatTableModule,
         FormsModule,
         ReactiveFormsModule,
         ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),

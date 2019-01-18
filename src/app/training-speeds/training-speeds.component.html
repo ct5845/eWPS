@@ -1,26 +1,57 @@
-<mat-horizontal-stepper #stepper [linear]="true" *ngIf="isHandset$">
+<mat-horizontal-stepper [linear]="true" *ngIf="isHandset$ | async">
     <mat-step [stepControl]="raceForm" label="Race">
         <ng-template [ngTemplateOutlet]="raceParameters"></ng-template>
         <div class="stepper-button step-1">
             <button [disabled]="raceForm.invalid"
                     color="primary"
-                    mat-raised-button>Next</button>
+                    matStepperNext
+                    mat-raised-button>Next
+            </button>
         </div>
-        <p>
-            {{ raceTargetTime.valid }}
-        </p>
     </mat-step>
-    <mat-step [stepControl]="trainForm" label="Train">
+    <mat-step [stepControl]="trainingForm" label="Train">
+        <ng-template [ngTemplateOutlet]="trainParameters"></ng-template>
+        <div class="stepper-button step-2">
+            <button matStepperPrevious
+                    mat-raised-button>Back
+            </button>
+            <button [disabled]="trainingForm.invalid"
+                    color="primary"
+                    matStepperNext
+                    mat-raised-button>Next
+            </button>
+        </div>
     </mat-step>
     <mat-step label="Paces">
+        <ng-template [ngTemplateOutlet]="trainingTable"></ng-template>
     </mat-step>
 </mat-horizontal-stepper>
+
+<div *ngIf="!(isHandset$ | async)" class="row full-page">
+    <div class="col-xs-6">
+        <mat-card class="race">
+            <mat-card-title color="primary">Race Parameters</mat-card-title>
+            <ng-template [ngTemplateOutlet]="raceParameters"></ng-template>
+        </mat-card>
+        <mat-card class="training">
+            <mat-card-title>Training Parameters</mat-card-title>
+            <ng-template [ngTemplateOutlet]="trainParameters"></ng-template>
+        </mat-card>
+    </div>
+    <div class="col-xs-6">
+        <mat-card>
+            <mat-card-title>Training Rate, Time & Split Targets</mat-card-title>
+            <ng-template [ngTemplateOutlet]="trainingTable"></ng-template>
+        </mat-card>
+    </div>
+</div>
 
 <ng-template #raceParameters>
     <form [formGroup]="raceForm" class="row">
         <div class="col-xs-12">
             <mat-form-field>
                 <input matInput
+                       required
                        [formControl]="raceDistance"
                        placeholder="Race Distance" type="tel">
                 <span matSuffix>m</span>
@@ -29,13 +60,14 @@
         <div class="col-xs-12">
             <mat-form-field>
                 <input matInput placeholder="Race Rate" type="tel"
+                       required
                        [formControl]="raceRate">
                 <span matSuffix>1/min</span>
             </mat-form-field>
         </div>
         <div class="col-xs-12">
             <mat-form-field>
-                <mat-select [formControl]="raceBoatType" placeholder="Boat Type">
+                <mat-select [formControl]="raceBoatType" placeholder="Boat Size" required>
                     <mat-option *ngFor="let boatType of boatTypes" [value]="boatType">{{ boatType.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
@@ -43,10 +75,104 @@
         <div class="col-xs-12">
             <mat-form-field>
                 <app-duration-input
+                        required
                         [formControl]="raceTargetTime"
                         placeholder="Target Time"></app-duration-input>
                 <span matSuffix>mm:ss</span>
             </mat-form-field>
         </div>
     </form>
+</ng-template>
+
+<ng-template #trainParameters>
+    <form [formGroup]="trainingForm" class="row">
+        <div class="col-xs-12">
+            <mat-form-field>
+                <input matInput
+                       required
+                       [formControl]="trainingDistance"
+                       placeholder="Training Distance" type="tel">
+                <span matSuffix>m</span>
+            </mat-form-field>
+        </div>
+        <div class="col-xs-12">
+            <mat-form-field>
+                <input matInput
+                       required
+                       [formControl]="extraWPS"
+                       placeholder="Extra Work per Stroke" type="tel">
+                <span matSuffix>%</span>
+                <mat-hint>e.g. if you're training piece is 1/2 the distance, you might want a higher WPS for training.
+                </mat-hint>
+            </mat-form-field>
+        </div>
+        <div class="col-xs-12" *ngIf="isHandset$ | async">
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>Advanced Parameters</mat-expansion-panel-header>
+                <div class="row">
+                    <ng-template [ngTemplateOutlet]="trainingAdvancedParameters"></ng-template>
+                </div>
+            </mat-expansion-panel>
+        </div>
+        <ng-template *ngIf="!(isHandset$ | async)" [ngTemplateOutlet]="trainingAdvancedParameters"></ng-template>
+    </form>
+</ng-template>
+
+<ng-template #trainingAdvancedParameters>
+    <div class="col-xs-12">
+        <mat-form-field>
+            <input matInput placeholder="Water Temperature" type="tel"
+                   required
+                   [formControl]="waterTemperature">
+            <span matSuffix>&#8451;</span>
+            <mat-hint>Assuming a race temperature of 25degrees.</mat-hint>
+        </mat-form-field>
+    </div>
+    <div class="col-xs-12">
+        <mat-form-field>
+            <input matInput placeholder="Water Current" type="tel"
+                   required
+                   [formControl]="currentSpeed">
+            <span matSuffix>+/- m/s</span>
+            <mat-hint>(+) Going downstream (-) Going upstream</mat-hint>
+        </mat-form-field>
+    </div>
+    <div class="col-xs-12">
+        <mat-form-field>
+            <input matInput placeholder="Wind Direction" type="tel"
+                   required
+                   [formControl]="windDirection">
+            <span matSuffix>deg</span>
+            <mat-hint>0deg = straight, 90deg = pure cross</mat-hint>
+        </mat-form-field>
+    </div>
+    <div class="col-xs-12">
+        <mat-form-field>
+            <input matInput placeholder="Wind Speed" type="tel"
+                   required
+                   [formControl]="windSpeed">
+            <span matSuffix>+/- m/s</span>
+            <mat-hint>(+) Tailwind (-) Headwind</mat-hint>
+        </mat-form-field>
+    </div>
+</ng-template>
+
+<ng-template #trainingTable>
+    <table mat-table [dataSource]="trainingSpeeds">
+        <ng-container matColumnDef="rate">
+            <th mat-header-cell *matHeaderCellDef>Rate</th>
+            <td mat-cell *matCellDef="let element">{{ element.rate }}</td>
+        </ng-container>
+        <ng-container matColumnDef="time">
+            <th mat-header-cell *matHeaderCellDef>Time</th>
+            <td mat-cell *matCellDef="let element">{{ element.time | duration }}</td>
+        </ng-container>
+        <ng-container matColumnDef="split">
+            <th mat-header-cell *matHeaderCellDef>Split</th>
+            <td mat-cell *matCellDef="let element">{{ element.split | duration }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+    </table>
 </ng-template>

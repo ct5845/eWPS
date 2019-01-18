@@ -13,9 +13,35 @@
     &.step-1 {
       justify-content: flex-end;
     }
+
+    &.step-2 {
+      justify-content: space-between;
+    }
   }
 
   mat-form-field {
     width: 100%;
+  }
+
+  mat-expansion-panel {
+    margin-bottom: 1.25em;
+  }
+
+  mat-form-field {
+    margin-bottom: 0.5em;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  mat-card.training {
+    margin-top: 0.5rem;
+  }
+
+  div.full-page {
+    margin: 0 !important;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 }

@@ -1,40 +1,46 @@
-import {Component, ElementRef, HostBinding, Input, OnDestroy, Optional, Self} from '@angular/core';
+import {Component, ElementRef, HostBinding, HostListener, Input, OnDestroy, Optional, Self} from '@angular/core';
 import {MatFormFieldControl} from '@angular/material';
-import {Subject} from 'rxjs/index';
+import {Subject} from 'rxjs';
 import {ControlValueAccessor, FormControl, FormGroup, NgControl, Validators} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {coerceBooleanProperty} from '@angular/cdk/coercion';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {CustomValidators} from 'ngx-custom-validators';
+import {map, takeUntil} from 'rxjs/operators';
 
 @Component({
     selector: 'app-duration-input',
     templateUrl: './duration-input.component.html',
-    styleUrls: ['./duration-input.component.scss'],
-    providers: [{provide: MatFormFieldControl, useExisting: DurationInputComponent}]
+    styleUrls: [ './duration-input.component.scss' ],
+    providers: [ {provide: MatFormFieldControl, useExisting: DurationInputComponent} ]
 })
 export class DurationInputComponent implements OnDestroy, MatFormFieldControl<number>, ControlValueAccessor {
     static nextId = 0;
 
+    private _placeholder = '';
+    private _disabled = false;
+    private _required = false;
+
     public minutesControl = new FormControl(null, [
-        Validators.required, CustomValidators.min(0), CustomValidators.max(59), CustomValidators.number]);
+        Validators.required, CustomValidators.min(0), CustomValidators.max(59), CustomValidators.number ]);
     public secondsControl = new FormControl(null, [
         Validators.required, CustomValidators.min(0), CustomValidators.max(59),
         Validators.minLength(2),
-        CustomValidators.number]);
+        CustomValidators.number ]);
     public form = new FormGroup({minutes: this.minutesControl, seconds: this.secondsControl});
 
-    stateChanges = new Subject<void>();
-    focused = false;
-    errorState = false;
-    controlType = 'duration-input';
-    @HostBinding('attr.id') id = `duration-input-${DurationInputComponent.nextId++}`;
-    @HostBinding('attr.aria-describedby') describedBy = '';
+    public stateChanges = new Subject<void>();
+    public focused = false;
+    public controlType = 'duration-input';
+    @HostBinding('attr.id') public id = `duration-input-${DurationInputComponent.nextId++}`;
+    @HostBinding('attr.aria-describedby') public describedBy = '';
+
+    @HostListener('focusout') public propagateTouch: () => any;
 
     get empty() {
-        const {value: {minutes, seconds}} = this.form;
+        const values = this.form.value;
 
-        return !minutes && !seconds;
+        return !values.seconds && !values.minutes;
     }
 
     @HostBinding('class.label-floating')
@@ -52,8 +58,6 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
         this.stateChanges.next();
     }
 
-    private _placeholder: string;
-
     @Input()
     get required(): boolean {
         return this._required;
@@ -63,8 +67,6 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
         this._required = coerceBooleanProperty(value);
         this.stateChanges.next();
     }
-
-    private _required = false;
 
     @Input()
     get disabled(): boolean {
@@ -76,29 +78,23 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
         this.stateChanges.next();
     }
 
-    private _disabled = false;
-
     @Input()
     get value(): number | null {
-        const {value: {minutes, seconds}} = this.form;
-
-        console.log('getValue', minutes, seconds);
-
-        return null;
+        if (this.form.valid) {
+            const values = this.form.value;
+            return parseInt(values.minutes, 10) * 60 + parseInt(this.form.getRawValue().seconds, 10);
+        } else {
+            return null;
+        }
     }
 
     set value(val: number | null) {
-        console.log('setValue', val);
-        const minutes = Math.floor((val || 0) / 60);
-        let seconds = val - (minutes * 60);
-
-        if (seconds < 10) {
-            seconds = `0${seconds}`;
-        }
-
-        this.form.setValue(val ? {minutes, seconds} : {minutes: null, seconds: null});
-
+        this.form.setValue(this.secondsToDuration(val));
         this.stateChanges.next();
+    }
+
+    get errorState(): boolean {
+        return this.form.dirty && this.form.invalid;
     }
 
     constructor(private fm: FocusMonitor, private elRef: ElementRef<HTMLElement>,
@@ -110,13 +106,19 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
 
         if (!!this.ngControl) {
             this.ngControl.valueAccessor = this;
+            ngControl.valueAccessor = this;
         }
 
-        this.form.valueChanges
-            .pipe(untilDestroyed(this))
-            .subscribe(val => {
-                this.stateChanges.next();
-            });
+        // this.form.valueChanges
+        //     .pipe(untilDestroyed(this))
+        //     .subscribe(() => {
+        //         if (this.form.valid) {
+        //             const minutes = parseInt(this.form.getRawValue().minutes, 10) * 60;
+        //             const seconds = parseInt(this.form.getRawValue().seconds, 10);
+        //
+        //             this.value = minutes + seconds;
+        //         }
+        //     });
     }
 
     ngOnDestroy() {
@@ -134,14 +136,32 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
         }
     }
 
-    writeValue(obj: any): void {
-        console.log('writeValue', obj);
-        this.value = obj;
+    writeValue(value: number): void {
+        const duration = this.secondsToDuration(value);
+        this.form.setValue(duration, {emitEvent: false});
     }
 
-    registerOnChange(fn: any): void {
+    registerOnChange(onChange: (value: number) => void): void {
+        this.form.valueChanges
+            .pipe(untilDestroyed(this),
+                map(() => {
+                    return this.value;
+                }))
+            .subscribe(onChange);
     }
 
     registerOnTouched(fn: any): void {
+        this.propagateTouch = fn;
+    }
+
+    private secondsToDuration(value: number): any {
+        if (value) {
+            const minutes = Math.floor(value / 60);
+            const seconds = value - (minutes * 60);
+
+            return {minutes, seconds};
+        } else {
+            return {minutes: null, seconds: null};
+        }
     }
 }
