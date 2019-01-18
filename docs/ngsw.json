@@ -21,30 +21,16 @@
       "installMode": "lazy",
       "updateMode": "prefetch",
       "urls": [
-        "/rowing-toolbox/assets/icons/icon-128x128.png",
-        "/rowing-toolbox/assets/icons/icon-144x144.png",
-        "/rowing-toolbox/assets/icons/icon-152x152.png",
-        "/rowing-toolbox/assets/icons/icon-192x192.png",
-        "/rowing-toolbox/assets/icons/icon-384x384.png",
-        "/rowing-toolbox/assets/icons/icon-512x512.png",
-        "/rowing-toolbox/assets/icons/icon-72x72.png",
-        "/rowing-toolbox/assets/icons/icon-96x96.png"
+        "/rowing-toolbox/assets/icons/blade.svg"
       ],
       "patterns": []
     }
   ],
   "dataGroups": [],
   "hashTable": {
-    "/rowing-toolbox/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
-    "/rowing-toolbox/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
-    "/rowing-toolbox/assets/icons/icon-152x152.png": "7479a9477815dfd9668d60f8b3b2fba709b91310",
-    "/rowing-toolbox/assets/icons/icon-192x192.png": "1abd80d431a237a853ce38147d8c63752f10933b",
-    "/rowing-toolbox/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
-    "/rowing-toolbox/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
-    "/rowing-toolbox/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
-    "/rowing-toolbox/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
-    "/rowing-toolbox/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/rowing-toolbox/index.html": "1e6a6668708cebacb19c51d0a9f85ea41a336fae",
+    "/rowing-toolbox/assets/icons/blade.svg": "53c596c4f90628f1d1d7190d38df1e0ce5c4be45",
+    "/rowing-toolbox/favicon.ico": "2c433ad8359e33cf8af5f1ee8555602c588d12db",
+    "/rowing-toolbox/index.html": "212d88704ab4573036b952f9d23f756761778c6f",
     "/rowing-toolbox/main.380576b9d205a91aa005.js": "030c4818c8dfde781781d629b28193565aec1c10",
     "/rowing-toolbox/polyfills.e6fbd82b34ccb0c8609f.js": "4ab98e11e44c4bc97507dfc711f8420a47d6f18e",
     "/rowing-toolbox/runtime.ec2944dd8b20ec099bf3.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
