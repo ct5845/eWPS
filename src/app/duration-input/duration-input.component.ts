@@ -6,7 +6,7 @@ import {FocusMonitor} from '@angular/cdk/a11y';
 import {coerceBooleanProperty} from '@angular/cdk/coercion';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {CustomValidators} from 'ngx-custom-validators';
-import {map, takeUntil} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 @Component({
     selector: 'app-duration-input',
@@ -108,17 +108,6 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
             this.ngControl.valueAccessor = this;
             ngControl.valueAccessor = this;
         }
-
-        // this.form.valueChanges
-        //     .pipe(untilDestroyed(this))
-        //     .subscribe(() => {
-        //         if (this.form.valid) {
-        //             const minutes = parseInt(this.form.getRawValue().minutes, 10) * 60;
-        //             const seconds = parseInt(this.form.getRawValue().seconds, 10);
-        //
-        //             this.value = minutes + seconds;
-        //         }
-        //     });
     }
 
     ngOnDestroy() {
