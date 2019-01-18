@@ -1,9 +1,11 @@
 import {Component, ElementRef, HostBinding, Input, OnDestroy, Optional, Self} from '@angular/core';
 import {MatFormFieldControl} from '@angular/material';
 import {Subject} from 'rxjs/index';
-import {ControlValueAccessor, FormBuilder, FormGroup, NgControl} from '@angular/forms';
+import {ControlValueAccessor, FormControl, FormGroup, NgControl, Validators} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';
 import {coerceBooleanProperty} from '@angular/cdk/coercion';
+import {untilDestroyed} from 'ngx-take-until-destroy';
+import {CustomValidators} from 'ngx-custom-validators';
 
 @Component({
     selector: 'app-duration-input',
@@ -14,7 +16,14 @@ import {coerceBooleanProperty} from '@angular/cdk/coercion';
 export class DurationInputComponent implements OnDestroy, MatFormFieldControl<number>, ControlValueAccessor {
     static nextId = 0;
 
-    parts: FormGroup;
+    public minutesControl = new FormControl(null, [
+        Validators.required, CustomValidators.min(0), CustomValidators.max(59), CustomValidators.number]);
+    public secondsControl = new FormControl(null, [
+        Validators.required, CustomValidators.min(0), CustomValidators.max(59),
+        Validators.minLength(2),
+        CustomValidators.number]);
+    public form = new FormGroup({minutes: this.minutesControl, seconds: this.secondsControl});
+
     stateChanges = new Subject<void>();
     focused = false;
     errorState = false;
@@ -23,7 +32,7 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
     @HostBinding('attr.aria-describedby') describedBy = '';
 
     get empty() {
-        const {value: {minutes, seconds}} = this.parts;
+        const {value: {minutes, seconds}} = this.form;
 
         return !minutes && !seconds;
     }
@@ -71,32 +80,29 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
 
     @Input()
     get value(): number | null {
-        // const {value: {minutes, seconds}} = this.parts;
-        // if (area.length === 3 && exchange.length === 3 && subscriber.length === 4) {
-        //     return new DurationInput(minutes, seconds);
-        // }
+        const {value: {minutes, seconds}} = this.form;
+
+        console.log('getValue', minutes, seconds);
+
         return null;
     }
 
     set value(val: number | null) {
+        console.log('setValue', val);
         const minutes = Math.floor((val || 0) / 60);
-        const seconds = val - (minutes * 60);
+        let seconds = val - (minutes * 60);
 
-        if (!!val) {
-
+        if (seconds < 10) {
+            seconds = `0${seconds}`;
         }
-        this.parts.setValue(val ? {minutes, seconds} : {minutes: null, seconds: null});
+
+        this.form.setValue(val ? {minutes, seconds} : {minutes: null, seconds: null});
 
         this.stateChanges.next();
     }
 
-    constructor(fb: FormBuilder, private fm: FocusMonitor, private elRef: ElementRef<HTMLElement>,
+    constructor(private fm: FocusMonitor, private elRef: ElementRef<HTMLElement>,
                 @Optional() @Self() public ngControl: NgControl) {
-        this.parts = fb.group({
-            minutes: null,
-            seconds: null
-        });
-
         fm.monitor(elRef, true).subscribe(origin => {
             this.focused = !!origin;
             this.stateChanges.next();
@@ -105,6 +111,12 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
         if (!!this.ngControl) {
             this.ngControl.valueAccessor = this;
         }
+
+        this.form.valueChanges
+            .pipe(untilDestroyed(this))
+            .subscribe(val => {
+                this.stateChanges.next();
+            });
     }
 
     ngOnDestroy() {
@@ -123,6 +135,7 @@ export class DurationInputComponent implements OnDestroy, MatFormFieldControl<nu
     }
 
     writeValue(obj: any): void {
+        console.log('writeValue', obj);
         this.value = obj;
     }
 

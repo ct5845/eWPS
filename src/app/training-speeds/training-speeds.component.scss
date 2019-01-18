@@ -1,13 +1,21 @@
 :host {
-  display: block;
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+
+  mat-horizontal-stepper {
+    flex: 1 1 auto;
+  }
+
+  .stepper-button {
+    display: flex;
+
+    &.step-1 {
+      justify-content: flex-end;
+    }
+  }
 
   mat-form-field {
     width: 100%;
-  }
-
-  .color-picker, .remove-target {
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }

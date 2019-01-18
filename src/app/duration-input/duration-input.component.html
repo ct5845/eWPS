@@ -1,5 +1,5 @@
-<div [formGroup]="parts" class="parts">
-  <input formControlName="minutes" type="number" max="59" min="0">
+<form [formGroup]="form" class="parts">
+  <input [formControl]="minutesControl" type="tel">
   <span class="spacer">:</span>
-  <input formControlName="seconds" type="number" max="59" min="0">
-</div>
+  <input [formControl]="secondsControl" type="tel">
+</form>

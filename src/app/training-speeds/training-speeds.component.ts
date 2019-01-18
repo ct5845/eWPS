@@ -1,25 +1,18 @@
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {BoatTypes} from '../../shared/boat-types';
 import {CustomValidators} from 'ngx-custom-validators';
-
-const defaultColours = [
-    '#FFD700',
-    '#C0C0C0',
-    '#cd7f32'
-];
+import {MatHorizontalStepper} from '@angular/material';
 
 const defaultConfig = {
     race: {
         distance: 2000,
         boatType: null,
         rate: 36,
-        targets: [
-            {seconds: 400, colour: defaultColours[0]}
-        ]
+        seconds: 400
     }
 };
 
@@ -41,41 +34,26 @@ export class TrainingSpeedsComponent implements OnInit {
         CustomValidators.number,
         Validators.min(1)]);
     public raceBoatType = new FormControl(null, [Validators.required]);
-    public raceTargetTimes = new FormArray([
-        TrainingSpeedsComponent.newTargetTime(0)
-    ], []);
+    public raceTargetTime = new FormControl(null, [Validators.required]);
 
     public raceForm = new FormGroup({
         'distance': this.raceDistance,
         'rate': this.raceRate,
         'boatType': this.raceBoatType,
-        'targets': this.raceTargetTimes
+        'seconds': this.raceTargetTime
     });
     public trainForm = new FormGroup({});
-
     public boatTypes = BoatTypes;
-    public defaultColours = defaultColours;
 
-    static newTargetTime(color?: number) {
-        return new FormGroup({
-            colour: new FormControl(defaultColours[color], [Validators.required]),
-            seconds: new FormControl(null, [Validators.required,
-                CustomValidators.number,
-                Validators.min(1)])
-        });
-    }
+    @ViewChild(MatHorizontalStepper) public m: MatHorizontalStepper;
 
     constructor(private breakpointObserver: BreakpointObserver) {
     }
 
     ngOnInit() {
-    }
-
-    addTargetTime() {
-        this.raceTargetTimes.push(TrainingSpeedsComponent.newTargetTime());
-    }
-
-    removeTargetTime(index: number) {
-        this.raceTargetTimes.removeAt(index);
+        this.raceTargetTime.statusChanges
+            .subscribe(s => {
+                console.log('statusChange', s, this.raceTargetTime);
+            });
     }
 }
