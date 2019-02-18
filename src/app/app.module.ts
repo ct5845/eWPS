@@ -1,3 +1,8 @@
+import {AngularFireModule} from '@angular/fire';
+import {AngularFireAuthModule} from '@angular/fire/auth';
+import {AngularFireDatabaseModule} from '@angular/fire/database';
+import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {AngularFireStorageModule} from '@angular/fire/storage';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
@@ -17,13 +22,15 @@ import {DurationInputComponent} from './duration-input/duration-input.component'
 import {TrainingSpeedsComponent} from './training-speeds/training-speeds.component';
 import {LayoutModule} from '@angular/cdk/layout';
 import { DurationPipe } from './duration/duration.pipe';
+import { SessionsComponent } from './sessions/sessions.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         DurationInputComponent,
         TrainingSpeedsComponent,
-        DurationPipe
+        DurationPipe,
+        SessionsComponent
     ],
     imports: [
         BrowserModule,
@@ -47,7 +54,12 @@ import { DurationPipe } from './duration/duration.pipe';
         LayoutModule,
         MatButtonModule,
         MatSidenavModule,
-        MatIconModule
+        MatIconModule,
+        AngularFireModule.initializeApp(environment.firebaseConfig),
+        AngularFirestoreModule,
+        AngularFireAuthModule,
+        AngularFireStorageModule,
+        AngularFireDatabaseModule
     ],
     providers: [],
     bootstrap: [ AppComponent ]
