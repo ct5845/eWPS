@@ -1,0 +1,57 @@
+{
+  "configVersion": 1,
+  "index": "/rowing-toolbox/eWPS/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/rowing-toolbox/favicon.ico",
+        "/rowing-toolbox/index.html",
+        "/rowing-toolbox/main.380576b9d205a91aa005.js",
+        "/rowing-toolbox/polyfills.e6fbd82b34ccb0c8609f.js",
+        "/rowing-toolbox/runtime.ec2944dd8b20ec099bf3.js",
+        "/rowing-toolbox/styles.c37802eac88ad1523265.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "/rowing-toolbox/assets/icons/blade.svg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/rowing-toolbox/assets/icons/blade.svg": "53c596c4f90628f1d1d7190d38df1e0ce5c4be45",
+    "/rowing-toolbox/favicon.ico": "2c433ad8359e33cf8af5f1ee8555602c588d12db",
+    "/rowing-toolbox/index.html": "212d88704ab4573036b952f9d23f756761778c6f",
+    "/rowing-toolbox/main.380576b9d205a91aa005.js": "030c4818c8dfde781781d629b28193565aec1c10",
+    "/rowing-toolbox/polyfills.e6fbd82b34ccb0c8609f.js": "4ab98e11e44c4bc97507dfc711f8420a47d6f18e",
+    "/rowing-toolbox/runtime.ec2944dd8b20ec099bf3.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
+    "/rowing-toolbox/styles.c37802eac88ad1523265.css": "15c9ab2b7fb1913aafc33db295fedaac61aca569"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}
