@@ -69,8 +69,6 @@ export class TrainingSpeedsComponent implements OnInit, OnDestroy {
     @ViewChild(MatHorizontalStepper) public m: MatHorizontalStepper;
 
     constructor(private breakpointObserver: BreakpointObserver) {
-        this.breakpointObserver.observe(Breakpoints.Handset)
-            .subscribe(val => console.log(val));
     }
 
     ngOnInit() {

@@ -1,0 +1,8 @@
+<plotly-plot #plotly
+             *ngIf="data | async"
+             [data]="data | async"
+             [layout]="layout"
+             [useResizeHandler]="true"
+             (update)="plotUpdated($event)"
+             (relayout)="plotRangeChanged($event)"></plotly-plot>
+<app-metric-averages [pieces]="pieces"></app-metric-averages>

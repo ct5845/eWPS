@@ -1,0 +1,166 @@
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {SessionService} from '../session.service';
+import {Session} from '../models/session';
+import {Plotly} from 'angular-plotly.js/src/app/shared/plotly.interface';
+import Layout = Plotly.Layout;
+
+import {Observable, ReplaySubject, combineLatest, BehaviorSubject, Subscription} from 'rxjs';
+import {Piece} from '../models/piece';
+import {MatDialog, MatSelectionListChange, MatSnackBar} from '@angular/material';
+import {
+    map,
+    mergeMap,
+    mergeAll,
+    first,
+    take,
+    share,
+    tap,
+    publish,
+    publishBehavior,
+    publishReplay,
+    shareReplay,
+    pluck, refCount
+} from 'rxjs/operators';
+import {DateTime} from 'luxon';
+import {componentDestroyed, untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
+import {PlotComponent} from 'angular-plotly.js';
+import {FormControl, Validators} from '@angular/forms';
+import {Stroke} from '../models/stroke';
+import {DecimalPipe} from '@angular/common';
+import {randomString} from '../../../shared/random-string';
+import {DeleteDialogComponent} from '../../delete-dialog/delete-dialog.component';
+import {SessionOverviewComponent} from './session-overview/session-overview.component';
+
+@Component({
+    selector: 'app-session',
+    templateUrl: './session.component.html',
+    styleUrls: ['./session.component.scss']
+})
+export class SessionComponent implements OnInit, OnDestroy {
+    public session: Observable<Session>;
+    public strokes: Observable<Stroke[]>;
+    public pieces: Observable<Piece[]>;
+    public selectedPieces: Observable<Piece[]>;
+    public selectedPiecePlaceholder: Observable<string>;
+    public name: string;
+
+    public selectedTab          = new FormControl(0);
+    public selectedPieceControl = new FormControl();
+
+    private numberPipe       = new DecimalPipe('en-GB');
+    private sessionPiece     = new ReplaySubject<Piece>(1);
+    private selectedPieceIds = new BehaviorSubject<string[]>([]);
+    private _session: Session;
+
+    private _getSessionSubscription: Subscription;
+    @ViewChild(SessionOverviewComponent) sessionOverview: SessionOverviewComponent;
+
+    constructor(private route: ActivatedRoute,
+                private snackBar: MatSnackBar,
+                private dialog: MatDialog,
+                private changeRef: ChangeDetectorRef,
+                private sessionService: SessionService) {
+    }
+
+    ngOnInit() {
+        this.session = this.route.params.pipe(
+            pluck('id'),
+            mergeMap(id => this.sessionService.find(id).pipe(untilComponentDestroyed(this))),
+            shareReplay(1)
+        );
+
+        this.strokes = this.session.pipe(pluck('strokes'), shareReplay(1));
+        this.pieces  = this.session.pipe(pluck('pieces'), shareReplay(1));
+
+        this.selectedPieces = combineLatest(this.pieces,
+            this.selectedPieceIds).pipe(map(values => {
+            const pieces = values[0];
+            const ids    = values[1];
+
+            return pieces.filter(piece => ids.indexOf(piece.id) > -1);
+        }));
+
+        this._getSessionSubscription = this.session
+            .pipe(untilComponentDestroyed(this))
+            .subscribe(session => {
+                this._session = session;
+                this.name     = session.name;
+            });
+
+        this.selectedPiecePlaceholder = this.sessionPiece.pipe(
+            map(piece => this.getPlaceholderName(piece)));
+    }
+
+    ngOnDestroy() {
+    }
+
+    updateName() {
+        this._session.name = this.name;
+        this.sessionService.update(this._session);
+    }
+
+    savePiece() {
+        combineLatest(this.session, this.sessionPiece)
+            .pipe(take(1))
+            .subscribe((values) => {
+                const session = values[0];
+                const piece   = values[1].copy();
+
+                piece.id   = randomString();
+                piece.name = this.selectedPieceControl.value ? this.selectedPieceControl.value : this.getPlaceholderName(piece);
+
+                session.pieces.push(piece);
+
+                this.sessionService.update(session);
+            });
+    }
+
+    updatePiece(piece: Piece) {
+        if (!piece.name || piece.name.length === 0) {
+            this.deletePiece(piece, true);
+        } else {
+            this.session
+                .pipe(take(1))
+                .subscribe(session => {
+                    session.pieces.find(p => p.id === piece.id).name = piece.name;
+
+                    this.sessionService.update(session);
+                });
+        }
+    }
+
+    deletePiece(piece: Piece, reset?: boolean) {
+        this.session
+            .pipe(take(1))
+            .subscribe(session => {
+                const dialog = this.dialog.open(DeleteDialogComponent);
+
+                dialog.afterClosed()
+                    .subscribe(closed => {
+                        if (closed === true) {
+                            session.pieces.splice(session.pieces.findIndex(p => p.id === piece.id), 1);
+
+                            this.sessionService.update(session);
+                        } else if (reset) {
+                            piece.name = this.getPlaceholderName(piece);
+                            this.updatePiece(piece);
+                        }
+                    });
+            });
+    }
+
+    viewPieceInOverview(piece: Piece) {
+        if (!!this.sessionOverview) {
+            this.sessionOverview.putRangeIntoView(piece.start, piece.end);
+        }
+    }
+
+    pieceSelection(change: MatSelectionListChange) {
+        this.selectedPieceIds.next(change.source.selectedOptions.selected.map(option => option.value.id));
+    }
+
+    private getPlaceholderName(piece: Piece) {
+        return `${this.numberPipe.transform(piece.distance, '1.0-0')}m @ r${this.numberPipe.transform(piece.average.rate, '1.0-0')}`;
+    }
+}

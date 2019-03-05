@@ -1,0 +1,18 @@
+<mat-action-list>
+    <ng-container *ngFor="let session of sessions | async; let i = index">
+        <h3 matSubheader>{{ session.date | date:'EEEE MMM d, yyyy' }}</h3>
+        <mat-divider></mat-divider>
+        <mat-list-item (click)="goTo(session)">
+            <h3 matLine>{{ session.name }}</h3>
+            <p matLine>Device: {{ session.nkDevice }}</p>
+            <button (click)="delete(session, $event)" style="margin-right: 1rem" color="warn" mat-icon-button>
+                <mat-icon>delete</mat-icon>
+            </button>
+            <button color="primary" mat-raised-button>View</button>
+        </mat-list-item>
+    </ng-container>
+    <mat-list-item *ngIf="(sessions | async)?.length === 0">
+        No sessions yet. Drag and drop .csv files from your Oarlock/Stroke coach GPS2 to begin.
+    </mat-list-item>
+</mat-action-list>
+

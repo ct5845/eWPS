@@ -4,8 +4,6 @@ import {ActivatedRoute, Router, RoutesRecognized} from '@angular/router';
 import {Observable} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 
-
-
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -13,6 +11,7 @@ import {filter, map} from 'rxjs/operators';
 })
 export class AppComponent implements OnInit {
     public pageTitle = '';
+    public back: any[];
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
         .pipe(
@@ -29,6 +28,7 @@ export class AppComponent implements OnInit {
             .pipe(filter(event => event instanceof RoutesRecognized))
             .subscribe((event: RoutesRecognized) => {
                 this.pageTitle = event.state.root.firstChild.data.toolbarName;
+                this.back = event.state.root.firstChild.data.back;
             });
     }
 }

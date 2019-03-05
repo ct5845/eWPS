@@ -1,0 +1,86 @@
+@import "../../../variables";
+@import "~@angular/material/theming";
+
+:host {
+  padding: $gutter-width;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+
+  mat-card {
+    &.details {
+      flex: 0 0 auto;
+    }
+
+    &.session {
+      flex: 1 1 auto;
+
+      mat-card-content {
+        display: flex;
+        height: 100%;
+
+        mat-selection-list, mat-list {
+          min-width: 200px;
+          max-width: 250px;
+          flex: 0 0 33%;
+        }
+
+        .analysis {
+          flex: 1 1 auto;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
+  mat-tab-group {
+    height: 100%;
+  }
+
+  span {
+    &[color='primary'] {
+      color: mat-color($primaryPalette);
+    }
+  }
+
+  mat-card-title {
+    input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      text-align: center;
+      font-size: inherit;
+      outline: none;
+    }
+  }
+
+  table {
+    width: 100%;
+
+    tr {
+      &[mat-header-row] {
+        background-color: mat-color($primaryPalette);
+
+        .mat-header-cell {
+          color: white;
+        }
+      }
+    }
+
+    tr[main='true'] {
+      background-color: rgb(245,245,245);
+
+      .mat-cell {
+        color: mat-color($primaryPalette);
+      }
+    }
+
+    .mat-header-cell, .mat-cell {
+      text-align: right;
+
+      &.mat-column-name {
+        text-align: left;
+      }
+    }
+  }
+}

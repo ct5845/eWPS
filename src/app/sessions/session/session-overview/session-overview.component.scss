@@ -1,0 +1,14 @@
+:host {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+
+  plotly-plot {
+    flex: 0 0 auto;
+  }
+
+  app-metric-averages {
+    flex: 1 1 auto;
+  };
+}
