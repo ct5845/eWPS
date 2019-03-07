@@ -46,7 +46,7 @@
             <mat-tab label="Session Overview">
                 <ng-template matTabContent>
                     <app-session-overview [session]="session"
-                                          (pieceChanged)="sessionPiece.next($event)"></app-session-overview>
+                                          (pieceChanged)="sessionOverviewPiece.next($event)"></app-session-overview>
                 </ng-template>
             </mat-tab>
             <mat-tab label="Force Curves">

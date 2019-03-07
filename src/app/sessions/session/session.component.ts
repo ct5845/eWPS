@@ -33,12 +33,13 @@ export class SessionComponent implements OnInit, OnDestroy {
     public selectedPieces: Observable<Piece[]>;
     public selectedPiecePlaceholder: Observable<string>;
     public name: string;
+    public sessionOverviewPiece = new ReplaySubject<Piece>(1);
 
     public selectedTab          = new FormControl(0);
     public selectedPieceControl = new FormControl();
 
-    private numberPipe       = new DecimalPipe('en-GB');
-    private sessionPiece     = new ReplaySubject<Piece>(1);
+    private numberPipe = new DecimalPipe('en-GB');
+
     private selectedPieceIds = new BehaviorSubject<string[]>([]);
     private _session: Session;
 
@@ -77,7 +78,7 @@ export class SessionComponent implements OnInit, OnDestroy {
                 this.name     = session.name;
             });
 
-        this.selectedPiecePlaceholder = this.sessionPiece.pipe(
+        this.selectedPiecePlaceholder = this.sessionOverviewPiece.pipe(
             map(piece => this.getPlaceholderName(piece)));
     }
 
@@ -90,18 +91,12 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     savePiece() {
-        combineLatest(this.session, this.sessionPiece)
+        this.sessionOverviewPiece
             .pipe(take(1))
-            .subscribe((values) => {
-                const session = values[0];
-                const piece   = values[1].copy();
-
-                piece.id   = randomString();
+            .subscribe((piece) => {
                 piece.name = this.selectedPieceControl.value ? this.selectedPieceControl.value : this.getPlaceholderName(piece);
 
-                session.pieces.push(piece);
-
-                this.sessionService.update(session);
+                this.sessionService.addPiece(piece);
             });
     }
 

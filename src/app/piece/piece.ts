@@ -1,20 +1,19 @@
 import {Stroke} from '../strokes/stroke';
-import {DateTime} from 'luxon';
+import {DateTime, Duration} from 'luxon';
 import {Session} from '../sessions/session';
 import {randomString} from '../../shared/random-string';
 
 export class Piece {
-    public name: string;
     public id: string;
-    public date: DateTime;
     public sessionId: string;
-
+    public name: string;
     public strokeCount = 0;
     public distance    = 0;
-
     public average: Stroke;
     public start: number;
     public end: number;
+    public from: string;
+    public to: string;
 
     static fromRange(start: number, end: number, session: Session): Piece {
         const strokes = session.strokes;
@@ -23,6 +22,11 @@ export class Piece {
         piece.start   = start;
         piece.end     = end;
         piece.average = new Stroke();
+
+        piece.from = DateTime.fromISO(session.details.session.date).plus(Duration.fromISO(session.strokes[start].timeElapsed)).toISO();
+        piece.to   = DateTime.fromISO(session.details.session.date).plus(Duration.fromISO(session.strokes[end].timeElapsed)).toISO();
+
+        piece.id = `${piece.from}-${piece.to}`;
 
         if (start === -1 || end === -1 || start >= end) {
             return piece;
@@ -56,9 +60,9 @@ export class Piece {
     }
 
     toFirestore(): any {
-        const obj: any = Object.assign<any, Piece>({}, this);
+        const obj: any = {...this};
 
-        obj.average = this.average ? this.average.toFirestore() : null;
+        obj.average = this.average.toFirestore();
 
         return obj;
     }

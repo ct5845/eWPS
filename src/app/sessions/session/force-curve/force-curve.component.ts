@@ -49,23 +49,21 @@ export class ForceCurveComponent implements OnInit {
     public data: Observable<any>;
     public layout: any;
 
-    public targetCurve = {
-        x: [-55, -50, -22, 19, 35],
-        y: [0, 100, 500, 100, 0],
-        name: 'Target',
-        line: {
-            dash: 'dot',
-            width: 4
-        },
-        mode: 'lines'
-    };
-
     constructor() {
     }
 
     ngOnInit() {
         this.layout = {
             showlegend: true,
+            margin: {
+                l: 30,
+                t: 20,
+                r: 10,
+                b: 50
+            },
+            legend: {
+                'orientation': 'h'
+            },
             xaxis: {
                 title: 'Oar Angle (°)',
                 zeroline: false,
@@ -85,12 +83,6 @@ export class ForceCurveComponent implements OnInit {
         if (!!this.pieces) {
             this.data = this.pieces.pipe(
                 map(pieces => {
-                    const maxForce = pieces.reduce((max, piece) => {
-                        return Math.max(max, piece.average.forceMax);
-                    }, 0);
-
-                    this.targetCurve.y[2] = maxForce;
-
                     return [...pieces.map((piece: Piece) => {
                         const x = [
                             piece.average.catch.toFixed(),

@@ -4,6 +4,7 @@ import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, shareReplay} from 'rxjs/operators';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Stroke} from '../strokes/stroke';
+import {Piece} from '../piece/piece';
 
 @Injectable({
     providedIn: 'root'
@@ -43,11 +44,15 @@ export class SessionService {
     find(id: string): Observable<Session> {
         return this.collection.doc(id).valueChanges().pipe(
             filter(session => !!session),
-            mergeMap(sessions => combineLatest(of(sessions), this.collection.doc(id).collection('strokes').valueChanges())),
+            mergeMap(sessions => combineLatest(
+                of(sessions),
+                this.collection.doc(id).collection('pieces').valueChanges(),
+                this.collection.doc(id).collection('strokes').valueChanges())),
             map((values) => {
                 const session = Session.fromStorage(values[0]);
 
-                session.strokes = values[1].map(stroke => Object.assign(new Stroke(), stroke));
+                session.pieces = values[1].map(piece => Object.assign(new Piece(), piece));
+                session.strokes = values[2].map(stroke => Object.assign(new Stroke(), stroke));
 
                 return session;
             }));
@@ -57,6 +62,10 @@ export class SessionService {
         const data = session.toFirestore();
 
         this.collection.doc(data.session.id).set(data.session);
+    }
+
+    addPiece(piece: Piece) {
+        this.collection.doc(piece.sessionId).collection('pieces').doc(piece.id).set(piece.toFirestore());
     }
 
     delete(session: Session) {

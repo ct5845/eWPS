@@ -31,8 +31,8 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
         this.layout = {
             showlegend: true,
             margin: {
-                l: 30,
-                t: 10,
+                l: 40,
+                t: 20,
                 r: 10,
                 b: 50
             },
