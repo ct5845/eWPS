@@ -1,32 +1,21 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {SessionService} from '../session.service';
-import {Session} from '../models/session';
-import {Plotly} from 'angular-plotly.js/src/app/shared/plotly.interface';
-import Layout = Plotly.Layout;
-
+import {Session} from '../session';
 import {Observable, ReplaySubject, combineLatest, BehaviorSubject, Subscription} from 'rxjs';
-import {Piece} from '../models/piece';
+import {Piece} from '../../piece/piece';
 import {MatDialog, MatSelectionListChange, MatSnackBar} from '@angular/material';
 import {
     map,
     mergeMap,
-    mergeAll,
-    first,
     take,
-    share,
-    tap,
-    publish,
-    publishBehavior,
-    publishReplay,
     shareReplay,
-    pluck, refCount
+    pluck
 } from 'rxjs/operators';
-import {DateTime} from 'luxon';
-import {componentDestroyed, untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
-import {PlotComponent} from 'angular-plotly.js';
-import {FormControl, Validators} from '@angular/forms';
-import {Stroke} from '../models/stroke';
+
+import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
+import {FormControl} from '@angular/forms';
+import {Stroke} from '../../strokes/stroke';
 import {DecimalPipe} from '@angular/common';
 import {randomString} from '../../../shared/random-string';
 import {DeleteDialogComponent} from '../../delete-dialog/delete-dialog.component';

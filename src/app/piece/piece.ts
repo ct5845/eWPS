@@ -1,29 +1,35 @@
-import {Stroke} from './stroke';
+import {Stroke} from '../strokes/stroke';
+import {DateTime} from 'luxon';
+import {Session} from '../sessions/session';
+import {randomString} from '../../shared/random-string';
 
 export class Piece {
     public name: string;
     public id: string;
+    public date: DateTime;
+    public sessionId: string;
 
-    public strokes  = 0;
-    public distance = 0;
+    public strokeCount = 0;
+    public distance    = 0;
 
     public average: Stroke;
     public start: number;
     public end: number;
 
-    static fromRange(start: number, end: number, strokes?: Stroke[], id?: string): Piece {
-        const piece   = new Piece();
+    static fromRange(start: number, end: number, session: Session): Piece {
+        const strokes = session.strokes;
+        const piece   = new Piece(null, session.id);
+
         piece.start   = start;
         piece.end     = end;
         piece.average = new Stroke();
-        piece.id      = id;
 
         if (start === -1 || end === -1 || start >= end) {
             return piece;
         }
 
-        piece.strokes  = (end - start) + 1;
-        piece.distance = strokes[end].distanceGPS - strokes[start].distanceGPS;
+        piece.strokeCount = (end - start) + 1;
+        piece.distance    = strokes[end].distanceGPS - strokes[start].distanceGPS;
 
         const strokeCounter = new Stroke();
 
@@ -34,6 +40,11 @@ export class Piece {
         piece.average.average(strokeCounter);
 
         return piece;
+    }
+
+    constructor(id?: string, sessionId?: string) {
+        this.id        = id || randomString();
+        this.sessionId = sessionId;
     }
 
     copy(): Piece {

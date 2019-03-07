@@ -1,18 +1,24 @@
 <mat-action-list>
-    <ng-container *ngFor="let session of sessions | async; let i = index">
-        <h3 matSubheader>{{ session.date | date:'EEEE MMM d, yyyy' }}</h3>
+    <ng-container *ngFor="let sessions of (dateSessions | async | keyvalue:compareMapDates)">
+        <h3 mat-subheader>{{ sessions.key | date }}</h3>
         <mat-divider></mat-divider>
-        <mat-list-item (click)="goTo(session)">
-            <h3 matLine>{{ session.name }}</h3>
-            <p matLine>Device: {{ session.nkDevice }}</p>
-            <button (click)="delete(session, $event)" style="margin-right: 1rem" color="warn" mat-icon-button>
-                <mat-icon>delete</mat-icon>
-            </button>
-            <button color="primary" mat-raised-button>View</button>
+        <mat-list-item *ngFor="let session of sessions.value" (click)="goTo(session)">
+            <div class="col-xs-2 col-md-1 seat" [attr.port]="session.details.oarlock.port">
+                <span>{{ session.details.oarlock.seat }}</span>
+            </div>
+            <div class="col-xs">
+                <div><span class="mat-small"></span><span
+                        class="mat-body-2">{{ session.name }}</span></div>
+                <div><span class="mat-small">Boat:</span><span
+                        class="mat-body-2">{{ session.details.oarlock.boatId }}</span></div>
+            </div>
+            <div class="col-xs-3 col-md-1 mat-body" style="text-align: right">
+                {{ session.details.session.date | date:'shortTime' }}
+            </div>
         </mat-list-item>
     </ng-container>
-    <mat-list-item *ngIf="(sessions | async)?.length === 0">
-        No sessions yet. Drag and drop .csv files from your Oarlock/Stroke coach GPS2 to begin.
+    <mat-list-item class="add">
+        Drag and drop .csv files from your NK Device.
     </mat-list-item>
 </mat-action-list>
 

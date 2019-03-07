@@ -4,10 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod --output-path docs --base-href /rowing-toolbox/",
+    "build": "ng build --prod --stats-json --output-path docs --base-href /rowing-toolbox/",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "bundle-report": "webpack-bundle-analyzer docs/stats.json"
   },
   "private": true,
   "dependencies": {
@@ -41,6 +42,7 @@
     "npm": "^6.6.0",
     "plotly.js": "^1.45.0",
     "rxjs": "~6.4.0",
+    "shortid": "^2.2.14",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
   },
@@ -53,6 +55,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/luxon": "^1.11.1",
     "@types/node": "~8.9.4",
+    "@types/shortid": "0.0.29",
     "codelyzer": "~4.5.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -65,6 +68,7 @@
     "rxjs-spy": "^7.5.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
-    "typescript": "~3.2.2"
+    "typescript": "~3.2.2",
+    "webpack-bundle-analyzer": "^3.1.0"
   }
 }

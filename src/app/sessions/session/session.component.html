@@ -1,32 +1,13 @@
 <ng-container *ngIf="(session | async)">
-    <mat-card class="details">
-        <mat-card-content>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="row middle-xs between-xs">
-                        <div class="col-">
-                            <span color="primary" class="mat-small">Date:&nbsp;</span>
-                            <span class="mat-body-2">{{ ((session | async))?.date | date:'EEEE MMM d, yyyy - h:mm a' }}</span>
-                        </div>
-                        <div class="col-">
-                            <span color="primary" class="mat-small">Device:&nbsp;</span>
-                            <span class="mat-body">{{ (session | async)?.nkDevice }}
-                                /{{ (session | async)?.nkName }}</span>
-                        </div>
-                    </div>
-                </div>
-                <mat-form-field class="col-xs" appearance="fill">
-                    <mat-label>Session Name</mat-label>
-                    <input matInput type="text" [(ngModel)]="name" (change)="updateName()"/>
-                    <mat-icon matSuffix>
-                        edit
-                    </mat-icon>
-                </mat-form-field>
-            </div>
-        </mat-card-content>
-    </mat-card>
-    <mat-card class="session">
-        <mat-card-content>
+    <div class="details row">
+        <mat-form-field class="col-xs-12" appearance="fill">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" [(ngModel)]="name" (change)="updateName()"/>
+            <mat-icon matSuffix>edit</mat-icon>
+        </mat-form-field>
+    </div>
+    <div class="analysis">
+        <div class="pieces">
             <mat-list *ngIf="selectedTab.value === 0">
                 <h3 mat-subheader>Currently Selected</h3>
                 <mat-list-item>
@@ -52,27 +33,32 @@
                     </button>
                 </mat-list-item>
             </mat-list>
-            <mat-selection-list *ngIf="selectedTab.value === 1" (selectionChange)="pieceSelection($event)">
+            <mat-selection-list *ngIf="selectedTab.value !== 0" (selectionChange)="pieceSelection($event)">
                 <h3 mat-subheader>Saved</h3>
-                <mat-list-option *ngFor="let piece of pieces | async" [value]="piece" [selected]="(selectedPieceIds | async).indexOf(piece.id) > -1">
+                <mat-list-option *ngFor="let piece of pieces | async" [value]="piece"
+                                 [selected]="(selectedPieceIds | async).indexOf(piece.id) > -1">
                     {{ piece.name }}
                 </mat-list-option>
             </mat-selection-list>
             <mat-divider [vertical]="true"></mat-divider>
-            <div class="analysis">
-                <mat-tab-group [selectedIndex]="selectedTab.value" (selectedIndexChange)="selectedTab.setValue($event)">
-                    <mat-tab label="Session Overview">
-                        <app-session-overview [session]="session"
-                                              (pieceChanged)="sessionPiece.next($event)"></app-session-overview>
-                    </mat-tab>
-                    <!--<mat-tab label="Time Series">-->
-                        <!--<app-time-series></app-time-series>-->
-                    <!--</mat-tab>-->
-                    <mat-tab label="Force Curves">
-                        <app-force-curve [pieces]="selectedPieces"></app-force-curve>
-                    </mat-tab>
-                </mat-tab-group>
-            </div>
-        </mat-card-content>
-    </mat-card>
+        </div>
+        <mat-tab-group [selectedIndex]="selectedTab.value" (selectedIndexChange)="selectedTab.setValue($event)">
+            <mat-tab label="Session Overview">
+                <ng-template matTabContent>
+                    <app-session-overview [session]="session"
+                                          (pieceChanged)="sessionPiece.next($event)"></app-session-overview>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label="Force Curves">
+                <ng-template matTabContent>
+                    <app-force-curve [pieces]="selectedPieces"></app-force-curve>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label="Angles">
+                <ng-template matTabContent>
+                    <app-angle-plot [pieces]="selectedPieces"></app-angle-plot>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
 </ng-container>

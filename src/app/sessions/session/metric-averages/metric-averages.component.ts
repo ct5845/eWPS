@@ -1,8 +1,8 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {combineLatest, Observable, ReplaySubject} from 'rxjs';
-import {Piece} from '../../models/piece';
+import {Piece} from '../../../piece/piece';
 import {ColDef, GridReadyEvent, GridApi, ValueFormatterParams, ColumnApi, RowNode} from 'ag-grid-community';
-import {Stroke} from '../../models/stroke';
+import {Stroke} from '../../../strokes/stroke';
 import {DecimalPipe} from '@angular/common';
 import {tap} from 'rxjs/operators';
 
@@ -24,7 +24,7 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        const numOfStrokes = {field: 'strokes', headerName: 'Strokes', type: 'numericColumn'};
+        const numOfStrokes = {field: 'strokeCount', headerName: 'Strokes', type: 'numericColumn'};
         const distance     = {
             field: 'distance',
             headerName: 'Distance (m)',

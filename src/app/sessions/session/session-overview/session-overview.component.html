@@ -1,5 +1,4 @@
-<plotly-plot #plotly
-             *ngIf="data | async"
+<plotly-plot *ngIf="data | async"
              [data]="data | async"
              [layout]="layout"
              [useResizeHandler]="true"

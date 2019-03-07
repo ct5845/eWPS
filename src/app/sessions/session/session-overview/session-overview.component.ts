@@ -1,15 +1,13 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {Session} from '../../models/session';
+import {Session} from '../../session';
 import {debounceTime, filter, map, shareReplay, take} from 'rxjs/operators';
-import {Stroke} from '../../models/stroke';
-import {Piece} from '../../models/piece';
+import {Stroke} from '../../../strokes/stroke';
+import {Piece} from '../../../piece/piece';
 import {DateTime} from 'luxon';
 import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
-import {randomString} from '../../../../shared/random-string';
 import {PlotComponent} from 'angular-plotly.js';
-
-const pieceId = randomString();
+import {BreakpointObserver, Breakpoints, BreakpointState} from '@angular/cdk/layout';
 
 @Component({
     selector: 'app-session-overview',
@@ -27,16 +25,29 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
 
     private piece: Observable<Piece>;
     private dateRange = new BehaviorSubject<string[]>([]);
+    private layoutChanges: Observable<BreakpointState>;
 
-    constructor() {
+    constructor(breakPoint: BreakpointObserver) {
         this.layout = {
             showlegend: true,
+            margin: {
+                l: 30,
+                t: 10,
+                r: 10,
+                b: 50
+            },
+            legend: {
+                'orientation': 'h'
+            },
             xaxis: {
-                rangeselector: {},
-                rangeslider: {},
-                type: 'date'
+                type: 'date',
+                rangeselector: {}
             }
         };
+
+        this.layoutChanges = breakPoint.observe([
+            Breakpoints.Handset
+        ]);
     }
 
     ngOnInit() {
@@ -47,7 +58,7 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
         const dateRangeChanged =
                   this.dateRange.pipe(
                       filter(values => !!values && typeof values[0] === 'string'),
-                      map(value => [DateTime.fromJSDate(new Date(value[0])), DateTime.fromJSDate(new Date(value[1]))]),
+                      map(value => [DateTime.fromJSDate(new Date(value[0])).toISO(), DateTime.fromJSDate(new Date(value[1])).toISO()]),
                       shareReplay(1),
                   );
 
@@ -69,7 +80,7 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
                         return false;
                     });
 
-                    return Piece.fromRange(start, end, session.strokes, pieceId);
+                    return Piece.fromRange(start, end, session);
                 }),
                 shareReplay(1));
 
@@ -98,8 +109,8 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
     putRangeIntoView(start: number, end: number) {
         this.session.pipe(take(1))
             .subscribe(session => {
-                const from = session.strokes[start].timestamp.toFormat('yyyy-MM-dd HH:mm:ss.S');
-                const to   = session.strokes[end].timestamp.toFormat('yyyy-MM-dd HH:mm:ss.S');
+                const from = session.strokes[start].timestamp;
+                const to   = session.strokes[end].timestamp;
 
                 this.layout.xaxis.autorange = false;
                 this.layout.xaxis.range     = [
@@ -112,7 +123,7 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
     }
 
     private getData(session: Session) {
-        const x = session.strokes.map(stroke => stroke.timestamp.toJSDate());
+        const x = session.strokes.map(stroke => stroke.timestamp);
 
         const workData = Stroke.getWorkData.map((data, index) => {
             const y = session.strokes.map(stroke => stroke[data.field]);

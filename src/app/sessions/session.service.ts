@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {Session} from './models/session';
-import {Observable, Subscription} from 'rxjs';
-import {filter, map, share, shareReplay, tap} from 'rxjs/operators';
+import {Session} from './session';
+import {combineLatest, Observable, of} from 'rxjs';
+import {filter, map, mergeMap, shareReplay} from 'rxjs/operators';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
-import {tag} from 'rxjs-spy/operators';
+import {Stroke} from '../strokes/stroke';
 
 @Injectable({
     providedIn: 'root'
@@ -11,10 +11,9 @@ import {tag} from 'rxjs-spy/operators';
 export class SessionService {
     public sessions: Observable<Session[]>;
     private collection: AngularFirestoreCollection;
-    private findMap = new Map<string, Subscription>();
 
     constructor(private db: AngularFirestore) {
-        this.collection = this.db.collection<any>('sessions');
+        this.collection = this.db.collection('sessions', ref => ref.orderBy('details.session.date', 'asc'));
 
         this.sessions = this.collection.valueChanges()
             .pipe(
@@ -27,7 +26,12 @@ export class SessionService {
     add(session: Session) {
         const data = session.toFirestore();
 
-        this.collection.doc(data.id).set(data);
+        this.collection.doc(data.session.id).set(data.session)
+            .then(() => {
+                data.strokes.forEach(s => {
+                    this.collection.doc(`${session.id}`).collection('strokes').doc(s.id).set(s);
+                });
+            });
 
         return session;
     }
@@ -38,14 +42,21 @@ export class SessionService {
 
     find(id: string): Observable<Session> {
         return this.collection.doc(id).valueChanges().pipe(
-            tag(`getSession`),
-            map(s => !s ? null : Session.fromStorage(s)));
+            filter(session => !!session),
+            mergeMap(sessions => combineLatest(of(sessions), this.collection.doc(id).collection('strokes').valueChanges())),
+            map((values) => {
+                const session = Session.fromStorage(values[0]);
+
+                session.strokes = values[1].map(stroke => Object.assign(new Stroke(), stroke));
+
+                return session;
+            }));
     }
 
     update(session: Session) {
         const data = session.toFirestore();
 
-        this.collection.doc(data.id).set(data);
+        this.collection.doc(data.session.id).set(data.session);
     }
 
     delete(session: Session) {

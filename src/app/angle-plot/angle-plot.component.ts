@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/index';
-import {Piece} from '../../../piece/piece';
-import {map, tap} from 'rxjs/internal/operators';
+import {Observable} from 'rxjs';
+import {Piece} from '../piece/piece';
+import {map} from 'rxjs/operators';
 
 function targetLine(x: number) {
     return {
@@ -39,26 +39,15 @@ function indexToTarget(index: number) {
 }
 
 @Component({
-    selector: 'app-force-curve',
-    templateUrl: './force-curve.component.html',
-    styleUrls: ['./force-curve.component.scss']
+    selector: 'app-angle-plot',
+    templateUrl: './angle-plot.component.html',
+    styleUrls: ['./angle-plot.component.scss']
 })
-export class ForceCurveComponent implements OnInit {
+export class AnglePlotComponent implements OnInit {
     @Input() public pieces: Observable<Piece[]>;
 
     public data: Observable<any>;
     public layout: any;
-
-    public targetCurve = {
-        x: [-55, -50, -22, 19, 35],
-        y: [0, 100, 500, 100, 0],
-        name: 'Target',
-        line: {
-            dash: 'dot',
-            width: 4
-        },
-        mode: 'lines'
-    };
 
     constructor() {
     }
@@ -67,12 +56,8 @@ export class ForceCurveComponent implements OnInit {
         this.layout = {
             showlegend: true,
             xaxis: {
-                title: 'Oar Angle (°)',
-                zeroline: false,
-                dtick: 2
-            },
-            yaxis: {
-                title: 'Force (N)'
+                title: 'Oar Angle',
+                zeroline: false
             },
             shapes: [targetLine(-55),
                      targetLine(-50),
@@ -85,12 +70,6 @@ export class ForceCurveComponent implements OnInit {
         if (!!this.pieces) {
             this.data = this.pieces.pipe(
                 map(pieces => {
-                    const maxForce = pieces.reduce((max, piece) => {
-                        return Math.max(max, piece.average.forceMax);
-                    }, 0);
-
-                    this.targetCurve.y[2] = maxForce;
-
                     return [...pieces.map((piece: Piece) => {
                         const x = [
                             piece.average.catch.toFixed(),
@@ -99,28 +78,16 @@ export class ForceCurveComponent implements OnInit {
                             (piece.average.finish - piece.average.wash).toFixed(),
                             piece.average.finish.toFixed()];
 
-                        const text = x.map((v, index) => {
-                            return `${indexToTarget(index)} ${v}°`;
+                        const text = x.map((v, i) => {
+                            return `${indexToTarget(i)} ${v}°`;
                         });
 
-                        const y = [
-                            0,
-                            100,
-                            piece.average.forceMax.toFixed(),
-                            100,
-                            0
-                        ];
-
                         return {
-                            x, y, text, type: 'scatter', mode: 'lines+markers', name: piece.name, connectgaps: true,
-                            hoverinfo: 'text', marker: {
-                                size: 12
-                            }
+                            x, text, type: 'box', name: piece.name, hoverinfo: 'text'
                         };
                     })];
                 })
             );
         }
     }
-
 }
