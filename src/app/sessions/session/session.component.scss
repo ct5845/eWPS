@@ -6,6 +6,14 @@
   display: flex;
   flex-flow: column;
 
+  mat-toolbar {
+    flex: 0 0 auto;
+  }
+
+  mat-tab-group {
+    flex: 1 1 auto;
+  }
+
   .details {
     flex: 0 0 auto;
   }

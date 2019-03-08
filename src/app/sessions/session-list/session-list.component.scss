@@ -1,5 +1,6 @@
 :host {
   flex: 1 1 auto;
+  overflow: hidden;
   display: flex;
   flex-flow: column;
 
@@ -9,6 +10,7 @@
 
   mat-action-list {
     flex: 1 1 auto;
+    overflow: auto;
 
     h3 {
       font-variant: all-petite-caps;
@@ -69,6 +71,20 @@
       + h4 {
         font-variant: all-petite-caps;
       }
+    }
+  }
+
+  .loading {
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    flex: 1 1 auto;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+
+    h3 {
+      font-variant: all-petite-caps;
     }
   }
 }

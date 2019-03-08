@@ -3,6 +3,8 @@
         [rowData]="[]"
         [getRowNodeId]="getRowNodeId"
         [deltaRowDataMode]="true"
+        [overlayNoRowsTemplate]="'No saved pieces.'"
         [columnDefs]="columnDefs"
         (gridReady)="gridReady($event)"
+        (columnGroupOpened)="gridGroupChanged($event)"
         class="ag-theme-material"></ag-grid-angular>

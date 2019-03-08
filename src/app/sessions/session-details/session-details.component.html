@@ -1,0 +1,113 @@
+<ng-container *ngIf="$session | async as session">
+    <div class="row around-xs">
+        <div class="col-xs-12 col-md-6">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>
+                        Session
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <mat-list>
+                        <div class="row">
+                            <mat-form-field class="col-xs-12 col-md-6" appearance="fill">
+                                <mat-label>Name</mat-label>
+                                <input matInput type="text"
+                                       (change)="update(session, 'Name')"
+                                       [(ngModel)]="session.name"/>
+                                <mat-icon matSuffix>edit</mat-icon>
+                            </mat-form-field>
+
+                            <mat-form-field class="col-xs-12 col-md-6" appearance="fill">
+                                <mat-label>Date</mat-label>
+                                <input matInput [matDatepicker]="fromDate" [(ngModel)]="session.entireSession.from"
+                                       disabled/>
+                                <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                                <mat-datepicker #fromDate></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div class="row">
+                            <mat-form-field class="col-xs-6" appearance="fill">
+                                <mat-label>From</mat-label>
+                                <input matInput type="text" [value]="session.entireSession.from | date:'HH:mm:ss'"
+                                       disabled/>
+                                <mat-icon matSuffix>access_time</mat-icon>
+                            </mat-form-field>
+                            <mat-form-field class="col-xs-6" appearance="fill">
+                                <mat-label>To</mat-label>
+                                <input matInput type="text" [value]="session.entireSession.to | date:'HH:mm:ss'"
+                                       disabled/>
+                                <mat-icon matSuffix>access_time</mat-icon>
+                            </mat-form-field>
+                        </div>
+
+                        <mat-form-field appearance="fill">
+                            <mat-label>Original Name</mat-label>
+                            <input matInput type="text" [(ngModel)]="session.details.session.name" disabled/>
+                            <mat-icon matSuffix>lock</mat-icon>
+                        </mat-form-field>
+                    </mat-list>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <div class="col-xs-12 col-md-6">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>
+                        Oarlock
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <mat-list>
+                        <div class="row">
+                            <mat-form-field class="col-xs-6" appearance="fill">
+                                <mat-label>Boat</mat-label>
+                                <input matInput type="text" (change)="update(session, 'Boat')" [(ngModel)]="session.details.oarlock.boatId"/>
+                                <mat-icon matSuffix>edit</mat-icon>
+                            </mat-form-field>
+                            <mat-form-field class="col-xs-6" appearance="fill">
+                                <mat-label>Seat</mat-label>
+                                <input matInput type="number" min="1" max="8"
+                                       (change)="update(session, 'Seat')"
+                                       [(ngModel)]="session.details.oarlock.seat"/>
+                                <mat-icon matSuffix>edit</mat-icon>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="row">
+                            <mat-form-field class="col-xs-6" appearance="fill">
+                                <mat-label>Oar Length</mat-label>
+                                <input matInput type="text" [value]="session.details.oarlock.oarLength" disabled/>
+                                <span matSuffix>cm</span>
+                            </mat-form-field>
+                            <mat-form-field class="col-xs-6" appearance="fill">
+                                <mat-label>Inboard</mat-label>
+                                <input matInput type="text" [value]="session.details.oarlock.inboardLength" disabled/>
+                                <span matSuffix>cm</span>
+                            </mat-form-field>
+                        </div>
+
+                        <mat-radio-group [(ngModel)]="session.details.oarlock.port" disabled>
+                            <mat-radio-button [value]="false">Starboard</mat-radio-button>
+                            <mat-radio-button [value]="true">Port</mat-radio-button>
+                        </mat-radio-group>
+                    </mat-list>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <div class="col-xs-12">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>
+                        Metrics
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <app-metric-averages [$pieces]="$piece"></app-metric-averages>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</ng-container>

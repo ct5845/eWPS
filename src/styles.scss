@@ -5,6 +5,18 @@
 @include mat-core();
 @include angular-material-theme(mat-light-theme($primaryPalette, $accentPalette, $warnPalette));
 
+$custom-typography: mat-typography-config(
+        $caption: mat-typography-level(11px, 11px, 500)
+);
+
+mat-list-item {
+  &[appearance='fill'] {
+    .mat-list-item-content {
+      padding-left: 0.75em;
+    }
+  }
+}
+
 /* You can add global styles to this file, and also import other style files */
 $media-sm: sm 48em 46rem;
 $media-md: md 62em 61rem;

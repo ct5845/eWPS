@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Observable} from 'rxjs';
-import {auth} from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 @Injectable({
     providedIn: 'root'
@@ -21,7 +22,7 @@ export class FirebaseGuard implements CanActivate {
                     resolve(true);
                 } else {
                     this.afAuth.auth
-                        .signInWithPopup(new auth.GoogleAuthProvider()).then(res => {
+                        .signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(res => {
                         resolve(!!res);
                     }, err => {
                         console.log(err);

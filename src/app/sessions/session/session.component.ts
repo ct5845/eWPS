@@ -26,7 +26,7 @@ import {SessionOverviewComponent} from './session-overview/session-overview.comp
     styleUrls: ['./session.component.scss']
 })
 export class SessionComponent implements OnInit, OnDestroy {
-    public sessionObservable: Observable<Session>;
+    public $session: Observable<Session>;
     public strokes: Observable<Stroke[]>;
     public pieces: Observable<Piece[]>;
     public selectedPieces: Observable<Piece[]>;
@@ -53,14 +53,14 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.sessionObservable = this.route.params.pipe(
+        this.$session = this.route.params.pipe(
             pluck('id'),
             mergeMap(id => this.sessionService.find(id).pipe(untilComponentDestroyed(this))),
             shareReplay(1)
         );
 
-        this.strokes = this.sessionObservable.pipe(pluck('strokes'), shareReplay(1));
-        this.pieces  = this.sessionObservable.pipe(pluck('pieces'), shareReplay(1));
+        this.strokes = this.$session.pipe(pluck('strokes'), shareReplay(1));
+        this.pieces  = this.$session.pipe(pluck('pieces'), shareReplay(1));
 
         this.selectedPieces = combineLatest(this.pieces,
             this.selectedPieceIds).pipe(map(values => {
@@ -70,7 +70,7 @@ export class SessionComponent implements OnInit, OnDestroy {
             return pieces.filter(piece => ids.indexOf(piece.id) > -1);
         }));
 
-        this._getSessionSubscription = this.sessionObservable
+        this._getSessionSubscription = this.$session
             .pipe(untilComponentDestroyed(this))
             .subscribe(session => {
                 this._session = session;
@@ -90,7 +90,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     savePiece() {
-        combineLatest(this.sessionObservable, this.sessionOverviewPiece)
+        combineLatest(this.$session, this.sessionOverviewPiece)
             .pipe(take(1))
             .subscribe((values) => {
                 const session = values[0];
@@ -109,7 +109,7 @@ export class SessionComponent implements OnInit, OnDestroy {
         if (!piece.name || piece.name.length === 0) {
             this.deletePiece(piece, true);
         } else {
-            this.sessionObservable
+            this.$session
                 .pipe(take(1))
                 .subscribe(session => {
                     session.pieces.find(p => p.id === piece.id).name = piece.name;
@@ -120,7 +120,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     deletePiece(piece: Piece, reset?: boolean) {
-        this.sessionObservable
+        this.$session
             .pipe(take(1))
             .subscribe(session => {
                 const dialog = this.dialog.open(DeleteDialogComponent);

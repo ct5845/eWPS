@@ -1,7 +1,43 @@
-<plotly-plot *ngIf="data | async"
-             [data]="data | async"
-             [layout]="layout"
-             [useResizeHandler]="true"
-             (update)="plotUpdated($event)"
-             (relayout)="plotRangeChanged($event)"></plotly-plot>
-<app-metric-averages [pieces]="pieces"></app-metric-averages>
+<ng-container *ngIf="$data | async as data; else loading">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                <span>Time vs Stroke Rate </span>
+                <small *ngIf="$dateRange | async" class="mat-caption">({{ $viewFrom | async | date:'HH:mm:ss' }} - {{ $viewTo | async | date:'HH:mm:ss' }})</small>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <plotly-plot [data]="data"
+                         [layout]="layout"
+                         [useResizeHandler]="true"
+                         (update)="plotUpdated($event)"
+                         (relayout)="plotRangeChanged($event)"></plotly-plot>
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <button (click)="putRangeIntoView()" mat-flat-button>Clear Selection</button>
+            <button mat-raised-button color="primary" (click)="savePiece()">Save Selection</button>
+        </mat-card-actions>
+    </mat-card>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Pieces</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <app-metric-averages
+                    [$headerPiece]="$selectedPiece"
+                    [$footerPiece]="$entireSession"
+                    [$pieces]="$pieces"></app-metric-averages>
+        </mat-card-content>
+    </mat-card>
+</ng-container>
+
+<ng-template #loading>
+    <div class="loading">
+        <mat-progress-spinner
+                color="accent"
+                mode="indeterminate">
+        </mat-progress-spinner>
+        <h3 mat-subheader>Creating Time Series</h3></div>
+</ng-template>
+
+

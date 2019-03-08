@@ -1,67 +1,89 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
 import {combineLatest, Observable, ReplaySubject} from 'rxjs';
 import {Piece} from '../../../piece/piece';
-import {ColDef, GridReadyEvent, GridApi, ValueFormatterParams, ColumnApi, RowNode} from 'ag-grid-community';
-import {Stroke} from '../../../strokes/stroke';
+import {ColDef, GridReadyEvent, GridApi, ValueFormatterParams, ColumnApi, ColumnGroupOpenedEvent} from 'ag-grid-community';
 import {DecimalPipe} from '@angular/common';
-import {tap} from 'rxjs/operators';
+
+import {STROKE_COLUMNS} from '../../../strokes/stroke-columns';
 
 @Component({
     selector: 'app-metric-averages',
     templateUrl: './metric-averages.component.html',
-    styleUrls: ['./metric-averages.component.scss']
+    styleUrls: [ './metric-averages.component.scss' ]
 })
 export class MetricAveragesComponent implements OnInit, OnDestroy {
-    @Input() public pieces: Observable<Piece[]>;
+    @Input() public $pieces: Observable<Piece[]>;
+    @Input() public $headerPiece: Observable<Piece>;
+    @Input() public $footerPiece: Observable<Piece>;
 
     public columnDefs: ColDef[];
 
-    private api        = new ReplaySubject<GridApi>(1);
-    private columnApi  = new ReplaySubject<ColumnApi>(1);
+    private api = new ReplaySubject<GridApi>(1);
+    private columnApi = new ReplaySubject<ColumnApi>(1);
     private numberPipe = new DecimalPipe('en-GB');
 
     constructor() {
     }
 
     ngOnInit() {
-        const numOfStrokes = {field: 'strokeCount', headerName: 'Strokes', type: 'numericColumn'};
-        const distance     = {
-            field: 'distance',
-            headerName: 'Distance (m)',
-            type: 'numericColumn',
-            valueFormatter: (params: ValueFormatterParams) => this.numberPipe.transform(params.value, '1.0-0')
-        };
-
-        const workColumns = Stroke.getWorkData.map(col => {
+        this.columnDefs = STROKE_COLUMNS.map(group => {
             return {
-                field: `average.${col.field}`,
-                headerName: col.name,
-                type: 'numericColumn',
-                valueFormatter: (params: ValueFormatterParams) => this.numberPipe.transform(params.value, '1.0-0')
+                headerName: group.name,
+                children: group.children.map(child => {
+                    const col = {...child};
+
+                    col.headerName = col.name;
+
+                    if (col.type === 'numericColumn') {
+                        col.valueFormatter = (params: ValueFormatterParams) => {
+                            if (Array.isArray(params.value)) {
+                                return params.value.map(v => this.numberPipe.transform(v, '1.0-0')).join('/');
+                            } else {
+                                return this.numberPipe.transform(params.value, '1.0-0');
+                            }
+                        };
+                    }
+
+                    if (child.isAverage) {
+                        col.field = `averages.${child.field}`;
+                    }
+
+                    return col;
+                })
             };
         });
 
-        const angleColumns = Stroke.getAngleData.map(col => {
-            return {
-                field: `average.${col.field}`,
-                headerName: col.name,
-                type: 'numericColumn',
-                valueFormatter: (params: ValueFormatterParams) => this.numberPipe.transform(params.value, '1.0-0')
-            };
-        });
-
-        this.columnDefs = [numOfStrokes, distance, ...workColumns, ...angleColumns];
-
-        combineLatest(this.api, this.columnApi, this.pieces)
-            .pipe()
+        combineLatest(this.api, this.$pieces)
+            .pipe(untilComponentDestroyed(this))
             .subscribe(values => {
-                const api       = values[0];
-                const columnApi = values[1];
-                const pieces    = values[2];
+                const api = values[ 0 ];
+                const pieces = values[ 1 ];
 
                 api.setRowData(pieces);
-                columnApi.autoSizeAllColumns();
             });
+
+        if (!!this.$footerPiece) {
+            combineLatest(this.api, this.$footerPiece)
+                .pipe(untilComponentDestroyed(this))
+                .subscribe(values => {
+                    const api = values[ 0 ];
+                    const piece = values[ 1 ];
+
+                    api.setPinnedBottomRowData([ piece ]);
+                });
+        }
+
+        if (!!this.$headerPiece) {
+            combineLatest(this.api, this.$headerPiece)
+                .pipe(untilComponentDestroyed(this))
+                .subscribe(values => {
+                    const api = values[ 0 ];
+                    const piece = values[ 1 ];
+
+                    api.setPinnedTopRowData([ piece ]);
+                });
+        }
     }
 
     ngOnDestroy(): void {
@@ -74,5 +96,10 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
     public gridReady(event: GridReadyEvent) {
         this.api.next(event.api);
         this.columnApi.next(event.columnApi);
+        event.columnApi.autoSizeAllColumns();
+    }
+
+    public gridGroupChanged(event: ColumnGroupOpenedEvent) {
+        event.columnApi.autoSizeAllColumns();
     }
 }

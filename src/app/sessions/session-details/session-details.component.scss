@@ -1,0 +1,32 @@
+@import '../../../variables';
+
+:host {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+  justify-content: space-around;
+  padding: $gutter-width;
+
+  mat-card {
+    margin-bottom: $gutter-width;
+
+    mat-card-header {
+      //color: white;
+      //background-color: mat-color($primaryPalette);
+    }
+
+    mat-list {
+      display: flex;
+      flex-flow: column;
+    }
+
+    mat-radio-group {
+      display: flex;
+      flex-flow: column;
+
+      mat-radio-button {
+        margin: $gutter-width 0;
+      }
+    }
+  }
+}

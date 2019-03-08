@@ -1,39 +1,50 @@
-<mat-toolbar>
-    <button [routerLink]="['']" mat-icon-button>
-        <mat-icon>arrow_back</mat-icon>
-    </button>
-    <span style="flex: 1 1 auto;">Sessions</span>
-    <button mat-icon-button
-            [matTooltip]="'Drop CSVs to upload.'"
-            *ngIf="(hasSessions | async)">
-        <mat-icon svgIcon="upload"></mat-icon>
-    </button>
-</mat-toolbar>
-<mat-divider></mat-divider>
+<ng-container *ngIf="$sessions | async as sessions; else loading">
+    <mat-toolbar>
+        <button [routerLink]="['']" mat-icon-button>
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span style="flex: 1 1 auto;">Sessions</span>
+        <button mat-icon-button
+                [matTooltip]="'Drop CSVs to upload.'"
+                *ngIf="sessions.length > 0">
+            <mat-icon svgIcon="upload"></mat-icon>
+        </button>
+    </mat-toolbar>
+    <mat-divider></mat-divider>
 
-<mat-action-list *ngIf="(hasSessions | async); else noSessions;">
-    <ng-container *ngFor="let sessions of (sessionsByDay | async | keyvalue:compareMapDates)">
-        <h3 mat-subheader>
-            <span>{{ sessions.key | date:'EEEE dd/MM' }}</span>
-        </h3>
-        <mat-divider></mat-divider>
-        <ng-container *ngFor="let session of sessions.value">
-            <mat-list-item (click)="goTo(session)">
-                <div class="boat-seat">
+    <mat-action-list *ngIf="sessions.length > 0; else noSessions;">
+        <ng-container *ngFor="let day of (sessionsByDay | async | keyvalue:compareMapDates)">
+            <h3 mat-subheader>
+                <span>{{ day.key | date:'EEEE dd/MM' }}</span>
+            </h3>
+            <mat-divider></mat-divider>
+            <ng-container *ngFor="let session of day.value">
+                <mat-list-item (click)="goTo(session)">
+                    <div class="boat-seat">
                     <span class="seat"
                           [attr.port]="session.details.oarlock.port || null">{{ session.details.oarlock.seat }}</span>
-                    <span class="mat-small boat">{{ session.details.oarlock.boatId }}</span>
-                </div>
-                <div class="name-time">
-                    <span class="name">{{ session.name }}</span>
-                    <span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}
-                        - {{ session.entireSession.to | date:'HH:mm'}}</span>
-                </div>
-            </mat-list-item>
-            <mat-divider></mat-divider>
+                        <span class="mat-small boat">{{ session.details.oarlock.boatId }}</span>
+                    </div>
+                    <div class="name-time">
+                        <span class="name">{{ session.name || session.details.session.name }}</span>
+                        <span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}
+                            - {{ session.entireSession.to | date:'HH:mm'}}</span>
+                    </div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+            </ng-container>
         </ng-container>
-    </ng-container>
-</mat-action-list>
+    </mat-action-list>
+</ng-container>
+
+<ng-template #loading>
+    <div class="loading">
+        <mat-progress-spinner
+                color="accent"
+                mode="indeterminate">
+        </mat-progress-spinner>
+        <h3 mat-subheader>Loading Sessions</h3></div>
+</ng-template>
 
 <ng-template #noSessions>
     <div class="no-sessions">

@@ -1,8 +1,16 @@
+@import '../../../../variables';
+
 :host {
-  height: 100%;
-  width: 100%;
   display: flex;
   flex-flow: column;
+  flex: 1 1 auto;
+  height: 100%;
+  padding: $gutter-width;
+  box-sizing: border-box;
+
+  mat-card {
+    margin-bottom: $gutter-width;
+  }
 
   plotly-plot {
     flex: 0 0 auto;
@@ -10,5 +18,19 @@
 
   app-metric-averages {
     flex: 1 1 auto;
-  };
+  }
+
+  .loading {
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    flex: 1 1 auto;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+
+    h3 {
+      font-variant: all-petite-caps;
+    }
+  }
 }

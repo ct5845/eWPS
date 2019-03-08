@@ -1,4 +1,5 @@
 import {AngularFireModule} from '@angular/fire';
+import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule} from '@angular/material-moment-adapter';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
@@ -27,7 +28,7 @@ import {
     MatTabsModule,
     MAT_SNACK_BAR_DEFAULT_OPTIONS,
     MatProgressSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule, MatDatepickerModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatRadioModule
 } from '@angular/material';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {DurationInputComponent} from './duration-input/duration-input.component';
@@ -36,7 +37,7 @@ import {LayoutModule} from '@angular/cdk/layout';
 import {DurationPipe} from './duration/duration.pipe';
 import {SessionComponent} from './sessions/session/session.component';
 import {PapaParseModule} from 'ngx-papaparse';
-import {PlotlyModule, PlotlyViaCDNModule} from 'angular-plotly.js';
+import {PlotlyModule} from 'angular-plotly.js';
 import {SessionListComponent} from './sessions/session-list/session-list.component';
 import {DeleteDialogComponent} from './delete-dialog/delete-dialog.component';
 import {ForceCurveComponent} from './sessions/session/force-curve/force-curve.component';
@@ -45,12 +46,27 @@ import {SessionOverviewComponent} from './sessions/session/session-overview/sess
 import {TimeSeriesComponent} from './sessions/session/time-series/time-series.component';
 import {MetricAveragesComponent} from './sessions/session/metric-averages/metric-averages.component';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
-import { AnglePlotComponent } from './angle-plot/angle-plot.component';
-import { HomeComponent } from './home/home.component';
-import {HttpClientJsonpModule, HttpClientModule} from '@angular/common/http';
+import {AnglePlotComponent} from './angle-plot/angle-plot.component';
+import {HomeComponent} from './home/home.component';
+import {HttpClientModule} from '@angular/common/http';
 import {MomentModule} from 'ngx-moment';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import {AngularFireAuthModule} from '@angular/fire/auth';
+import {SessionDetailsComponent} from './sessions/session-details/session-details.component';
+
+export const DATE_DISPLAY = 'ddd do, MMMM YYYY';
+
+const MY_FORMATS = {
+    parse: {
+        dateInput: 'LL'
+    },
+    display: {
+        dateInput: DATE_DISPLAY,
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: DATE_DISPLAY,
+        monthYearA11yLabel: 'MMMM YYYY'
+    }
+};
 
 @NgModule({
     declarations: [
@@ -66,7 +82,8 @@ import {AngularFireAuthModule} from '@angular/fire/auth';
         TimeSeriesComponent,
         MetricAveragesComponent,
         AnglePlotComponent,
-        HomeComponent
+        HomeComponent,
+        SessionDetailsComponent
     ],
     entryComponents: [
         DeleteDialogComponent
@@ -77,6 +94,7 @@ import {AngularFireAuthModule} from '@angular/fire/auth';
         AppRoutingModule,
         MatToolbarModule,
         MatListModule,
+        MatRadioModule,
         MatCardModule,
         MatExpansionModule,
         MatButtonModule,
@@ -107,12 +125,17 @@ import {AngularFireAuthModule} from '@angular/fire/auth';
         HttpClientModule,
         MomentModule,
         MatTooltipModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatDatepickerModule,
+        MatMomentDateModule
     ],
     providers: [
-        {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 1500}}
+        {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 1500}},
+        {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
+        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+        {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [ AppComponent ]
 })
 export class AppModule {
 }

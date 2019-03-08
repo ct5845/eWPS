@@ -14,7 +14,7 @@ import {map} from 'rxjs/operators';
     styleUrls: ['./session-list.component.scss']
 })
 export class SessionListComponent implements OnInit {
-    public sessions: Observable<Session[]>;
+    public $sessions: Observable<Session[]>;
     public sessionsByDay: Observable<Map<string, Session[]>>;
 
     public hasSessions: Observable<boolean>;
@@ -27,11 +27,11 @@ export class SessionListComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.sessions = this.sessionService.get();
+        this.$sessions = this.sessionService.get();
 
-        this.hasSessions = this.sessions.pipe(map(sessions => sessions.length > 0));
+        this.hasSessions = this.$sessions.pipe(map(sessions => sessions.length > 0));
 
-        this.sessionsByDay = this.sessions.pipe(
+        this.sessionsByDay = this.$sessions.pipe(
             map(sessions => {
                 const sessionMap = new Map<string, Session[]>();
 
