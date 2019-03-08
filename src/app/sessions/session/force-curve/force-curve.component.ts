@@ -85,11 +85,11 @@ export class ForceCurveComponent implements OnInit {
                 map(pieces => {
                     return [...pieces.map((piece: Piece) => {
                         const x = [
-                            piece.average.catch.toFixed(),
-                            (piece.average.catch + piece.average.slip).toFixed(),
-                            piece.average.forceMaxDeg.toFixed(),
-                            (piece.average.finish - piece.average.wash).toFixed(),
-                            piece.average.finish.toFixed()];
+                            piece.averages.catch.toFixed(),
+                            (piece.averages.catch + piece.averages.slip).toFixed(),
+                            piece.averages.forceMaxDeg.toFixed(),
+                            (piece.averages.finish - piece.averages.wash).toFixed(),
+                            piece.averages.finish.toFixed()];
 
                         const text = x.map((v, index) => {
                             return `${indexToTarget(index)} ${v}°`;
@@ -98,7 +98,7 @@ export class ForceCurveComponent implements OnInit {
                         const y = [
                             0,
                             100,
-                            piece.average.forceMax.toFixed(),
+                            piece.averages.forceMax.toFixed(),
                             100,
                             0
                         ];

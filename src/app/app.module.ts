@@ -8,10 +8,26 @@ import {ServiceWorkerModule} from '@angular/service-worker';
 import {environment} from '../environments/environment';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
-    MatCardModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatListModule, MatSelectModule,
+    MatCardModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatListModule,
+    MatSelectModule,
     MatToolbarModule,
-    MatStepperModule, MatButtonModule, MatSidenavModule, MatIconModule, MatSlideToggleModule, MatTableModule,
-    MatButtonToggleModule, MatDialogModule, MatSnackBarModule, MatTabsModule, MAT_SNACK_BAR_DEFAULT_OPTIONS
+    MatStepperModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    MatTableModule,
+    MatButtonToggleModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatTabsModule,
+    MAT_SNACK_BAR_DEFAULT_OPTIONS,
+    MatProgressSpinnerModule,
+    MatTooltipModule
 } from '@angular/material';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {DurationInputComponent} from './duration-input/duration-input.component';
@@ -30,6 +46,11 @@ import {TimeSeriesComponent} from './sessions/session/time-series/time-series.co
 import {MetricAveragesComponent} from './sessions/session/metric-averages/metric-averages.component';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import { AnglePlotComponent } from './angle-plot/angle-plot.component';
+import { HomeComponent } from './home/home.component';
+import {HttpClientJsonpModule, HttpClientModule} from '@angular/common/http';
+import {MomentModule} from 'ngx-moment';
+import {AngularFireStorageModule} from '@angular/fire/storage';
+import {AngularFireAuthModule} from '@angular/fire/auth';
 
 @NgModule({
     declarations: [
@@ -44,7 +65,8 @@ import { AnglePlotComponent } from './angle-plot/angle-plot.component';
         SessionOverviewComponent,
         TimeSeriesComponent,
         MetricAveragesComponent,
-        AnglePlotComponent
+        AnglePlotComponent,
+        HomeComponent
     ],
     entryComponents: [
         DeleteDialogComponent
@@ -76,12 +98,16 @@ import { AnglePlotComponent } from './angle-plot/angle-plot.component';
         MatIconModule,
         AngularFireModule.initializeApp(environment.firebaseConfig),
         AngularFirestoreModule,
-        // AngularFireAuthModule,
-        // AngularFireStorageModule,
+        AngularFireAuthModule,
+        AngularFireStorageModule,
         // AngularFireDatabaseModule,
         PapaParseModule,
         MatButtonToggleModule,
-        PlotlyModule
+        PlotlyModule,
+        HttpClientModule,
+        MomentModule,
+        MatTooltipModule,
+        MatProgressSpinnerModule
     ],
     providers: [
         {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 1500}}

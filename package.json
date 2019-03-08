@@ -37,6 +37,7 @@
     "material-community-components": "^3.3.1",
     "moment": "^2.24.0",
     "ngx-custom-validators": "^7.0.0",
+    "ngx-moment": "^3.4.0",
     "ngx-papaparse": "^3.0.2",
     "ngx-take-until-destroy": "^5.4.0",
     "npm": "^6.6.0",

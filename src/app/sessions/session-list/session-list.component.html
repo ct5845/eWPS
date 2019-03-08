@@ -1,24 +1,42 @@
-<mat-action-list>
-    <ng-container *ngFor="let sessions of (dateSessions | async | keyvalue:compareMapDates)">
-        <h3 mat-subheader>{{ sessions.key | date }}</h3>
+<mat-toolbar>
+    <button [routerLink]="['']" mat-icon-button>
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span style="flex: 1 1 auto;">Sessions</span>
+    <button mat-icon-button
+            [matTooltip]="'Drop CSVs to upload.'"
+            *ngIf="(hasSessions | async)">
+        <mat-icon svgIcon="upload"></mat-icon>
+    </button>
+</mat-toolbar>
+<mat-divider></mat-divider>
+
+<mat-action-list *ngIf="(hasSessions | async); else noSessions;">
+    <ng-container *ngFor="let sessions of (sessionsByDay | async | keyvalue:compareMapDates)">
+        <h3 mat-subheader>
+            <span>{{ sessions.key | date:'EEEE dd/MM' }}</span>
+        </h3>
         <mat-divider></mat-divider>
-        <mat-list-item *ngFor="let session of sessions.value" (click)="goTo(session)">
-            <div class="col-xs-2 col-md-1 seat" [attr.port]="session.details.oarlock.port">
-                <span>{{ session.details.oarlock.seat }}</span>
-            </div>
-            <div class="col-xs">
-                <div><span class="mat-small"></span><span
-                        class="mat-body-2">{{ session.name }}</span></div>
-                <div><span class="mat-small">Boat:</span><span
-                        class="mat-body-2">{{ session.details.oarlock.boatId }}</span></div>
-            </div>
-            <div class="col-xs-3 col-md-1 mat-body" style="text-align: right">
-                {{ session.details.session.date | date:'shortTime' }}
-            </div>
-        </mat-list-item>
+        <ng-container *ngFor="let session of sessions.value">
+            <mat-list-item (click)="goTo(session)">
+                <div class="boat-seat">
+                    <span class="seat"
+                          [attr.port]="session.details.oarlock.port || null">{{ session.details.oarlock.seat }}</span>
+                    <span class="mat-small boat">{{ session.details.oarlock.boatId }}</span>
+                </div>
+                <div class="name-time">
+                    <span class="name">{{ session.name }}</span>
+                    <span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}
+                        - {{ session.entireSession.to | date:'HH:mm'}}</span>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </ng-container>
     </ng-container>
-    <mat-list-item class="add">
-        Drag and drop .csv files from your NK Device.
-    </mat-list-item>
 </mat-action-list>
 
+<ng-template #noSessions>
+    <div class="no-sessions">
+        <mat-icon svgIcon="upload"></mat-icon>
+        <h4 mat-subheader>Drop a session CSV anywhere to upload</h4></div>
+</ng-template>

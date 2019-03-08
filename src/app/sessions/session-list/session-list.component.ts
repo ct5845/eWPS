@@ -6,7 +6,7 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {DeleteDialogComponent} from '../../delete-dialog/delete-dialog.component';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 @Component({
     selector: 'app-session-list',
@@ -15,7 +15,9 @@ import {map, tap} from 'rxjs/operators';
 })
 export class SessionListComponent implements OnInit {
     public sessions: Observable<Session[]>;
-    public dateSessions: Observable<Map<string, Session[]>>;
+    public sessionsByDay: Observable<Map<string, Session[]>>;
+
+    public hasSessions: Observable<boolean>;
 
     constructor(private sessionService: SessionService,
                 private router: Router,
@@ -27,7 +29,9 @@ export class SessionListComponent implements OnInit {
     ngOnInit() {
         this.sessions = this.sessionService.get();
 
-        this.dateSessions = this.sessions.pipe(
+        this.hasSessions = this.sessions.pipe(map(sessions => sessions.length > 0));
+
+        this.sessionsByDay = this.sessions.pipe(
             map(sessions => {
                 const sessionMap = new Map<string, Session[]>();
 
@@ -35,7 +39,11 @@ export class SessionListComponent implements OnInit {
                     const key = session.timestamp.format('YYYY-MM-DD');
 
                     if (sessionMap.has(key)) {
-                        sessionMap.set(key, [...sessionMap.get(key), session]);
+                        const orderedSessions: Session[] = [...sessionMap.get(key), session].sort((s1, s2) => {
+                            return s2.details.oarlock.seat - s1.details.oarlock.seat;
+                        });
+
+                        sessionMap.set(key, orderedSessions);
                     } else {
                         sessionMap.set(key, [session]);
                     }

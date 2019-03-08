@@ -1,7 +1,6 @@
 import {DateTime, Duration} from 'luxon';
 import {toMillis} from '../../../shared/to-millis';
 import {Stroke} from '../../strokes/stroke';
-import {timestamp} from 'rxjs/operators';
 
 export function parseNKStrokes(csv: any[][], date: string): Stroke[] {
     const strokes: Stroke[] = [];

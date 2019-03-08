@@ -3,7 +3,7 @@ import {Piece} from '../piece/piece';
 import * as shortid from 'shortid';
 import {parseNKSummary} from '../common/nk/parse-details';
 import {Moment} from 'moment';
-import * as moment from 'moment';
+import moment from 'moment';
 import {parseNKStrokes} from '../common/nk/parse-strokes';
 
 export class Session {
@@ -32,21 +32,30 @@ export class Session {
     public id: string;
     public name: string;
 
-    public strokes?: Stroke[] = [];
-    public pieces?: Piece[]   = [];
+    public strokes: Stroke[] = [];
+    public pieces?: Piece[]  = [];
+    public entireSession: Piece;
 
     static fromCSV(file: File, csv?: any[][]): Session | null {
         const session = new Session();
 
-        session.details = parseNKSummary(file, csv);
-        session.name    = session.details.session.name;
-        session.strokes = parseNKStrokes(csv, session.details.session.date);
+        session.details       = parseNKSummary(file, csv);
+        session.name          = session.details.session.name;
+        session.strokes       = parseNKStrokes(csv, session.details.session.date);
+        session.entireSession = Piece.fromRange(0, session.strokes.length - 1, session);
 
         return session;
     }
 
-    static fromStorage(session: any): Session {
-        return Object.assign(new Session(session.id), session);
+    static fromStorage(value: any): Session {
+        const session = Object.assign(new Session(value.id), value);
+
+        session.pieces = value.pieces.map(piece => {
+            const p    = Object.assign(new Piece(), piece);
+            p.averages = Object.assign(new Stroke(), piece.averages);
+        });
+
+        return session;
     }
 
     constructor(id?: string) {
@@ -56,11 +65,13 @@ export class Session {
     toFirestore(): any {
         const session: any = {...this};
         delete session.strokes;
-        delete session.pieces;
 
-        const strokes = this.strokes.map(s => s.toFirestore());
+        session.pieces        = this.pieces.map(p => p.toFirestore());
+        session.entireSession = this.entireSession.toFirestore();
 
-        return {session, strokes};
+        console.log(session);
+
+        return session;
     }
 
     get timestamp(): Moment {

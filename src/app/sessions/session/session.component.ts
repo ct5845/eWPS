@@ -17,7 +17,6 @@ import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
 import {FormControl} from '@angular/forms';
 import {Stroke} from '../../strokes/stroke';
 import {DecimalPipe} from '@angular/common';
-import {randomString} from '../../../shared/random-string';
 import {DeleteDialogComponent} from '../../delete-dialog/delete-dialog.component';
 import {SessionOverviewComponent} from './session-overview/session-overview.component';
 
@@ -27,7 +26,7 @@ import {SessionOverviewComponent} from './session-overview/session-overview.comp
     styleUrls: ['./session.component.scss']
 })
 export class SessionComponent implements OnInit, OnDestroy {
-    public session: Observable<Session>;
+    public sessionObservable: Observable<Session>;
     public strokes: Observable<Stroke[]>;
     public pieces: Observable<Piece[]>;
     public selectedPieces: Observable<Piece[]>;
@@ -54,14 +53,14 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.session = this.route.params.pipe(
+        this.sessionObservable = this.route.params.pipe(
             pluck('id'),
             mergeMap(id => this.sessionService.find(id).pipe(untilComponentDestroyed(this))),
             shareReplay(1)
         );
 
-        this.strokes = this.session.pipe(pluck('strokes'), shareReplay(1));
-        this.pieces  = this.session.pipe(pluck('pieces'), shareReplay(1));
+        this.strokes = this.sessionObservable.pipe(pluck('strokes'), shareReplay(1));
+        this.pieces  = this.sessionObservable.pipe(pluck('pieces'), shareReplay(1));
 
         this.selectedPieces = combineLatest(this.pieces,
             this.selectedPieceIds).pipe(map(values => {
@@ -71,7 +70,7 @@ export class SessionComponent implements OnInit, OnDestroy {
             return pieces.filter(piece => ids.indexOf(piece.id) > -1);
         }));
 
-        this._getSessionSubscription = this.session
+        this._getSessionSubscription = this.sessionObservable
             .pipe(untilComponentDestroyed(this))
             .subscribe(session => {
                 this._session = session;
@@ -91,12 +90,18 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     savePiece() {
-        this.sessionOverviewPiece
+        combineLatest(this.sessionObservable, this.sessionOverviewPiece)
             .pipe(take(1))
-            .subscribe((piece) => {
-                piece.name = this.selectedPieceControl.value ? this.selectedPieceControl.value : this.getPlaceholderName(piece);
+            .subscribe((values) => {
+                const session = values[0];
+                const piece   = values[1];
 
-                this.sessionService.addPiece(piece);
+                piece.name = this.selectedPieceControl.value ? this.selectedPieceControl.value : this.getPlaceholderName(piece);
+                this.selectedPieceControl.setValue(null);
+
+                session.pieces.push(piece);
+
+                this.sessionService.update(session);
             });
     }
 
@@ -104,7 +109,7 @@ export class SessionComponent implements OnInit, OnDestroy {
         if (!piece.name || piece.name.length === 0) {
             this.deletePiece(piece, true);
         } else {
-            this.session
+            this.sessionObservable
                 .pipe(take(1))
                 .subscribe(session => {
                     session.pieces.find(p => p.id === piece.id).name = piece.name;
@@ -115,7 +120,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     deletePiece(piece: Piece, reset?: boolean) {
-        this.session
+        this.sessionObservable
             .pipe(take(1))
             .subscribe(session => {
                 const dialog = this.dialog.open(DeleteDialogComponent);
@@ -145,6 +150,6 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     private getPlaceholderName(piece: Piece) {
-        return `${this.numberPipe.transform(piece.distance, '1.0-0')}m @ r${this.numberPipe.transform(piece.average.rate, '1.0-0')}`;
+        return `${this.numberPipe.transform(piece.distance, '1.0-0')}m @ r${this.numberPipe.transform(piece.averages.rate, '1.0-0')}`;
     }
 }
