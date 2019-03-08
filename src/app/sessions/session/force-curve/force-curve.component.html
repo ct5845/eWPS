@@ -1,4 +1,45 @@
-<plotly-plot [data]="data | async"
-             [layout]="layout"
-             [useResizeHandler]="false"></plotly-plot>
-<app-metric-averages [$pieces]="pieces"></app-metric-averages>
+<ng-container *ngIf="$pieces | async as pieces; else loading">
+    <ng-container *ngIf="pieces.length > 0; else noPieces">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Force Curves</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <plotly-plot [data]="data | async"
+                             [layout]="layout"
+                             [useResizeHandler]="false"></plotly-plot>
+            </mat-card-content>
+        </mat-card>
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Metrics</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <app-metric-averages
+                        [$pieces]="$pieces"></app-metric-averages>
+            </mat-card-content>
+        </mat-card>
+    </ng-container>
+</ng-container>
+
+<ng-template #noPieces>
+    <div class="no-pieces">
+        <h4 mat-subheader>No data!</h4>
+        <mat-icon svgIcon="shelves"></mat-icon>
+        <h4 mat-subheader>Go to "Pieces" to create and save pieces to view here.</h4></div>
+</ng-template>
+
+<ng-template #loading>
+    <div class="loading">
+        <mat-progress-spinner
+                color="accent"
+                mode="indeterminate">
+        </mat-progress-spinner>
+        <h4 mat-subheader>Loading Force Curves</h4></div>
+</ng-template>
+
+
+
+
+
+

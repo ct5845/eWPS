@@ -53,6 +53,8 @@ import {MomentModule} from 'ngx-moment';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {SessionDetailsComponent} from './sessions/session-details/session-details.component';
+import {ButtonRendererComponent} from './ag-grid/button-renderer/button-renderer.component';
+import { MetricsComponent } from './metrics/metrics.component';
 
 export const DATE_DISPLAY = 'ddd do, MMMM YYYY';
 
@@ -83,14 +85,16 @@ const MY_FORMATS = {
         MetricAveragesComponent,
         AnglePlotComponent,
         HomeComponent,
-        SessionDetailsComponent
+        SessionDetailsComponent,
+        ButtonRendererComponent,
+        MetricsComponent
     ],
     entryComponents: [
         DeleteDialogComponent
     ],
     imports: [
         BrowserModule,
-        AgGridModule.withComponents([]),
+        AgGridModule.withComponents([ButtonRendererComponent]),
         AppRoutingModule,
         MatToolbarModule,
         MatListModule,

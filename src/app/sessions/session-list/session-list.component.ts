@@ -5,7 +5,7 @@ import {Papa} from 'ngx-papaparse';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {DeleteDialogComponent} from '../../delete-dialog/delete-dialog.component';
 import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 @Component({
@@ -14,10 +14,9 @@ import {map} from 'rxjs/operators';
     styleUrls: ['./session-list.component.scss']
 })
 export class SessionListComponent implements OnInit {
+    public $saving = new BehaviorSubject(false);
     public $sessions: Observable<Session[]>;
     public sessionsByDay: Observable<Map<string, Session[]>>;
-
-    public hasSessions: Observable<boolean>;
 
     constructor(private sessionService: SessionService,
                 private router: Router,
@@ -28,8 +27,6 @@ export class SessionListComponent implements OnInit {
 
     ngOnInit() {
         this.$sessions = this.sessionService.get();
-
-        this.hasSessions = this.$sessions.pipe(map(sessions => sessions.length > 0));
 
         this.sessionsByDay = this.$sessions.pipe(
             map(sessions => {
@@ -85,12 +82,18 @@ export class SessionListComponent implements OnInit {
             this.papa.parse($event.dataTransfer.files.item(i), {
                 complete: (results, file: File) => {
                     const data = Session.fromCSV(file, results.data);
+                    this.$saving.next(true);
 
                     if (!data) {
                         this.snackBar.open(`Couldn't load '${file.name}', possibly invalid date, or data format`);
                     } else {
-                        this.sessionService.add(data);
-                        this.snackBar.open(`'${file.name}', successfully loaded`);
+                        this.sessionService.add(data).then((success) => {
+                            this.snackBar.open(`File(s) uploaded`);
+                        }, () => {
+                            this.snackBar.open(`File upload failed`);
+                        }).finally(() => {
+                            this.$saving.next(false);
+                        });
                     }
                 }
             });

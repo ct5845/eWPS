@@ -1,0 +1,33 @@
+@import '../../../../variables';
+
+:host {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+  height: 100%;
+  padding: $gutter-width;
+  box-sizing: border-box;
+
+  mat-card {
+    margin-bottom: $gutter-width;
+  }
+
+  .loading, .no-pieces {
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    flex: 1 1 auto;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon[svgicon] {
+      width: 8rem;
+      height: 8rem;
+    }
+
+    h4 {
+      font-variant: all-petite-caps;
+    }
+  }
+}

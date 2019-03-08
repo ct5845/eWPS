@@ -24,6 +24,8 @@
         </mat-card-header>
         <mat-card-content>
             <app-metric-averages
+                    (onDelete)="deletePiece($event)"
+                    [allowDelete]="true"
                     [$headerPiece]="$selectedPiece"
                     [$footerPiece]="$entireSession"
                     [$pieces]="$pieces"></app-metric-averages>

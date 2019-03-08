@@ -1,0 +1,10 @@
+<ng-container *ngIf="params">
+    <ng-container *ngFor="let button of params.buttons">
+        <button mat-icon-button
+                *ngIf="button.show(params.node)"
+                [attr.color]="button.color"
+                (click)="click(button)">
+            <mat-icon>{{ button.icon }}</mat-icon>
+        </button>
+    </ng-container>
+</ng-container>

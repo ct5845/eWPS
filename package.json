@@ -30,6 +30,7 @@
     "ag-grid-angular": "^20.1.0",
     "ag-grid-community": "^20.1.0",
     "angular-plotly.js": "^1.1.0",
+    "chunk": "0.0.2",
     "core-js": "^2.5.4",
     "firebase": "^5.8.3",
     "flexboxgrid-sass": "^8.0.5",

@@ -5,7 +5,6 @@ class StrokeGroup {
     public children?: any[];
 }
 
-
 export const STROKE_COLUMNS: StrokeGroup[] = [
     {
         name: 'Details',
@@ -13,6 +12,11 @@ export const STROKE_COLUMNS: StrokeGroup[] = [
             {
                 field: 'name',
                 name: 'Name',
+            },
+            {
+                field: 'from',
+                name: 'Time',
+                type: 'dateColumn',
             },
             {
                 field: 'rate',
@@ -24,9 +28,15 @@ export const STROKE_COLUMNS: StrokeGroup[] = [
                 field: 'distance',
                 name: 'Distance',
                 type: 'numericColumn'
+            },
+            {
+                field: 'strokeCount',
+                name: 'Strokes',
+                type: 'numericColumn'
             }
         ]
-    }, {
+    },
+    {
         name: 'Effort',
         children: [
             {
@@ -57,7 +67,8 @@ export const STROKE_COLUMNS: StrokeGroup[] = [
                 columnGroupShow: 'open'
             }
         ]
-    }, {
+    },
+    {
         name: 'Angles',
         children: [
             {

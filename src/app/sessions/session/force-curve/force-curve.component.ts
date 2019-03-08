@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/index';
+import {Observable} from 'rxjs';
 import {Piece} from '../../../piece/piece';
-import {map, tap} from 'rxjs/internal/operators';
+import {map, pluck} from 'rxjs/operators';
+import {Session} from '../../session';
 
 function targetLine(x: number) {
     return {
@@ -44,7 +45,8 @@ function indexToTarget(index: number) {
     styleUrls: ['./force-curve.component.scss']
 })
 export class ForceCurveComponent implements OnInit {
-    @Input() public pieces: Observable<Piece[]>;
+    @Input() public $session: Observable<Session>;
+    public $pieces: Observable<Piece[]>;
 
     public data: Observable<any>;
     public layout: any;
@@ -53,6 +55,8 @@ export class ForceCurveComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.$pieces = this.$session.pipe(pluck('pieces'));
+
         this.layout = {
             showlegend: true,
             margin: {
@@ -80,8 +84,8 @@ export class ForceCurveComponent implements OnInit {
             ]
         };
 
-        if (!!this.pieces) {
-            this.data = this.pieces.pipe(
+        if (!!this.$pieces) {
+            this.data = this.$pieces.pipe(
                 map(pieces => {
                     return [...pieces.map((piece: Piece) => {
                         const x = [

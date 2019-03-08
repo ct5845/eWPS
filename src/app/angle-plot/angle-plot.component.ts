@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Piece} from '../piece/piece';
-import {map} from 'rxjs/operators';
+import {map, pluck} from 'rxjs/operators';
+import {Session} from '../sessions/session';
 
 function targetLine(x: number) {
     return {
@@ -44,7 +45,8 @@ function indexToTarget(index: number) {
     styleUrls: ['./angle-plot.component.scss']
 })
 export class AnglePlotComponent implements OnInit {
-    @Input() public pieces: Observable<Piece[]>;
+    @Input() public $session: Observable<Session>;
+    public $pieces: Observable<Piece[]>;
 
     public data: Observable<any>;
     public layout: any;
@@ -53,6 +55,8 @@ export class AnglePlotComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.$pieces = this.$session.pipe(pluck('pieces'));
+
         this.layout = {
             showlegend: true,
             xaxis: {
@@ -67,8 +71,8 @@ export class AnglePlotComponent implements OnInit {
             ]
         };
 
-        if (!!this.pieces) {
-            this.data = this.pieces.pipe(
+        if (!!this.$pieces) {
+            this.data = this.$pieces.pipe(
                 map(pieces => {
                     return [...pieces.map((piece: Piece) => {
                         const x = [

@@ -18,13 +18,6 @@ mat-list-item {
 }
 
 /* You can add global styles to this file, and also import other style files */
-$media-sm: sm 48em 46rem;
-$media-md: md 62em 61rem;
-$media-lg: lg 75em 71rem;
-
-$breakpoints: $media-sm,
-$media-md,
-$media-lg;
 
 @import "~flexboxgrid-sass/flexboxgrid.scss";
 

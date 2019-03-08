@@ -1,3 +1,6 @@
+@import '../../../variables';
+@import "~@angular/material/theming";
+
 :host {
   flex: 1 1 auto;
   overflow: hidden;
@@ -86,5 +89,24 @@
     h3 {
       font-variant: all-petite-caps;
     }
+  }
+}
+
+@media (min-width: nth($media-md, 2)) {
+  :host {
+      padding: $gutter-width;
+
+      mat-action-list {
+        overflow: hidden;
+
+        .row {
+          overflow: auto;
+          height: 100%;
+        }
+      }
+
+      div.day {
+          @include mat-elevation(2);
+      }
   }
 }

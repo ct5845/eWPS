@@ -23,22 +23,22 @@
         </mat-tab>
         <mat-tab label="Metrics">
             <ng-template matTabContent>
-                <!--<app-session-overview [session]="session"-->
-                <!--(pieceChanged)="sessionOverviewPiece.next($event)"></app-session-overview>-->
+                <app-metrics [$session]="$session"></app-metrics>
             </ng-template>
         </mat-tab>
         <mat-tab label="Force Curves">
             <ng-template matTabContent>
-                <app-force-curve [pieces]="selectedPieces"></app-force-curve>
+                <app-force-curve [$session]="$session"></app-force-curve>
             </ng-template>
         </mat-tab>
         <mat-tab label="Angles">
             <ng-template matTabContent>
-                <app-angle-plot [pieces]="selectedPieces"></app-angle-plot>
+                <app-angle-plot [$session]="$session"></app-angle-plot>
             </ng-template>
         </mat-tab>
     </mat-tab-group>
 </ng-container>
+
 <ng-template #loading>
     <div class="no-session">
         <mat-progress-spinner
