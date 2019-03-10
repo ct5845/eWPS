@@ -32,6 +32,10 @@
                                 <span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}
                                     - {{ session.entireSession.to | date:'HH:mm'}}</span>
                             </div>
+                            <div class="work-rate">
+                                <span class="mat-small work">{{ session.entireSession.averages.work | number:'1.0-0' }} (J)</span>
+                                <span class="mat-small rate">r{{ session.entireSession.averages.rate | number:'1.0-0' }}</span>
+                            </div>
                             <!--<button mat-icon-button matSuffix color="warn" (click)="delete(session, $event)">-->
                             <!--<mat-icon>delete</mat-icon>-->
                             <!--</button>-->
