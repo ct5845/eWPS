@@ -16,20 +16,22 @@ export class FirebaseGuard implements CanActivate {
         next: ActivatedRouteSnapshot,
         state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
 
-        return new Promise<boolean>((resolve, reject) => {
-            this.afAuth.user.subscribe(user => {
-                if (!!user) {
-                    resolve(true);
-                } else {
-                    this.afAuth.auth
-                        .signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(res => {
-                        resolve(!!res);
-                    }, err => {
-                        console.log(err);
-                        reject(err);
-                    });
-                }
-            });
-        });
+        return true;
+
+        // return new Promise<boolean>((resolve, reject) => {
+        //     this.afAuth.user.subscribe(user => {
+        //         if (!!user) {
+        //             resolve(true);
+        //         } else {
+        //             this.afAuth.auth
+        //                 .signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(res => {
+        //                 resolve(!!res);
+        //             }, err => {
+        //                 console.log(err);
+        //                 reject(err);
+        //             });
+        //         }
+        //     });
+        // });
     }
 }
