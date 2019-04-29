@@ -1,0 +1,42 @@
+<ng-container *ngIf="$plots | async as plots; else loading">
+
+    <mat-toolbar>
+      <button [routerLink]="['']" mat-icon-button>
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span style="flex: 1 1 auto;">Angle Plots</span>
+      <button mat-icon-button
+              (click)="addPlot()"
+              *ngIf="plots.length > 0">
+        <mat-icon>library_add</mat-icon>
+      </button>
+    </mat-toolbar>
+    <mat-divider></mat-divider>
+
+    <mat-action-list *ngIf="plots.length > 0; else noPlots;">
+      <div class="row around-md middle-md">
+        <mat-list-item (click)="goTo(plot)" *ngFor="let plot of plots">
+          <span matLine>{{ plot.name }}</span>
+          <span matLine>{{ plot.date | date:'EEEE dd/MM'  }}</span>
+        </mat-list-item>
+      </div>
+    </mat-action-list>
+</ng-container>
+
+<ng-template #loading>
+  <div class="loading">
+    <mat-progress-spinner
+            color="accent"
+            mode="indeterminate">
+    </mat-progress-spinner>
+    <h3 mat-subheader>
+      <span>Loading Plots</span>
+    </h3>
+  </div>
+</ng-template>
+
+<ng-template #noPlots>
+  <div class="no-plots" style="cursor: pointer;" (click)="addPlot()">
+    <mat-icon svgIcon="magic-wand"></mat-icon>
+    <h4 mat-subheader>Click to add an angle plot</h4></div>
+</ng-template>

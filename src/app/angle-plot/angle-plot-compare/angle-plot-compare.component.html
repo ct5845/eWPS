@@ -1,0 +1,27 @@
+<ng-container *ngIf="$comparePlot | async as comparePlot; else loading">
+  <mat-toolbar>
+    <button [routerLink]="['/angle-plot']" mat-icon-button>
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <mat-form-field>
+      <input matInput [(ngModel)]="comparePlot.name">
+    </mat-form-field>
+    <div style="flex: 1 1 auto;"></div>
+    <button mat-icon-button [disabled]="!comparePlot.name">
+      <mat-icon>add_circle</mat-icon>
+    </button>
+  </mat-toolbar>
+  <mat-divider></mat-divider>
+  <main>
+    Plot
+  </main>
+</ng-container>
+
+<ng-template #loading>
+  <div class="loading">
+    <mat-progress-spinner
+            color="accent"
+            mode="indeterminate">
+    </mat-progress-spinner>
+    <h3 mat-subheader>Getting Angle Plot</h3></div>
+</ng-template>

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AnglePlotComponent } from './angle-plot.component';
+import { AnglePlotCompareComponent } from './angle-plot-compare.component';
 
-describe('AnglePlotComponent', () => {
-  let component: AnglePlotComponent;
-  let fixture: ComponentFixture<AnglePlotComponent>;
+describe('AnglePlotCompareComponent', () => {
+  let component: AnglePlotCompareComponent;
+  let fixture: ComponentFixture<AnglePlotCompareComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AnglePlotComponent ]
+      declarations: [ AnglePlotCompareComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AnglePlotComponent);
+    fixture = TestBed.createComponent(AnglePlotCompareComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

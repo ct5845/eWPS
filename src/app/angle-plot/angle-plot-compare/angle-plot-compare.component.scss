@@ -1,0 +1,30 @@
+@import "~src/variables";
+@import "~@angular/material/theming";
+
+:host {
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+
+  mat-toolbar {
+    flex: 0 0 auto;
+  }
+
+  main {
+    flex: 1 1 auto;
+  }
+
+  .loading {
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    flex: 1 1 auto;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+
+    h3 {
+      font-variant: all-petite-caps;
+    }
+  }
+}

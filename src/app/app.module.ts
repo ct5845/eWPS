@@ -55,6 +55,8 @@ import {AngularFireAuthModule} from '@angular/fire/auth';
 import {SessionDetailsComponent} from './sessions/session-details/session-details.component';
 import {ButtonRendererComponent} from './ag-grid/button-renderer/button-renderer.component';
 import { MetricsComponent } from './metrics/metrics.component';
+import { AnglePlotListComponent } from './angle-plot/angle-plot-list/angle-plot-list.component';
+import { AnglePlotCompareComponent } from './angle-plot/angle-plot-compare/angle-plot-compare.component';
 
 export const DATE_DISPLAY = 'ddd do, MMMM YYYY';
 
@@ -87,7 +89,9 @@ const MY_FORMATS = {
         HomeComponent,
         SessionDetailsComponent,
         ButtonRendererComponent,
-        MetricsComponent
+        MetricsComponent,
+        AnglePlotListComponent,
+        AnglePlotCompareComponent
     ],
     entryComponents: [
         DeleteDialogComponent
