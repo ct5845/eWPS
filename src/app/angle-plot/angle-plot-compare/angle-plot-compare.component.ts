@@ -31,6 +31,8 @@ export class AnglePlotCompareComponent implements OnInit {
         shapes: []
     };
 
+    public alignedTo: string;
+
     constructor(private plotService: AnglePlotService,
                 private route: ActivatedRoute) {
     }
@@ -41,11 +43,13 @@ export class AnglePlotCompareComponent implements OnInit {
                 switchMap(params => this.plotService.find(params.id)));
     }
 
-    public createPlot(plot: AnglePlotCompare) {
+    public createPlot(plot: AnglePlotCompare, align?: string) {
+        this.alignedTo = align;
+
         const target = {x: plot.target.boxPlot, type: 'box', name: 'Target'};
-        const average = plot.plots.length > 1 ? {x: plot.average.boxPlot, type: 'box', name: 'Average'} : {};
+        const average = plot.plots.length > 1 ? {x: plot.average.alignedBoxPlot(plot.target, align), type: 'box', name: 'Average'} : {};
         const data = plot.plots.map(p => {
-            return {x: p.boxPlot, type: 'box', name: p.name};
+            return {x: p.alignedBoxPlot(plot.target, align), type: 'box', name: p.name};
         }).reverse();
 
         this.plotData = [ ...data, average, target ];

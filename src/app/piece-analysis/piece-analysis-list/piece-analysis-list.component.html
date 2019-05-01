@@ -1,66 +1,132 @@
-<ng-container *ngIf="$sessions | async as sessions; else loading">
-  <ng-container *ngIf="!($saving | async); else loading">
-    <mat-toolbar>
-      <button [routerLink]="['']" mat-icon-button>
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <span style="flex: 1 1 auto;">Piece Analysis</span>
-      <button mat-icon-button
-              *ngIf="sessions.length > 0">
-        <mat-icon svgIcon="add"></mat-icon>
-      </button>
-    </mat-toolbar>
-    <mat-divider></mat-divider>
+<!--<ng-container *ngIf="$sessions | async as sessions; else loading">-->
+  <!--<ng-container *ngIf="!($saving | async); else loading">-->
+    <!--<mat-toolbar>-->
+      <!--<button [routerLink]="['']" mat-icon-button>-->
+        <!--<mat-icon>arrow_back</mat-icon>-->
+      <!--</button>-->
+      <!--<span style="flex: 1 1 auto;">Piece Analysis</span>-->
+      <!--<button mat-icon-button-->
+              <!--*ngIf="sessions.length > 0">-->
+        <!--<mat-icon svgIcon="add"></mat-icon>-->
+      <!--</button>-->
+    <!--</mat-toolbar>-->
+    <!--<mat-divider></mat-divider>-->
 
-    <mat-action-list *ngIf="sessions.length > 0; else noSessions;">
-      <div class="row around-md middle-md">
-        <!--<div *ngFor="let day of (sessionsByDay | async | keyvalue:compareMapDates)" class="col-xs-12 day">-->
-          <!--<h3 mat-subheader>-->
-            <!--<span>{{ day.key | date:'EEEE dd/MM' }}</span>-->
-          <!--</h3>-->
-          <!--<mat-divider></mat-divider>-->
-          <!--<ng-container *ngFor="let session of day.value">-->
-            <!--<mat-list-item (click)="goTo(session)">-->
-              <!--<div class="boat-seat">-->
-                    <!--<span class="seat"-->
-                          <!--[attr.port]="session.details.oarlock.port || null">{{ session.details.oarlock.seat }}</span>-->
-                <!--<span class="mat-small boat">{{ session.details.oarlock.boatId }}</span>-->
-              <!--</div>-->
-              <!--<div class="name-time">-->
-                <!--<span class="name">{{ session.name || session.details.session.name }}</span>-->
-                <!--<span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}-->
-                  <!-- - {{ session.entireSession.to | date:'HH:mm'}}</span>-->
-              <!--</div>-->
-              <!--<div class="work-rate">-->
-                <!--<span class="mat-small work">{{ session.entireSession.averages.work | number:'1.0-0' }} (J)</span>-->
-                <!--<span class="mat-small rate">r{{ session.entireSession.averages.rate | number:'1.0-0' }}</span>-->
-              <!--</div>-->
-              <!--&lt;!&ndash;<button mat-icon-button matSuffix color="warn" (click)="delete(session, $event)">&ndash;&gt;-->
-              <!--&lt;!&ndash;<mat-icon>delete</mat-icon>&ndash;&gt;-->
-              <!--&lt;!&ndash;</button>&ndash;&gt;-->
-            <!--</mat-list-item>-->
-            <!--<mat-divider></mat-divider>-->
-          <!--</ng-container>-->
-        <!--</div>-->
-      </div>
-    </mat-action-list>
-  </ng-container>
-</ng-container>
+    <!--<mat-action-list *ngIf="sessions.length > 0; else noSessions;">-->
+      <!--<div class="row around-md middle-md">-->
+        <!--&lt;!&ndash;<div *ngFor="let day of (sessionsByDay | async | keyvalue:compareMapDates)" class="col-xs-12 day">&ndash;&gt;-->
+          <!--&lt;!&ndash;<h3 mat-subheader>&ndash;&gt;-->
+            <!--&lt;!&ndash;<span>{{ day.key | date:'EEEE dd/MM' }}</span>&ndash;&gt;-->
+          <!--&lt;!&ndash;</h3>&ndash;&gt;-->
+          <!--&lt;!&ndash;<mat-divider></mat-divider>&ndash;&gt;-->
+          <!--&lt;!&ndash;<ng-container *ngFor="let session of day.value">&ndash;&gt;-->
+            <!--&lt;!&ndash;<mat-list-item (click)="goTo(session)">&ndash;&gt;-->
+              <!--&lt;!&ndash;<div class="boat-seat">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<span class="seat"&ndash;&gt;-->
+                          <!--&lt;!&ndash;[attr.port]="session.details.oarlock.port || null">{{ session.details.oarlock.seat }}</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="mat-small boat">{{ session.details.oarlock.boatId }}</span>&ndash;&gt;-->
+              <!--&lt;!&ndash;</div>&ndash;&gt;-->
+              <!--&lt;!&ndash;<div class="name-time">&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="name">{{ session.name || session.details.session.name }}</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}&ndash;&gt;-->
+                  <!--&lt;!&ndash; - {{ session.entireSession.to | date:'HH:mm'}}</span>&ndash;&gt;-->
+              <!--&lt;!&ndash;</div>&ndash;&gt;-->
+              <!--&lt;!&ndash;<div class="work-rate">&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="mat-small work">{{ session.entireSession.averages.work | number:'1.0-0' }} (J)</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="mat-small rate">r{{ session.entireSession.averages.rate | number:'1.0-0' }}</span>&ndash;&gt;-->
+              <!--&lt;!&ndash;</div>&ndash;&gt;-->
+              <!--&lt;!&ndash;&lt;!&ndash;<button mat-icon-button matSuffix color="warn" (click)="delete(session, $event)">&ndash;&gt;&ndash;&gt;-->
+              <!--&lt;!&ndash;&lt;!&ndash;<mat-icon>delete</mat-icon>&ndash;&gt;&ndash;&gt;-->
+              <!--&lt;!&ndash;&lt;!&ndash;</button>&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;</mat-list-item>&ndash;&gt;-->
+            <!--&lt;!&ndash;<mat-divider></mat-divider>&ndash;&gt;-->
+          <!--&lt;!&ndash;</ng-container>&ndash;&gt;-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--</div>-->
+    <!--</mat-action-list>-->
+  <!--</ng-container>-->
+<!--</ng-container>-->
 
-<ng-template #loading>
-  <div class="loading">
-    <mat-progress-spinner
-            color="accent"
-            mode="indeterminate">
-    </mat-progress-spinner>
-    <h3 mat-subheader>
-      <span>Loading Analysis</span>
-    </h3>
-  </div>
-</ng-template>
+<!--<ng-template #loading>-->
+  <!--<div class="loading">-->
+    <!--<mat-progress-spinner-->
+            <!--color="accent"-->
+            <!--mode="indeterminate">-->
+    <!--</mat-progress-spinner>-->
+    <!--<h3 mat-subheader>-->
+      <!--<span>Loading Analysis</span>-->
+    <!--</h3>-->
+  <!--</div>-->
+<!--</ng-template>-->
 
-<ng-template #noSessions>
-  <div class="no-sessions">
-    <mat-icon svgIcon="add"></mat-icon>
-    <h4 mat-subheader>Click to start analysing.</h4></div>
-</ng-template>
+<!--<ng-template #noSessions>-->
+  <!--<div class="no-sessions">-->
+    <!--<mat-icon svgIcon="add"></mat-icon>-->
+    <!--<h4 mat-subheader>Click to start analysing.</h4></div>-->
+<!--</ng-template>-->
+<!--<ng-container *ngIf="$sessions | async as sessions; else loading">-->
+  <!--<ng-container *ngIf="!($saving | async); else loading">-->
+    <!--<mat-toolbar>-->
+      <!--<button [routerLink]="['']" mat-icon-button>-->
+        <!--<mat-icon>arrow_back</mat-icon>-->
+      <!--</button>-->
+      <!--<span style="flex: 1 1 auto;">Piece Analysis</span>-->
+      <!--<button mat-icon-button-->
+              <!--*ngIf="sessions.length > 0">-->
+        <!--<mat-icon svgIcon="add"></mat-icon>-->
+      <!--</button>-->
+    <!--</mat-toolbar>-->
+    <!--<mat-divider></mat-divider>-->
+
+    <!--<mat-action-list *ngIf="sessions.length > 0; else noSessions;">-->
+      <!--<div class="row around-md middle-md">-->
+        <!--&lt;!&ndash;<div *ngFor="let day of (sessionsByDay | async | keyvalue:compareMapDates)" class="col-xs-12 day">&ndash;&gt;-->
+          <!--&lt;!&ndash;<h3 mat-subheader>&ndash;&gt;-->
+            <!--&lt;!&ndash;<span>{{ day.key | date:'EEEE dd/MM' }}</span>&ndash;&gt;-->
+          <!--&lt;!&ndash;</h3>&ndash;&gt;-->
+          <!--&lt;!&ndash;<mat-divider></mat-divider>&ndash;&gt;-->
+          <!--&lt;!&ndash;<ng-container *ngFor="let session of day.value">&ndash;&gt;-->
+            <!--&lt;!&ndash;<mat-list-item (click)="goTo(session)">&ndash;&gt;-->
+              <!--&lt;!&ndash;<div class="boat-seat">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<span class="seat"&ndash;&gt;-->
+                          <!--&lt;!&ndash;[attr.port]="session.details.oarlock.port || null">{{ session.details.oarlock.seat }}</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="mat-small boat">{{ session.details.oarlock.boatId }}</span>&ndash;&gt;-->
+              <!--&lt;!&ndash;</div>&ndash;&gt;-->
+              <!--&lt;!&ndash;<div class="name-time">&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="name">{{ session.name || session.details.session.name }}</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}&ndash;&gt;-->
+                  <!--&lt;!&ndash; - {{ session.entireSession.to | date:'HH:mm'}}</span>&ndash;&gt;-->
+              <!--&lt;!&ndash;</div>&ndash;&gt;-->
+              <!--&lt;!&ndash;<div class="work-rate">&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="mat-small work">{{ session.entireSession.averages.work | number:'1.0-0' }} (J)</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="mat-small rate">r{{ session.entireSession.averages.rate | number:'1.0-0' }}</span>&ndash;&gt;-->
+              <!--&lt;!&ndash;</div>&ndash;&gt;-->
+              <!--&lt;!&ndash;&lt;!&ndash;<button mat-icon-button matSuffix color="warn" (click)="delete(session, $event)">&ndash;&gt;&ndash;&gt;-->
+              <!--&lt;!&ndash;&lt;!&ndash;<mat-icon>delete</mat-icon>&ndash;&gt;&ndash;&gt;-->
+              <!--&lt;!&ndash;&lt;!&ndash;</button>&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;</mat-list-item>&ndash;&gt;-->
+            <!--&lt;!&ndash;<mat-divider></mat-divider>&ndash;&gt;-->
+          <!--&lt;!&ndash;</ng-container>&ndash;&gt;-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--</div>-->
+    <!--</mat-action-list>-->
+  <!--</ng-container>-->
+<!--</ng-container>-->
+
+<!--<ng-template #loading>-->
+  <!--<div class="loading">-->
+    <!--<mat-progress-spinner-->
+            <!--color="accent"-->
+            <!--mode="indeterminate">-->
+    <!--</mat-progress-spinner>-->
+    <!--<h3 mat-subheader>-->
+      <!--<span>Loading Analysis</span>-->
+    <!--</h3>-->
+  <!--</div>-->
+<!--</ng-template>-->
+
+<!--<ng-template #noSessions>-->
+  <!--<div class="no-sessions">-->
+    <!--<mat-icon svgIcon="add"></mat-icon>-->
+    <!--<h4 mat-subheader>Click to start analysing.</h4></div>-->
+<!--</ng-template>-->

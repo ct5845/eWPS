@@ -58,6 +58,8 @@ import { MetricsComponent } from './metrics/metrics.component';
 import { AnglePlotListComponent } from './angle-plot/angle-plot-list/angle-plot-list.component';
 import { AnglePlotCompareComponent } from './angle-plot/angle-plot-compare/angle-plot-compare.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {PieceAnalysisListComponent} from './piece-analysis/piece-analysis-list/piece-analysis-list.component';
+import {PieceAnalysisComponent} from './piece-analysis/piece-analysis.component';
 
 export const DATE_DISPLAY = 'ddd do, MMMM YYYY';
 
@@ -92,7 +94,9 @@ const MY_FORMATS = {
         ButtonRendererComponent,
         MetricsComponent,
         AnglePlotListComponent,
-        AnglePlotCompareComponent
+        AnglePlotCompareComponent,
+        PieceAnalysisListComponent,
+        PieceAnalysisComponent
     ],
     entryComponents: [
         DeleteDialogComponent

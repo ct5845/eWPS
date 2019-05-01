@@ -5,7 +5,7 @@ export class AnglePlotCompare {
     public name: string;
     public date: string;
 
-    public target: AnglePlot = new AnglePlot();
+    public target: AnglePlot  = new AnglePlot();
     public plots: AnglePlot[] = [];
 
     constructor(id?: string) {
@@ -37,12 +37,12 @@ export class AnglePlotCompare {
 export class AnglePlot {
     public id: string = randomString();
     public name: string;
-    public catch = 0;
-    public load = 0;
-    public peak = 0;
-    public unload = 0;
-    public finish = 0;
-    public work = 0;
+    public catch      = 0;
+    public load       = 0;
+    public peak       = 0;
+    public unload     = 0;
+    public finish     = 0;
+    public work       = 0;
 
     public spread: number;
     public inboard: number;
@@ -91,5 +91,17 @@ export class AnglePlot {
         this.work *= ratio;
 
         return this;
+    }
+
+    alignedBoxPlot(target: AnglePlot, alignTo?: string):  number[] {
+        const boxPlot = this.boxPlot;
+
+        if (!alignTo) {
+            return boxPlot;
+        } else {
+            const alignBy = target[alignTo] - this[alignTo];
+
+            return boxPlot.map(x => x + alignBy);
+        }
     }
 }

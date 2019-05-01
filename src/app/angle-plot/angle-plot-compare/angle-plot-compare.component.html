@@ -16,20 +16,18 @@
         </mat-toolbar-row>
         <mat-divider [vertical]="false"></mat-divider>
         <mat-toolbar-row>
-            <ng-container *ngIf="!showData"><small>Align to:</small>
-                <button mat-raised-button>
+            <ng-container *ngIf="!showData">
+                <small style="margin-right: 0.5rem;">Align to:</small>
+                <button [color]="!alignedTo ? 'primary': ''" style="margin-right: 0.5rem;" (click)="createPlot(comparePlot)" mat-raised-button>
+                    <span>None</span>
+                </button>
+                <button [color]="alignedTo === 'catch' ? 'primary': ''" style="margin-right: 0.5rem;" (click)="createPlot(comparePlot, 'catch')" mat-raised-button>
                     <span>Catch</span>
                 </button>
-                <button mat-raised-button>
-                    <span>Load</span>
-                </button>
-                <button mat-raised-button>
+                <button [color]="alignedTo === 'peak' ? 'primary': ''" style="margin-right: 0.5rem;" (click)="createPlot(comparePlot, 'peak')" mat-raised-button>
                     <span>Peak</span>
                 </button>
-                <button mat-raised-button>
-                    <span>Unload</span>
-                </button>
-                <button mat-raised-button>
+                <button [color]="alignedTo === 'unload' ? 'primary': ''" style="margin-right: 0.5rem;" (click)="createPlot(comparePlot, 'finish')" mat-raised-button>
                     <span>Finish</span>
                 </button>
             </ng-container>
