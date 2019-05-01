@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
 import {combineLatest, Observable, ReplaySubject} from 'rxjs';
 import {Piece} from '../../../piece/piece';
-import {ColDef, GridReadyEvent, GridApi, ValueFormatterParams, ColumnApi, ColumnGroupOpenedEvent, RowNode} from 'ag-grid-community';
+import {ColDef, ColumnApi, ColumnGroupOpenedEvent, GridApi, GridReadyEvent, RowNode, ValueFormatterParams} from 'ag-grid-community';
 import {DatePipe, DecimalPipe} from '@angular/common';
 
 import {STROKE_COLUMNS} from '../../../strokes/stroke-columns';
@@ -25,7 +25,7 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
     public columnDefs: ColDef[];
     public frameworkComponents: any;
 
-    private api        = new ReplaySubject<GridApi>(1);
+    public api        = new ReplaySubject<GridApi>(1);
     private columnApi  = new ReplaySubject<ColumnApi>(1);
     private numberPipe = new DecimalPipe('en-GB');
     private datePipe   = new DatePipe('en-GB');
@@ -62,6 +62,10 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
 
                     if (child.isAverage) {
                         col.field = `averages.${child.field}`;
+                    }
+
+                    if (!!child.defaultSort) {
+                        col.sort = child.defaultSort;
                     }
 
                     col.sortable          = true;

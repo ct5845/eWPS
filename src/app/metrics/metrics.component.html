@@ -2,6 +2,7 @@
     <mat-card *ngIf="pieces.length > 0; else noPieces">
         <mat-card-header>
             <mat-card-title>Pieces</mat-card-title>
+            <button (click)="export()" mat-raised-button>Export</button>
         </mat-card-header>
         <mat-card-content>
             <app-metric-averages

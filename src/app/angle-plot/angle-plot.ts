@@ -1,10 +1,18 @@
+import {randomString} from '../../shared/random-string';
+
 export class AnglePlotCompare {
     public id: string;
     public name: string;
     public date: string;
 
-    public target: AnglePlot;
-    public plots: AnglePlot[];
+    public target: AnglePlot = new AnglePlot();
+    public plots: AnglePlot[] = [];
+
+    constructor(id?: string) {
+        if (id) {
+            this.id = id;
+        }
+    }
 
     get average(): AnglePlot {
         if (this.plots && this.plots.length > 1) {
@@ -24,6 +32,8 @@ export class AnglePlotCompare {
 }
 
 export class AnglePlot {
+    public id: string = randomString();
+    public name: string;
     public catch: number;
     public load: number;
     public peak: number;

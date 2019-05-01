@@ -88,7 +88,7 @@
                             </mat-form-field>
                         </div>
 
-                        <mat-radio-group [(ngModel)]="session.details.oarlock.port" disabled>
+                        <mat-radio-group [(ngModel)]="session.details.oarlock.port" (change)="update(session, 'Side')">
                             <mat-radio-button [value]="false">Starboard</mat-radio-button>
                             <mat-radio-button [value]="true">Port</mat-radio-button>
                         </mat-radio-group>

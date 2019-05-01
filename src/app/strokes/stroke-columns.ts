@@ -17,6 +17,7 @@ export const STROKE_COLUMNS: StrokeGroup[] = [
                 field: 'from',
                 name: 'Time',
                 type: 'dateColumn',
+                defaultSort: 'asc'
             },
             {
                 field: 'rate',
@@ -132,7 +133,7 @@ export const STROKE_COLUMNS: StrokeGroup[] = [
                 name: 'Peak Force (°)',
                 type: 'numericColumn',
                 isAverage: true,
-                columnGroupShow: 'open'
+                columnGroupShow: ''
             },
             {
                 field: 'wash',
@@ -149,5 +150,17 @@ export const STROKE_COLUMNS: StrokeGroup[] = [
                 columnGroupShow: 'open'
             }
         ]
+    },
+    {
+        name: 'Speed',
+        children: [
+            {
+                field: 'speedGPS',
+                name: 'Speed',
+                type: 'numericColumn',
+                isAverage: true
+            }
+        ]
+
     }
 ];

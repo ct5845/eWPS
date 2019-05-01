@@ -57,6 +57,7 @@ import {ButtonRendererComponent} from './ag-grid/button-renderer/button-renderer
 import { MetricsComponent } from './metrics/metrics.component';
 import { AnglePlotListComponent } from './angle-plot/angle-plot-list/angle-plot-list.component';
 import { AnglePlotCompareComponent } from './angle-plot/angle-plot-compare/angle-plot-compare.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 export const DATE_DISPLAY = 'ddd do, MMMM YYYY';
 
@@ -135,7 +136,8 @@ const MY_FORMATS = {
         MatTooltipModule,
         MatProgressSpinnerModule,
         MatDatepickerModule,
-        MatMomentDateModule
+        MatMomentDateModule,
+        DragDropModule
     ],
     providers: [
         {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 1500}},

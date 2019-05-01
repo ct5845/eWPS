@@ -12,6 +12,10 @@
 
   main {
     flex: 1 1 auto;
+
+    mat-form-field {
+      max-width: 100%;
+    }
   }
 
   .loading {

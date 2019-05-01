@@ -23,16 +23,23 @@ export class AnglePlotService {
                 shareReplay(1));
     }
 
+    save(plot: AnglePlotCompare) {
+        this.collection.doc(plot.id).set({...plot});
+    }
+
     get(): Observable<AnglePlotCompare[]> {
         return this.plots;
+    }
+
+    delete(plot: AnglePlotCompare) {
+        this.collection.doc(plot.id).delete();
     }
 
     find(id: string): Observable<AnglePlotCompare> {
         return this.collection.doc(id).valueChanges().pipe(
             map((plot) => {
                 if (!plot) {
-                    console.log('none');
-                    return new AnglePlotCompare();
+                    return new AnglePlotCompare(id);
                 } else {
                     return AnglePlotCompare.fromDb(plot);
                 }

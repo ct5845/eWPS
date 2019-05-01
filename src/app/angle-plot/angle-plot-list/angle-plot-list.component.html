@@ -12,7 +12,6 @@
       </button>
     </mat-toolbar>
     <mat-divider></mat-divider>
-
     <mat-action-list *ngIf="plots.length > 0; else noPlots;">
       <div class="row around-md middle-md">
         <mat-list-item (click)="goTo(plot)" *ngFor="let plot of plots">
