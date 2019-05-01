@@ -1,15 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import moment from 'moment';
 import {Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {AnglePlot, AnglePlotCompare} from '../angle-plot';
+import {targetLine} from '../angle-plot.component';
 import {AnglePlotService} from '../angle-plot.service';
-import moment from 'moment';
 
 @Component({
     selector: 'app-angle-plot-compare',
     templateUrl: './angle-plot-compare.component.html',
-    styleUrls: ['./angle-plot-compare.component.scss']
+    styleUrls: [ './angle-plot-compare.component.scss' ]
 })
 export class AnglePlotCompareComponent implements OnInit {
     public $comparePlot: Observable<AnglePlotCompare>;
@@ -21,8 +22,13 @@ export class AnglePlotCompareComponent implements OnInit {
         showlegend: true,
         xaxis: {
             title: 'Oar Angle',
-            zeroline: false
-        }
+            zeroline: false,
+            showgrid: false
+        },
+        yaxis: {
+            showgrid: false
+        },
+        shapes: []
     };
 
     constructor(private plotService: AnglePlotService,
@@ -36,9 +42,31 @@ export class AnglePlotCompareComponent implements OnInit {
     }
 
     public createPlot(plot: AnglePlotCompare) {
-        this.plotData = [{x: plot.target.toBoxPlot(), type: 'box', name: 'Target', hoverinfo: 'text'}, ...plot.plots.map(p => {
-            return {x: p.toBoxPlot(), type: 'box', name: p.name, hoverinfo: 'text'};
-        })];
+        const target = {x: plot.target.boxPlot, type: 'box', name: 'Target'};
+        const average = plot.plots.length > 1 ? {x: plot.average.boxPlot, type: 'box', name: 'Average'} : {};
+        const data = plot.plots.map(p => {
+            return {x: p.boxPlot, type: 'box', name: p.name};
+        }).reverse();
+
+        this.plotData = [ ...data, average, target ];
+
+        this.plotLayout.shapes = plot.target.targetLine.map(x => targetLine(x));
+
+        this.plotLayout.shapes.push({
+            xref: 'paper',
+            yref: 'y',
+            x0: 0,
+            x1: 1,
+            y0: plot.plots.length - 0.5,
+            y1: plot.plots.length + 1.5,
+            type: 'rect',
+            fillcolor: '#d3d3d3',
+            line: {
+                width: 0
+            },
+            opacity: 0.4,
+            layer: 'below'
+        });
 
         this.showData = false;
     }
@@ -65,10 +93,10 @@ export class AnglePlotCompareComponent implements OnInit {
 
     public dropPlot($event: any, comparePlot: AnglePlotCompare) {
         const from = $event.previousIndex;
-        const to   = $event.currentIndex;
+        const to = $event.currentIndex;
 
-        const tempTo            = comparePlot.plots[to];
-        comparePlot.plots[to]   = comparePlot.plots[from];
-        comparePlot.plots[from] = tempTo;
+        const tempTo = comparePlot.plots[ to ];
+        comparePlot.plots[ to ] = comparePlot.plots[ from ];
+        comparePlot.plots[ from ] = tempTo;
     }
 }

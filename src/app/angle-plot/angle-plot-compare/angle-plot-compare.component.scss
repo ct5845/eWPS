@@ -16,6 +16,19 @@
     mat-form-field {
       max-width: 100%;
     }
+
+    .graph-container {
+      padding: 1rem;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+
+      plotly-plot {
+        width: 100%;
+        height: 100%;
+      }
+
+    }
   }
 
   .loading {

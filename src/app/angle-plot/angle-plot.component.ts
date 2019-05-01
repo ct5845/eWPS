@@ -4,7 +4,7 @@ import {Piece} from '../piece/piece';
 import {map, pluck} from 'rxjs/operators';
 import {Session} from '../sessions/session';
 
-function targetLine(x: number) {
+export function targetLine(x: number) {
     return {
         xref: 'x',
         yref: 'paper',

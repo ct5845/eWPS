@@ -16,6 +16,23 @@
         </mat-toolbar-row>
         <mat-divider [vertical]="false"></mat-divider>
         <mat-toolbar-row>
+            <ng-container *ngIf="!showData"><small>Align to:</small>
+                <button mat-raised-button>
+                    <span>Catch</span>
+                </button>
+                <button mat-raised-button>
+                    <span>Load</span>
+                </button>
+                <button mat-raised-button>
+                    <span>Peak</span>
+                </button>
+                <button mat-raised-button>
+                    <span>Unload</span>
+                </button>
+                <button mat-raised-button>
+                    <span>Finish</span>
+                </button>
+            </ng-container>
             <div style="flex: 1 1 auto;"></div>
             <button [color]="showData ? 'primary' : ''" mat-icon-button (click)="showData = true">
                 <mat-icon>table_chart</mat-icon>
@@ -48,12 +65,11 @@
                 <span style="margin-left: 0.5rem;">Add angle data.</span>
             </mat-list-item>
         </mat-list>
-        <div *ngIf="!showData" style="padding: 1rem;">
+        <div class="graph-container" *ngIf="!showData">
             <plotly-plot [data]="plotData"
                          [layout]="plotLayout"></plotly-plot>
         </div>
     </main>
-
     <ng-template #anglePlot let-plot="plot" let-individual="individual">
         <div class="row" style="flex-wrap: nowrap; align-items: center; text-align: center">
             <div style="flex: 0 0 auto" *ngIf="individual">

@@ -16,7 +16,8 @@ export class AnglePlotCompare {
 
     get average(): AnglePlot {
         if (this.plots && this.plots.length > 1) {
-            return this.plots.reduce((prev, next) => prev.add(next), new AnglePlot()).multiply(this.plots.length);
+            return this.plots.reduce((prev, next) => prev.add(next),
+                new AnglePlot()).multiply(1 / this.plots.length);
         } else {
             return null;
         }
@@ -24,6 +25,8 @@ export class AnglePlotCompare {
 
     static fromDb(plot: any): AnglePlotCompare {
         const obj = Object.assign(new AnglePlotCompare(), plot);
+
+        obj.target = Object.assign(new AnglePlot(), plot.target);
 
         obj.plots = plot.plots.map(p => Object.assign(new AnglePlot(), p));
 
@@ -34,19 +37,31 @@ export class AnglePlotCompare {
 export class AnglePlot {
     public id: string = randomString();
     public name: string;
-    public catch: number;
-    public load: number;
-    public peak: number;
-    public unload: number;
-    public finish: number;
-    public work: number;
+    public catch = 0;
+    public load = 0;
+    public peak = 0;
+    public unload = 0;
+    public finish = 0;
+    public work = 0;
 
     public spread: number;
     public inboard: number;
     public length: number;
     public lineOfWork: number;
 
-    toBoxPlot(): number[] {
+    get boxPlot(): number[] {
+        return [
+            this.catch,
+            this.catch + this.load,
+            this.catch + this.load,
+            this.peak,
+            this.finish - this.unload,
+            this.finish - this.unload,
+            this.finish
+        ];
+    }
+
+    get targetLine(): number[] {
         return [
             this.catch,
             this.catch + this.load,

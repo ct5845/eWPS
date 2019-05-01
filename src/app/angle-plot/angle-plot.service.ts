@@ -24,7 +24,7 @@ export class AnglePlotService {
     }
 
     save(plot: AnglePlotCompare) {
-        this.collection.doc(plot.id).set({...plot});
+        this.collection.doc(plot.id).set(JSON.parse(JSON.stringify(plot)));
     }
 
     get(): Observable<AnglePlotCompare[]> {
