@@ -1,22 +1,22 @@
 import {Component, HostListener, OnInit} from '@angular/core';
-import {SessionService} from '../session.service';
-import {Session} from '../session';
-import {Papa} from 'ngx-papaparse';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {DeleteDialogComponent} from '../../delete-dialog/delete-dialog.component';
 import {Router} from '@angular/router';
-import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
+import {Papa} from 'ngx-papaparse';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {DeleteDialogComponent} from '../../delete-dialog/delete-dialog.component';
+import {Session} from '../session';
+import {SessionService} from '../session.service';
 
 @Component({
     selector: 'app-session-list',
     templateUrl: './session-list.component.html',
-    styleUrls: ['./session-list.component.scss']
+    styleUrls: [ './session-list.component.scss' ]
 })
 export class SessionListComponent implements OnInit {
     public $saving = new BehaviorSubject(false);
     public $sessions: Observable<Session[]>;
-    public sessionsByDay: Observable<Map<string, Session[]>>;
+    public sessionsByDay: Observable<Map<string, Map<string, Session[]>>>;
 
     constructor(private sessionService: SessionService,
                 private router: Router,
@@ -30,23 +30,33 @@ export class SessionListComponent implements OnInit {
 
         this.sessionsByDay = this.$sessions.pipe(
             map(sessions => {
-                const sessionMap = new Map<string, Session[]>();
+                const allSessions = new Map<string, Map<string, Session[]>>();
 
                 sessions.forEach((session) => {
-                    const key = session.timestamp.format('YYYY-MM-DD');
+                    const timestampKey = session.timestamp.format('YYYY-MM-DD');
 
-                    if (sessionMap.has(key)) {
-                        const orderedSessions: Session[] = [...sessionMap.get(key), session].sort((s1, s2) => {
-                            return s2.details.oarlock.seat - s1.details.oarlock.seat;
-                        });
+                    if (allSessions.has(timestampKey)) {
+                        const todaysSession = allSessions.get(timestampKey);
 
-                        sessionMap.set(key, orderedSessions);
+                        if (todaysSession.has(session.group)) {
+                            const orderedSessions: Session[] = [ ...todaysSession.get(session.group), session ].sort((s1, s2) => {
+                                return s2.details.oarlock.seat - s1.details.oarlock.seat;
+                            });
+
+                            todaysSession.set(session.group, orderedSessions);
+                        } else {
+                            todaysSession.set(session.group, [ session ]);
+                        }
                     } else {
-                        sessionMap.set(key, [session]);
+                        const todaysSession = new Map<string, Session[]>();
+
+                        todaysSession.set(session.group, [ session ]);
+
+                        allSessions.set(timestampKey, todaysSession);
                     }
                 });
 
-                return sessionMap;
+                return allSessions;
             })
         );
     }
@@ -65,10 +75,10 @@ export class SessionListComponent implements OnInit {
     }
 
     goTo(session: Session) {
-        this.router.navigate(['/session', session.id]);
+        this.router.navigate([ '/session', session.id ]);
     }
 
-    @HostListener('drop', ['$event'])
+    @HostListener('drop', [ '$event' ])
     drop($event: any) {
         this.preventAndStop($event);
 
@@ -100,12 +110,12 @@ export class SessionListComponent implements OnInit {
         }
     }
 
-    @HostListener('dragover', ['$event'])
+    @HostListener('dragover', [ '$event' ])
     dragOver($event: any) {
         this.preventAndStop($event);
     }
 
-    @HostListener('dragleave', ['$event'])
+    @HostListener('dragleave', [ '$event' ])
     dragLeave($event: any) {
         this.preventAndStop($event);
     }
@@ -115,7 +125,7 @@ export class SessionListComponent implements OnInit {
         $event.stopImmediatePropagation();
     }
 
-    public compareMapDates(a: any, b: any) {
+    public compareKeys(a: any, b: any) {
         return a.key > b.key ? -1 : 1;
     }
 }

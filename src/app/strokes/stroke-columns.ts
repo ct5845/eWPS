@@ -150,17 +150,5 @@ export const STROKE_COLUMNS: StrokeGroup[] = [
                 columnGroupShow: 'open'
             }
         ]
-    },
-    {
-        name: 'Speed',
-        children: [
-            {
-                field: 'speedGPS',
-                name: 'Speed',
-                type: 'numericColumn',
-                isAverage: true
-            }
-        ]
-
     }
 ];

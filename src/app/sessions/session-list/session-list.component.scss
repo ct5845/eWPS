@@ -13,12 +13,8 @@
 
   mat-action-list {
     flex: 1 1 auto;
+    max-width: 100%;
     overflow: auto;
-
-    h3 {
-      font-variant: all-petite-caps;
-      background-color: rgb(245, 245, 245);
-    }
 
     .boat-seat {
       flex: 0 0 auto;
@@ -95,31 +91,6 @@
 
     h3 {
       font-variant: all-petite-caps;
-    }
-  }
-}
-
-@media (min-width: nth($media-md, 2)) {
-  :host {
-    padding: $gutter-width;
-
-    mat-action-list {
-      overflow: hidden;
-
-      .row {
-        overflow: auto;
-        align-items: flex-start;
-        justify-content: flex-start;
-        flex-wrap: nowrap !important;
-        height: 100%;
-      }
-    }
-
-    div.day {
-      flex-basis: 300px;
-      max-width: 300px;
-      margin: $gutter-width;
-      @include mat-elevation(2);
     }
   }
 }

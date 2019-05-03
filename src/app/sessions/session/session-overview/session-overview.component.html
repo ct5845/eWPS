@@ -97,7 +97,7 @@
                 </div>
             </div>
             <mat-divider style="height: 60%; margin: 0 0.5rem;" [vertical]="true"></mat-divider>
-            <button mat-icon-button [matTooltip]="'Save series in view'">
+            <button mat-icon-button (click)="savePiece()" [matTooltip]="'Save series in view'">
                 <mat-icon>save</mat-icon>
             </button>
         </mat-toolbar-row>
@@ -170,7 +170,7 @@
                 color="accent"
                 mode="indeterminate">
         </mat-progress-spinner>
-        <h3 mat-subheader>Creating Time Series</h3></div>
+        <h3 mat-subheader>Generating Outing Plot</h3></div>
 </ng-template>
 
 

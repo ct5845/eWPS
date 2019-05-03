@@ -21,11 +21,11 @@
                 <app-session-overview [$session]="$session"></app-session-overview>
             </ng-template>
         </mat-tab>
-        <!--<mat-tab label="Metrics">-->
-            <!--<ng-template matTabContent>-->
-                <!--<app-metrics [$session]="$session"></app-metrics>-->
-            <!--</ng-template>-->
-        <!--</mat-tab>-->
+        <mat-tab [disabled]="session.pieces.length === 0" [label]="'Pieces (' + session.pieces.length + ')'">
+            <ng-template matTabContent>
+                <app-piece-list [$session]="$session"></app-piece-list>
+            </ng-template>
+        </mat-tab>
         <!--<mat-tab label="Force Curves">-->
             <!--<ng-template matTabContent>-->
                 <!--<app-force-curve [$session]="$session"></app-force-curve>-->

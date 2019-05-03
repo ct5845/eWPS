@@ -28,7 +28,7 @@ import {
     MatTabsModule,
     MAT_SNACK_BAR_DEFAULT_OPTIONS,
     MatProgressSpinnerModule,
-    MatTooltipModule, MatDatepickerModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatRadioModule, MatMenuModule
+    MatTooltipModule, MatDatepickerModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatRadioModule, MatMenuModule, MatCheckboxModule
 } from '@angular/material';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {DurationInputComponent} from './duration-input/duration-input.component';
@@ -60,6 +60,7 @@ import { AnglePlotCompareComponent } from './angle-plot/angle-plot-compare/angle
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PieceAnalysisListComponent} from './piece-analysis/piece-analysis-list/piece-analysis-list.component';
 import {PieceAnalysisComponent} from './piece-analysis/piece-analysis.component';
+import { PieceListComponent } from './piece/piece-list/piece-list.component';
 
 export const DATE_DISPLAY = 'ddd do, MMMM YYYY';
 
@@ -96,7 +97,8 @@ const MY_FORMATS = {
         AnglePlotListComponent,
         AnglePlotCompareComponent,
         PieceAnalysisListComponent,
-        PieceAnalysisComponent
+        PieceAnalysisComponent,
+        PieceListComponent
     ],
     entryComponents: [
         DeleteDialogComponent
@@ -107,6 +109,7 @@ const MY_FORMATS = {
         AppRoutingModule,
         MatToolbarModule,
         MatListModule,
+        MatCheckboxModule,
         MatRadioModule,
         MatCardModule,
         MatExpansionModule,

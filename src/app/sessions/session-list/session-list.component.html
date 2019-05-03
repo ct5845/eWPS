@@ -14,36 +14,42 @@
         <mat-divider></mat-divider>
 
         <mat-action-list *ngIf="sessions.length > 0; else noSessions;">
-            <div class="row around-md middle-md">
-                <div *ngFor="let day of (sessionsByDay | async | keyvalue:compareMapDates)" class="col-xs-12 day">
-                    <h3 mat-subheader>
-                        <span>{{ day.key | date:'EEEE dd/MM' }}</span>
-                    </h3>
+            <ng-container *ngFor="let sessionsByGroup of (sessionsByDay | async | keyvalue:compareKeys)"
+                          class="col-xs-12 day">
+                <mat-toolbar mat-subheader>
+                    <mat-icon style="margin-right: 0.5rem;">calendar_today</mat-icon>
+                    <span>{{ sessionsByGroup.key | date:'EEEE dd/MM' }}</span>
+                </mat-toolbar>
+                <mat-divider></mat-divider>
+                <ng-container *ngFor="let sessionList of (sessionsByGroup.value | keyvalue:compareKeys)">
+                    <mat-toolbar *ngIf="sessionsByGroup.value.size > 1" mat-subheader>
+                        <mat-icon
+                                style="margin-left: 1rem; margin-right: 0.5rem;">{{ sessionList.key.length > 0 ? 'local_offer' : 'list' }}</mat-icon>
+                        <span>{{ sessionList.key.length > 0 ? sessionList.key : 'Other Sessions' }}</span>
+                    </mat-toolbar>
                     <mat-divider></mat-divider>
-                    <ng-container *ngFor="let session of day.value">
-                        <mat-list-item (click)="goTo(session)">
-                            <div class="boat-seat">
-                    <span class="seat"
-                          [attr.port]="session.details.oarlock.port || null">{{ session.details.oarlock.seat }}</span>
-                                <span class="mat-small boat">{{ session.details.oarlock.boatId }}</span>
-                            </div>
-                            <div class="name-time">
-                                <span class="name">{{ session.name || session.details.session.name }}</span>
-                                <span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}
-                                    - {{ session.entireSession.to | date:'HH:mm'}}</span>
-                            </div>
-                            <div class="work-rate">
-                                <span class="mat-small work">{{ session.entireSession.averages.work | number:'1.0-0' }} (J)</span>
-                                <span class="mat-small rate">r{{ session.entireSession.averages.rate | number:'1.0-0' }}</span>
-                            </div>
-                            <!--<button mat-icon-button matSuffix color="warn" (click)="delete(session, $event)">-->
-                            <!--<mat-icon>delete</mat-icon>-->
-                            <!--</button>-->
-                        </mat-list-item>
-                        <mat-divider></mat-divider>
-                    </ng-container>
-                </div>
-            </div>
+                </ng-container>
+
+                <!--<ng-container *ngFor="let session of sessionsByGroup.value">-->
+                <!--<mat-list-item (click)="goTo(session)">-->
+                <!--<div class="boat-seat">-->
+                <!--<span class="seat"-->
+                <!--[attr.port]="session.details.oarlock.port || null">{{ session.details.oarlock.seat }}</span>-->
+                <!--</div>-->
+                <!--<div class="name-time">-->
+                <!--<span class="name">{{ session.name || session.details.session.name }}</span>-->
+                <!--</div>-->
+                <!--<div class="work-rate">-->
+                <!--<span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}-->
+                <!-- - {{ session.entireSession.to | date:'HH:mm'}}</span>-->
+                <!--</div>-->
+                <!--<button mat-icon-button color="warn" (click)="delete(session, $event)">-->
+                <!--<mat-icon>delete</mat-icon>-->
+                <!--</button>-->
+                <!--</mat-list-item>-->
+                <!--<mat-divider></mat-divider>-->
+                <!--</ng-container>-->
+            </ng-container>
         </mat-action-list>
     </ng-container>
 </ng-container>

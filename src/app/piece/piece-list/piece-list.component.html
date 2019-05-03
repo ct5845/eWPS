@@ -1,0 +1,29 @@
+<section class="list">
+  <mat-toolbar>
+    <mat-checkbox (change)="onCheckAllChanged($event)"
+                  [checked]="$checkAllChecked | async"
+                  [indeterminate]="$checkAllIndeterminate | async"></mat-checkbox>
+    <div style="flex: 1 1 auto"></div>
+    <mat-divider [vertical]="true"></mat-divider>
+    <!--<button (click)="mergeSelected()" mat-icon-button [disabled]="$disableMerge | async">-->
+      <!--<mat-icon>merge_type</mat-icon>-->
+    <!--</button>-->
+    <button (click)="deleteSelected()" mat-icon-button color="warn" [disabled]="$disableDelete | async">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </mat-toolbar>
+  <mat-selection-list (selectionChange)="onSelectionChanged($event)" #pieceList>
+    <ng-container *ngFor="let piece of $pieces | async">
+      <mat-list-option [value]="piece">
+        <span matLine>{{ piece.name }}</span>
+        <span matLine>{{ piece.from | date:'HH:mm' }} - {{ piece.distance | number:'1.0-0' }}m - r{{ piece.averages.rate | number:'1.0-0' }}</span>
+      </mat-list-option>
+      <mat-divider></mat-divider>
+    </ng-container>
+  </mat-selection-list>
+</section>
+<mat-divider [vertical]="true"></mat-divider>
+<main>
+  <app-metrics [$pieces]="$selectedPieces">
+  </app-metrics>
+</main>

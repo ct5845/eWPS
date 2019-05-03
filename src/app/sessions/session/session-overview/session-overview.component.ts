@@ -1,18 +1,19 @@
 import {DecimalPipe} from '@angular/common';
 import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {BehaviorSubject, combineLatest, Observable, ReplaySubject} from 'rxjs';
-import {Session} from '../../session';
-import {debounceTime, map, mergeMap, pluck, shareReplay, take} from 'rxjs/operators';
-import {Stroke} from '../../../strokes/stroke';
-import {Piece} from '../../../piece/piece';
-import {DateTime} from 'luxon';
+import {MatSnackBar} from '@angular/material';
 import {PlotComponent} from 'angular-plotly.js';
+import {DateTime} from 'luxon';
+import {BehaviorSubject, combineLatest, Observable, ReplaySubject} from 'rxjs';
+import {debounceTime, map, mergeMap, pluck, shareReplay, take} from 'rxjs/operators';
+import {Piece} from '../../../piece/piece';
+import {Stroke} from '../../../strokes/stroke';
+import {Session} from '../../session';
 import {SessionService} from '../../session.service';
 
 @Component({
     selector: 'app-session-overview',
     templateUrl: './session-overview.component.html',
-    styleUrls: ['./session-overview.component.scss']
+    styleUrls: [ './session-overview.component.scss' ]
 })
 export class SessionOverviewComponent implements OnInit, OnDestroy {
     @Input() public $session: Observable<Session>;
@@ -27,14 +28,15 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
     public $selectedPiece: Observable<Piece>;
 
     public $viewFrom = new ReplaySubject<string>(1);
-    public $viewTo   = new ReplaySubject<string>(1);
-    public $timeVs   = new BehaviorSubject('rate');
+    public $viewTo = new ReplaySubject<string>(1);
+    public $timeVs = new BehaviorSubject('rate');
 
     private $dateRange: Observable<any[]>;
 
     private numberPipe = new DecimalPipe('en-GB');
 
-    constructor(private sessionService: SessionService) {
+    constructor(private sessionService: SessionService,
+                private toast: MatSnackBar) {
         this.layout = {
             showlegend: false,
             margin: {
@@ -51,7 +53,7 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
         };
     }
 
-    @HostListener('document:keyup', ['$event'])
+    @HostListener('document:keyup', [ '$event' ])
     public onKeyUp($event: KeyboardEvent) {
         switch ($event.key) {
             case '[':
@@ -70,7 +72,7 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.$pieces        = this.$session.pipe(pluck('pieces'));
+        this.$pieces = this.$session.pipe(pluck('pieces'));
         this.$entireSession = this.$session.pipe(pluck('entireSession'));
 
         this.$strokes = this.$session.pipe(
@@ -86,7 +88,7 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
 
         this.$dateRange = combineLatest(this.$viewFrom, this.$viewTo)
             .pipe(
-                map(value => [DateTime.fromJSDate(new Date(value[0])).toISO(), DateTime.fromJSDate(new Date(value[1])).toISO()]),
+                map(value => [ DateTime.fromJSDate(new Date(value[ 0 ])).toISO(), DateTime.fromJSDate(new Date(value[ 1 ])).toISO() ]),
                 shareReplay(1));
 
         this.$selectedPiece = combineLatest(
@@ -96,15 +98,15 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
             .pipe(
                 debounceTime(100),
                 map((values) => {
-                    const strokes: Stroke[] = values[0];
-                    const from              = values[1][0];
-                    const to                = values[1][1];
-                    const session           = values[2];
+                    const strokes: Stroke[] = values[ 0 ];
+                    const from = values[ 1 ][ 0 ];
+                    const to = values[ 1 ][ 1 ];
+                    const session = values[ 2 ];
 
                     const start = strokes.findIndex(stroke => stroke.timestamp >= from);
-                    const end   = strokes.findIndex((stroke, index, arr) => {
+                    const end = strokes.findIndex((stroke, index, arr) => {
                         if (index < arr.length - 1) {
-                            return arr[index + 1].timestamp > to;
+                            return arr[ index + 1 ].timestamp > to;
                         } else if (stroke.timestamp === to || index === arr.length - 1) {
                             return true;
                         }
@@ -112,7 +114,7 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
                     });
 
                     const piece = Piece.fromRange(start, end, session, strokes);
-                    piece.name  = 'Current Selection';
+                    piece.name = 'Current Selection';
 
                     return piece;
                 }),
@@ -126,14 +128,16 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
         combineLatest(this.$selectedPiece, this.$session)
             .pipe(take(1))
             .subscribe(values => {
-                const piece: Piece     = values[0].copy();
-                const session: Session = values[1];
+                const piece: Piece = values[ 0 ].copy();
+                const session: Session = values[ 1 ];
 
                 piece.name = `${this.numberPipe
                     .transform(piece.distance, '1.0-0')}m @ r${this.numberPipe.transform(piece.averages.rate, '1.0-0')}`;
                 session.pieces.push(piece);
 
-                this.sessionService.update(session);
+                this.sessionService.update(session).then(() => {
+                    this.toast.open('Saved!');
+                });
             });
     }
 
@@ -149,17 +153,17 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
     }
 
     plotUpdated(updated: any) {
-        this.$viewFrom.next(updated.layout.xaxis.range[0]);
-        this.$viewTo.next(updated.layout.xaxis.range[1]);
+        this.$viewFrom.next(updated.layout.xaxis.range[ 0 ]);
+        this.$viewTo.next(updated.layout.xaxis.range[ 1 ]);
     }
 
     plotRangeChanged(update: any) {
-        if (!!update['xaxis.range[0]']) {
-            this.$viewFrom.next(update['xaxis.range[0]']);
-            this.$viewTo.next(update['xaxis.range[1]']);
-        } else if (!!update['xaxis.range']) {
-            this.$viewFrom.next(update['xaxis.range'][0]);
-            this.$viewTo.next(update['xaxis.range'][1]);
+        if (!!update[ 'xaxis.range[0]' ]) {
+            this.$viewFrom.next(update[ 'xaxis.range[0]' ]);
+            this.$viewTo.next(update[ 'xaxis.range[1]' ]);
+        } else if (!!update[ 'xaxis.range' ]) {
+            this.$viewFrom.next(update[ 'xaxis.range' ][ 0 ]);
+            this.$viewTo.next(update[ 'xaxis.range' ][ 1 ]);
         }
     }
 
@@ -173,11 +177,11 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
                     end = strokes.length - 1;
                 }
 
-                const from = strokes[start || 0].timestamp;
-                const to   = strokes[end || (strokes.length - 1)].timestamp;
+                const from = strokes[ start || 0 ].timestamp;
+                const to = strokes[ end || (strokes.length - 1) ].timestamp;
 
                 this.layout.xaxis.autorange = false;
-                this.layout.xaxis.range     = [
+                this.layout.xaxis.range = [
                     from,
                     to
                 ];
@@ -206,8 +210,8 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
 
     private getData(strokes: Stroke[], timeVs: string) {
         const x = strokes.map(stroke => stroke.timestamp);
-        const y = strokes.map(stroke => stroke[timeVs]);
+        const y = strokes.map(stroke => stroke[ timeVs ]);
 
-        return [{x, y, type: 'scatter', connectgaps: true, mode: 'lines+markers'}];
+        return [ {x, y, type: 'scatter', connectgaps: true, mode: 'lines+markers'} ];
     }
 }

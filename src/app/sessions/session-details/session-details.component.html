@@ -17,8 +17,14 @@
                                        [(ngModel)]="session.name"/>
                                 <mat-icon matSuffix>edit</mat-icon>
                             </mat-form-field>
-
                             <mat-form-field class="col-xs-12 col-md-6" appearance="fill">
+                                <mat-label>Session</mat-label>
+                                <input matInput type="text"
+                                       (change)="update(session, 'Session Name')"
+                                       [(ngModel)]="session.group"/>
+                                <mat-icon matSuffix>edit</mat-icon>
+                            </mat-form-field>
+                            <mat-form-field class="col-xs-12" appearance="fill">
                                 <mat-label>Date</mat-label>
                                 <input matInput [matDatepicker]="fromDate" [(ngModel)]="session.entireSession.from"
                                        disabled/>
@@ -93,19 +99,6 @@
                             <mat-radio-button [value]="true">Port</mat-radio-button>
                         </mat-radio-group>
                     </mat-list>
-                </mat-card-content>
-            </mat-card>
-        </div>
-
-        <div class="col-xs-12">
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>
-                        Metrics
-                    </mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <app-metric-averages [$pieces]="$piece"></app-metric-averages>
                 </mat-card-content>
             </mat-card>
         </div>

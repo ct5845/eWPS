@@ -1,10 +1,9 @@
-import {Stroke} from '../strokes/stroke';
-import {Piece} from '../piece/piece';
+import moment, {Moment} from 'moment';
 import * as shortid from 'shortid';
 import {parseNKSummary} from '../common/nk/parse-details';
-import {Moment} from 'moment';
-import moment from 'moment';
 import {parseNKStrokes} from '../common/nk/parse-strokes';
+import {Piece} from '../piece/piece';
+import {Stroke} from '../strokes/stroke';
 
 export class Session {
     public details?: {
@@ -31,6 +30,7 @@ export class Session {
 
     public id: string;
     public name: string;
+    public group?: string;
 
     public strokes: Stroke[] = [];
     public pieces?: Piece[] = [];
@@ -57,6 +57,8 @@ export class Session {
 
             return p;
         });
+
+        session.group = session.group || '';
 
         session.entireSession = Object.assign(new Piece(), value.entireSession);
         session.entireSession.averages = Object.assign(new Stroke(), value.entireSession.averages);

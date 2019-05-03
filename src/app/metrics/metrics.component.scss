@@ -2,11 +2,15 @@
 
 :host {
   display: flex;
-  flex-flow: column;
   flex: 1 1 auto;
   height: 100%;
-  padding: $gutter-width;
   box-sizing: border-box;
+  overflow: hidden;
+
+  app-metric-averages {
+    height: 100%;
+    width: 100%;
+  }
 
   .loading, .no-pieces {
     justify-self: center;
