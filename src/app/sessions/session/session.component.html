@@ -11,31 +11,31 @@
     <mat-tab-group color="primary"
                    [selectedIndex]="selectedTab.value"
                    (selectedIndexChange)="selectedTab.setValue($event)">
-        <mat-tab label="Session Details">
+        <mat-tab label="Details">
             <ng-template matTabContent>
                 <app-session-details [$session]="$session"></app-session-details>
             </ng-template>
         </mat-tab>
-        <mat-tab label="Pieces">
+        <mat-tab label="Outing">
             <ng-template matTabContent>
                 <app-session-overview [$session]="$session"></app-session-overview>
             </ng-template>
         </mat-tab>
-        <mat-tab label="Metrics">
-            <ng-template matTabContent>
-                <app-metrics [$session]="$session"></app-metrics>
-            </ng-template>
-        </mat-tab>
-        <mat-tab label="Force Curves">
-            <ng-template matTabContent>
-                <app-force-curve [$session]="$session"></app-force-curve>
-            </ng-template>
-        </mat-tab>
-        <mat-tab label="Angles">
-            <ng-template matTabContent>
-                <app-angle-plot [$session]="$session"></app-angle-plot>
-            </ng-template>
-        </mat-tab>
+        <!--<mat-tab label="Metrics">-->
+            <!--<ng-template matTabContent>-->
+                <!--<app-metrics [$session]="$session"></app-metrics>-->
+            <!--</ng-template>-->
+        <!--</mat-tab>-->
+        <!--<mat-tab label="Force Curves">-->
+            <!--<ng-template matTabContent>-->
+                <!--<app-force-curve [$session]="$session"></app-force-curve>-->
+            <!--</ng-template>-->
+        <!--</mat-tab>-->
+        <!--<mat-tab label="Angles">-->
+            <!--<ng-template matTabContent>-->
+                <!--<app-angle-plot [$session]="$session"></app-angle-plot>-->
+            <!--</ng-template>-->
+        <!--</mat-tab>-->
     </mat-tab-group>
 </ng-container>
 

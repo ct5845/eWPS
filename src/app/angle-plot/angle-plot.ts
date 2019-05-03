@@ -71,6 +71,14 @@ export class AnglePlot {
         ];
     }
 
+    get total(): number {
+        return -1 * this.catch + this.finish;
+    }
+
+    get effective(): number {
+        return this.total - this.load - this.unload;
+    }
+
     add(anglePlot: AnglePlot): AnglePlot {
         this.catch += anglePlot.catch;
         this.load += anglePlot.load;

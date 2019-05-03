@@ -1,14 +1,12 @@
 import {DecimalPipe} from '@angular/common';
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BehaviorSubject, combineLatest, Observable, ReplaySubject} from 'rxjs';
 import {Session} from '../../session';
-import {debounceTime, filter, map, mergeMap, pluck, shareReplay, take} from 'rxjs/operators';
+import {debounceTime, map, mergeMap, pluck, shareReplay, take} from 'rxjs/operators';
 import {Stroke} from '../../../strokes/stroke';
 import {Piece} from '../../../piece/piece';
 import {DateTime} from 'luxon';
-import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
 import {PlotComponent} from 'angular-plotly.js';
-import {BreakpointObserver, Breakpoints, BreakpointState} from '@angular/cdk/layout';
 import {SessionService} from '../../session.service';
 
 @Component({
@@ -30,6 +28,7 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
 
     public $viewFrom = new ReplaySubject<string>(1);
     public $viewTo   = new ReplaySubject<string>(1);
+    public $timeVs   = new BehaviorSubject('rate');
 
     private $dateRange: Observable<any[]>;
 
@@ -52,6 +51,24 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
         };
     }
 
+    @HostListener('document:keyup', ['$event'])
+    public onKeyUp($event: KeyboardEvent) {
+        switch ($event.key) {
+            case '[':
+                this.moveCap(!$event.ctrlKey, -1);
+                break;
+            case ']':
+                this.moveCap(!$event.ctrlKey, 1);
+                break;
+            case 'ArrowLeft':
+                this.moveRange(-1);
+                break;
+            case 'ArrowRight':
+                this.moveRange(1);
+                break;
+        }
+    }
+
     ngOnInit() {
         this.$pieces        = this.$session.pipe(pluck('pieces'));
         this.$entireSession = this.$session.pipe(pluck('entireSession'));
@@ -63,8 +80,8 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
             shareReplay(1));
 
 
-        this.$data = this.$strokes.pipe(
-            map(strokes => this.getData(strokes)),
+        this.$data = combineLatest(this.$strokes, this.$timeVs).pipe(
+            map(values => this.getData(...values)),
             shareReplay(1));
 
         this.$dateRange = combineLatest(this.$viewFrom, this.$viewTo)
@@ -149,6 +166,13 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
     putRangeIntoView(start?: number, end?: number) {
         this.$strokes.pipe(take(1))
             .subscribe(strokes => {
+                if (start < 0) {
+                    start = 0;
+                }
+                if (end > strokes.length - 1) {
+                    end = strokes.length - 1;
+                }
+
                 const from = strokes[start || 0].timestamp;
                 const to   = strokes[end || (strokes.length - 1)].timestamp;
 
@@ -162,30 +186,28 @@ export class SessionOverviewComponent implements OnInit, OnDestroy {
             });
     }
 
-    private getData(strokes: Stroke[]) {
+    moveCap(start: boolean, direction: number) {
+        this.$selectedPiece
+            .pipe(take(1))
+            .subscribe(selectedPiece => {
+                this.putRangeIntoView(start ? selectedPiece.start + direction : selectedPiece.start,
+                    !start ? selectedPiece.end + direction : selectedPiece.end);
+            });
+    }
+
+    moveRange(direction: number) {
+        this.$selectedPiece
+            .pipe(take(1))
+            .subscribe(selectedPiece => {
+                this.putRangeIntoView(selectedPiece.start + direction,
+                    selectedPiece.end + direction);
+            });
+    }
+
+    private getData(strokes: Stroke[], timeVs: string) {
         const x = strokes.map(stroke => stroke.timestamp);
-        const y = strokes.map(stroke => stroke.rate);
+        const y = strokes.map(stroke => stroke[timeVs]);
 
         return [{x, y, type: 'scatter', connectgaps: true, mode: 'lines+markers'}];
-
-        // const workData = Stroke.getWorkData.map((data, index) => {
-        //     const y = session.strokes.map(stroke => stroke[data.field]);
-        //
-        //     return {
-        //         x,
-        //         y,
-        //         type: 'scatter',
-        //         mode: 'lines+markers',
-        //         connectgaps: true,
-        //         name: data.name,
-        //         visible: index === 0 ? true : 'legendonly'
-        //     };
-        // });
-        //
-        // const angleData = Stroke.getAngleData.map(data => {
-        //     const y = session.strokes.map(stroke => stroke[data.field]);
-        //
-        //     return {x, y, type: 'scatter', mode: 'lines+markers', connectgaps: true, name: data.name, visible: 'legendonly'};
-        // });
     }
 }

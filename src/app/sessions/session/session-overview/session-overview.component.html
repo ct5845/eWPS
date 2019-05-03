@@ -1,37 +1,168 @@
 <ng-container *ngIf="$data | async as data; else loading">
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title>
-                <span>Time vs Stroke Rate </span>
-                <small *ngIf="$dateRange | async" class="mat-caption">({{ $viewFrom | async | date:'HH:mm:ss' }} - {{ $viewTo | async | date:'HH:mm:ss' }})</small>
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+    <mat-toolbar color="primary">
+        <mat-toolbar-row>
+            <span class="mat-body-1">Time vs</span>
+            <mat-select [matTooltip]="'Select time series'" style="margin-left: 0.5rem;"
+                        [value]="$timeVs.getValue()" (valueChange)="$timeVs.next($event)">
+                <mat-option value="rate">Stroke Rate</mat-option>
+                <mat-option value="work">Work</mat-option>
+                <mat-optgroup label="Angles">
+                    <mat-option value="catch">Catch</mat-option>
+                    <mat-option value="slip">Load</mat-option>
+                    <mat-option value="forceMaxDeg">Peak</mat-option>
+                    <mat-option value="wash">Unload</mat-option>
+                    <mat-option value="finish">Finish</mat-option>
+                </mat-optgroup>
+            </mat-select>
+            <mat-divider style="height: 60%; margin: 0 0.5rem;" [vertical]="true"></mat-divider>
+            <button [matMenuTriggerFor]="startCap" mat-icon-button [matTooltip]="'Start Cap'">
+                <mat-icon>border_left</mat-icon>
+            </button>
+            <button [matMenuTriggerFor]="endCap" mat-icon-button [matTooltip]="'End Cap'">
+                <mat-icon>border_right</mat-icon>
+            </button>
+            <mat-divider style="height: 60%; margin: 0 0.5rem;" [vertical]="true"></mat-divider>
+            <button [matMenuTriggerFor]="rewind" mat-icon-button [matTooltip]="'Back'">
+                <mat-icon>fast_rewind</mat-icon>
+            </button>
+            <button [matMenuTriggerFor]="forward" mat-icon-button [matTooltip]="'Forward'">
+                <mat-icon>fast_forward</mat-icon>
+            </button>
+            <mat-divider style="height: 60%; margin: 0 0.5rem;" [vertical]="true"></mat-divider>
+            <button mat-icon-button (click)="putRangeIntoView()">
+                <mat-icon>restore</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <main>
+
             <plotly-plot [data]="data"
                          [layout]="layout"
                          [useResizeHandler]="true"
                          (update)="plotUpdated($event)"
                          (relayout)="plotRangeChanged($event)"></plotly-plot>
-        </mat-card-content>
-        <mat-card-actions align="end">
-            <button (click)="putRangeIntoView()" mat-flat-button>Clear Selection</button>
-            <button mat-raised-button color="primary" (click)="savePiece()">Save Selection</button>
-        </mat-card-actions>
-    </mat-card>
-    <mat-card>
-        <mat-card-header>
-            <mat-card-title>Pieces</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <app-metric-averages
-                    (onDelete)="deletePiece($event)"
-                    [allowDelete]="true"
-                    [$headerPiece]="$selectedPiece"
-                    [$footerPiece]="$entireSession"
-                    [$pieces]="$pieces"></app-metric-averages>
-        </mat-card-content>
-    </mat-card>
+
+    </main>
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <div class="piece-summary" *ngIf="$selectedPiece | async as piece">
+                <div>
+                    <small class="mat-caption">Time of Day</small>
+                    <span class="mat-body-1">{{ piece.from | date:'HH:mm' }}</span>
+                </div>
+                <div>
+                    <small class="mat-caption">Strokes</small>
+                    <span class="mat-body-1">{{ piece.strokeCount }}
+                        <small class="mat-caption">({{ piece.start }} - {{ piece.end }})</small></span>
+                </div>
+                <div class="number">
+                    <small class="mat-caption">Rate</small>
+                    <span class="mat-body-1">{{ piece.averages.rate | number:'1.0-0' }}</span>
+                </div>
+                <div class="number">
+                    <small class="mat-caption">Work (J)</small>
+                    <span class="mat-body-1">{{ piece.averages.work | number:'1.0-0' }}</span>
+                </div>
+                <div class="number">
+                    <small class="mat-caption">Power (W)</small>
+                    <span class="mat-body-1">{{ piece.averages.power | number:'1.0-0' }}</span>
+                </div>
+                <div class="number">
+                    <small class="mat-caption">Catch</small>
+                    <span class="mat-body-1">{{ piece.averages.catch | number:'1.0-0' }}</span>
+                </div>
+                <div class="number">
+                    <small class="mat-caption">Load</small>
+                    <span class="mat-body-1">{{ piece.averages.slip | number:'1.0-0' }}</span>
+                </div>
+                <div class="number">
+                    <small class="mat-caption">Peak</small>
+                    <span class="mat-body-1">{{ piece.averages.forceMaxDeg | number:'1.0-0' }}</span>
+                </div>
+                <div class="number">
+                    <small class="mat-caption">Unload</small>
+                    <span class="mat-body-1">{{ piece.averages.wash | number:'1.0-0' }}</span>
+                </div>
+                <div class="number">
+                    <small class="mat-caption">Finish</small>
+                    <span class="mat-body-1">{{ piece.averages.finish | number:'1.0-0' }}</span>
+                </div>
+                <div class="number">
+                    <small class="mat-caption">Total</small>
+                    <span class="mat-body-1">{{ piece.averages.totalAngle | number:'1.0-0' }}</span>
+                </div>
+                <div class="number">
+                    <small class="mat-caption">Effective</small>
+                    <span class="mat-body-1">{{ piece.averages.effectiveAngle | number:'1.0-0' }}</span>
+                </div>
+            </div>
+            <mat-divider style="height: 60%; margin: 0 0.5rem;" [vertical]="true"></mat-divider>
+            <button mat-icon-button [matTooltip]="'Save series in view'">
+                <mat-icon>save</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
 </ng-container>
+
+<mat-menu #startCap>
+    <button mat-menu-item (click)="moveCap(true, -1)">
+        <mat-icon style="transform: rotate(90deg)">vertical_align_bottom</mat-icon>
+        Move start back 1 stroke
+    </button>
+    <button mat-menu-item (click)="moveCap(true, 1)">
+        <mat-icon style="transform: rotate(-90deg)">vertical_align_bottom</mat-icon>
+        Move start forward 1 stroke
+    </button>
+</mat-menu>
+
+<mat-menu #endCap>
+    <button mat-menu-item (click)="moveCap(false, -1)">
+        <mat-icon style="transform: rotate(90deg)">vertical_align_bottom</mat-icon>
+        Move end back 1 stroke
+    </button>
+    <button mat-menu-item (click)="moveCap(false, 1)">
+        <mat-icon style="transform: rotate(-90deg)">vertical_align_bottom</mat-icon>
+        Move end forward 1 stroke
+    </button>
+</mat-menu>
+
+<mat-menu #forward>
+    <button mat-menu-item (click)="moveRange(1)">
+        <mat-icon>skip_next</mat-icon>
+        1 stroke
+    </button>
+    <button mat-menu-item (click)="moveRange(5)">
+        <mat-icon>forward_5</mat-icon>
+        5 strokes
+    </button>
+    <button mat-menu-item (click)="moveRange(10)">
+        <mat-icon>forward_10</mat-icon>
+        10 strokes
+    </button>
+    <button mat-menu-item (click)="moveRange(30)">
+        <mat-icon>forward_30</mat-icon>
+        30 strokes
+    </button>
+</mat-menu>
+
+<mat-menu #rewind>
+    <button mat-menu-item (click)="moveRange(-1)">
+        <mat-icon>skip_prev</mat-icon>
+        1 stroke
+    </button>
+    <button mat-menu-item (click)="moveRange(-5)">
+        <mat-icon>replay_5</mat-icon>
+        5 strokes
+    </button>
+    <button mat-menu-item (click)="moveRange(-10)">
+        <mat-icon>replay_10</mat-icon>
+        10 strokes
+    </button>
+    <button mat-menu-item (click)="moveRange(-30)">
+        <mat-icon>replay_30</mat-icon>
+        30 strokes
+    </button>
+</mat-menu>
 
 <ng-template #loading>
     <div class="loading">

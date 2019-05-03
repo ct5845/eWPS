@@ -10,7 +10,7 @@ import {AnglePlotService} from '../angle-plot.service';
 @Component({
     selector: 'app-angle-plot-compare',
     templateUrl: './angle-plot-compare.component.html',
-    styleUrls: [ './angle-plot-compare.component.scss' ]
+    styleUrls: ['./angle-plot-compare.component.scss']
 })
 export class AnglePlotCompareComponent implements OnInit {
     public $comparePlot: Observable<AnglePlotCompare>;
@@ -23,12 +23,15 @@ export class AnglePlotCompareComponent implements OnInit {
         xaxis: {
             title: 'Oar Angle',
             zeroline: false,
-            showgrid: false
+            showgrid: false,
+            tickvals: [],
+            ticktext: ['Catch', 'Load', 'Peak', 'Unload', 'Finish']
         },
         yaxis: {
             showgrid: false
         },
-        shapes: []
+        shapes: [],
+        responsive: true
     };
 
     public alignedTo: string;
@@ -46,13 +49,13 @@ export class AnglePlotCompareComponent implements OnInit {
     public createPlot(plot: AnglePlotCompare, align?: string) {
         this.alignedTo = align;
 
-        const target = {x: plot.target.boxPlot, type: 'box', name: 'Target'};
+        const target  = {x: plot.target.boxPlot, type: 'box', name: 'Target', text: ['Catch', 'Load', 'Peak', 'Unload', 'Finish']};
         const average = plot.plots.length > 1 ? {x: plot.average.alignedBoxPlot(plot.target, align), type: 'box', name: 'Average'} : {};
-        const data = plot.plots.map(p => {
+        const data    = plot.plots.map(p => {
             return {x: p.alignedBoxPlot(plot.target, align), type: 'box', name: p.name};
         }).reverse();
 
-        this.plotData = [ ...data, average, target ];
+        this.plotData = [...data, average, target];
 
         this.plotLayout.shapes = plot.target.targetLine.map(x => targetLine(x));
 
@@ -71,6 +74,8 @@ export class AnglePlotCompareComponent implements OnInit {
             opacity: 0.4,
             layer: 'below'
         });
+
+        this.plotLayout.xaxis.tickvals = plot.target.targetLine;
 
         this.showData = false;
     }
@@ -97,10 +102,17 @@ export class AnglePlotCompareComponent implements OnInit {
 
     public dropPlot($event: any, comparePlot: AnglePlotCompare) {
         const from = $event.previousIndex;
-        const to = $event.currentIndex;
+        const to   = $event.currentIndex;
 
-        const tempTo = comparePlot.plots[ to ];
-        comparePlot.plots[ to ] = comparePlot.plots[ from ];
-        comparePlot.plots[ from ] = tempTo;
+        const removed = comparePlot.plots.splice(from, 1);
+
+        comparePlot.plots.splice(to, 0, ...removed);
+    }
+
+    public sort(cp: AnglePlotCompare, property: string) {
+        cp.plots = cp.plots.sort((a, b) =>
+            b[property] - a[property]);
+
+        this.createPlot(cp, this.alignedTo);
     }
 }

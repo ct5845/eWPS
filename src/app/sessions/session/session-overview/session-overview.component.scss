@@ -5,19 +5,45 @@
   flex-flow: column;
   flex: 1 1 auto;
   height: 100%;
-  padding: $gutter-width;
   box-sizing: border-box;
 
-  mat-card {
-    margin-bottom: $gutter-width;
-  }
-
-  plotly-plot {
+  mat-toolbar {
     flex: 0 0 auto;
+    overflow: auto;
   }
 
-  app-metric-averages {
+  main {
     flex: 1 1 auto;
+    padding: 0 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .wrapper {
+      flex: 0 0 auto;
+    }
+
+    plotly-plot {
+      width: 100%;
+    }
+  }
+
+  .piece-summary {
+    flex: 1 1 auto;
+    display: flex;
+    overflow: auto;
+
+
+    & > div {
+      display: flex;
+      flex-flow: column;
+      padding: 0 0.5rem;
+      flex: 1 1 auto;
+
+      &.number {
+        text-align: right;
+      }
+    }
   }
 
   .loading {

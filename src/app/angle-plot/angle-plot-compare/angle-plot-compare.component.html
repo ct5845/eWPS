@@ -18,31 +18,42 @@
         <mat-toolbar-row>
             <ng-container *ngIf="!showData">
                 <small style="margin-right: 0.5rem;">Align to:</small>
-                <button [color]="!alignedTo ? 'primary': ''" style="margin-right: 0.5rem;" (click)="createPlot(comparePlot)" mat-raised-button>
+                <button [color]="!alignedTo ? 'primary': ''" style="margin-right: 0.5rem;"
+                        (click)="createPlot(comparePlot)" mat-raised-button>
                     <span>None</span>
                 </button>
-                <button [color]="alignedTo === 'catch' ? 'primary': ''" style="margin-right: 0.5rem;" (click)="createPlot(comparePlot, 'catch')" mat-raised-button>
+                <button [color]="alignedTo === 'catch' ? 'primary': ''" style="margin-right: 0.5rem;"
+                        (click)="createPlot(comparePlot, 'catch')" mat-raised-button>
                     <span>Catch</span>
                 </button>
-                <button [color]="alignedTo === 'peak' ? 'primary': ''" style="margin-right: 0.5rem;" (click)="createPlot(comparePlot, 'peak')" mat-raised-button>
+                <button [color]="alignedTo === 'peak' ? 'primary': ''" style="margin-right: 0.5rem;"
+                        (click)="createPlot(comparePlot, 'peak')" mat-raised-button>
                     <span>Peak</span>
                 </button>
-                <button [color]="alignedTo === 'unload' ? 'primary': ''" style="margin-right: 0.5rem;" (click)="createPlot(comparePlot, 'finish')" mat-raised-button>
+                <button [color]="alignedTo === 'unload' ? 'primary': ''" style="margin-right: 0.5rem;"
+                        (click)="createPlot(comparePlot, 'finish')" mat-raised-button>
                     <span>Finish</span>
                 </button>
             </ng-container>
             <div style="flex: 1 1 auto;"></div>
-            <button [color]="showData ? 'primary' : ''" mat-icon-button (click)="showData = true">
+            <mat-divider [vertical]="true"></mat-divider>
+            <button mat-icon-button
+                    [disabled]="comparePlot.plots.length < 2"
+                    [matMenuTriggerFor]="sortMenu"
+                    [matTooltip]="'Sort'">
+                <mat-icon>sort</mat-icon>
+            </button>
+            <button [matTooltip]="'Show Data'" [color]="showData ? 'primary' : ''" mat-icon-button (click)="showData = true">
                 <mat-icon>table_chart</mat-icon>
             </button>
-            <button [color]="!showData ? 'primary' : ''" mat-icon-button (click)="createPlot(comparePlot)">
+            <button [matTooltip]="'Show Angle Graph'" [color]="!showData ? 'primary' : ''" mat-icon-button (click)="createPlot(comparePlot)">
                 <mat-icon>insert_chart</mat-icon>
             </button>
         </mat-toolbar-row>
     </mat-toolbar>
     <mat-divider></mat-divider>
     <main>
-        <mat-list *ngIf="showData" style="padding: 1rem;">
+        <mat-list class="data-input" *ngIf="showData" style="padding: 1rem;">
             <h3 mat-subheader>Target</h3>
             <mat-list-item class="mat-elevation-z1" style="background-color: white">
                 <ng-template [ngTemplateOutlet]="anglePlot"
@@ -51,50 +62,67 @@
 
             <h3 mat-subheader>Data</h3>
             <div cdkDropList (cdkDropListDropped)="dropPlot($event, comparePlot)">
-                <mat-list-item class="mat-elevation-z1" style="background-color: white"
+                <mat-list-item class="mat-elevation-z1" style="background-color: white; height: auto;"
                                cdkDrag
                                *ngFor="let plot of comparePlot.plots">
                     <ng-template [ngTemplateOutlet]="anglePlot"
                                  [ngTemplateOutletContext]="{ plot: plot, individual: true }"></ng-template>
                 </mat-list-item>
             </div>
-            <mat-list-item class="mat-elevation-z0" style="cursor: pointer" (click)="addPlot(comparePlot)">
+            <mat-list-item class="mat-elevation-z0" style="cursor: pointer; height: auto; padding: 0.5rem 0;"
+                           (click)="addPlot(comparePlot)">
                 <mat-icon>library_add</mat-icon>
                 <span style="margin-left: 0.5rem;">Add angle data.</span>
             </mat-list-item>
         </mat-list>
         <div class="graph-container" *ngIf="!showData">
             <plotly-plot [data]="plotData"
+                         [useResizeHandler]="true"
                          [layout]="plotLayout"></plotly-plot>
         </div>
     </main>
     <ng-template #anglePlot let-plot="plot" let-individual="individual">
-        <div class="row" style="flex-wrap: nowrap; align-items: center; text-align: center">
+        <div class="row" style="flex-wrap: nowrap; align-items: center">
             <div style="flex: 0 0 auto" *ngIf="individual">
                 <button mat-icon-button>
                     <mat-icon>drag_indicator</mat-icon>
                 </button>
             </div>
-            <div style="flex: 1 1 auto; text-align: left;" *ngIf="individual">
+            <div class="my-form-field" style="flex: 1 1 auto; text-align: left;" *ngIf="individual">
+                <small>Label</small>
                 <input type="text" autocomplete="off" matInput placeholder="Label" [(ngModel)]="plot.name">
             </div>
-            <div style="flex: 1 1 auto">
+            <div class="my-form-field" style="flex: 1 1 auto">
+                <small>Catch</small>
                 <input type="number" autocomplete="off" matInput placeholder="Catch" [(ngModel)]="plot.catch">
             </div>
-            <div style="flex: 1 1 auto">
+            <div class="my-form-field" style="flex: 1 1 auto">
+                <small>Load/Slip</small>
                 <input type="number" autocomplete="off" matInput placeholder="Load" [(ngModel)]="plot.load">
             </div>
-            <div style="flex: 1 1 auto">
+            <div class="my-form-field" style="flex: 1 1 auto">
+                <small>Peak</small>
                 <input type="number" autocomplete="off" matInput placeholder="Peak" [(ngModel)]="plot.peak">
             </div>
-            <div style="flex: 1 1 auto">
+            <div class="my-form-field" style="flex: 1 1 auto">
+                <small>Unload/Wash</small>
                 <input type="number" autocomplete="off" matInput placeholder="Unload" [(ngModel)]="plot.unload">
             </div>
-            <div style="flex: 1 1 auto">
+            <div class="my-form-field" style="flex: 1 1 auto">
+                <small>Finish</small>
                 <input type="number" autocomplete="off" matInput placeholder="Finish" [(ngModel)]="plot.finish">
             </div>
-            <div style="flex: 1 1 auto" *ngIf="individual">
+            <div class="my-form-field" style="flex: 1 1 auto" *ngIf="individual">
+                <small>Work</small>
                 <input type="number" autocomplete="off" matInput placeholder="Work(J)" [(ngModel)]="plot.work">
+            </div>
+            <div class="my-form-field" style="flex: 1 1 auto">
+                <small>Total</small>
+                <input type="number" [disabled]="true" autocomplete="off" matInput [value]="plot.total">
+            </div>
+            <div class="my-form-field" style="flex: 1 1 auto">
+                <small>Effective</small>
+                <input type="number" [disabled]="true" autocomplete="off" matInput [value]="plot.effective">
             </div>
             <div style="flex: 0 0 auto" *ngIf="individual">
                 <button mat-icon-button color="warn" (click)="deletePlot(comparePlot, plot)">
@@ -103,6 +131,15 @@
             </div>
         </div>
     </ng-template>
+    <mat-menu #sortMenu>
+        <button (click)="sort(comparePlot, 'total')" mat-menu-item>Total Angle</button>
+        <button (click)="sort(comparePlot, 'effective')" mat-menu-item>Effective Angle</button>
+        <button (click)="sort(comparePlot, 'catch')" mat-menu-item>Catch Angle</button>
+        <button (click)="sort(comparePlot, 'load')" mat-menu-item>Load Angle</button>
+        <button (click)="sort(comparePlot, 'peak')" mat-menu-item>Peak Angle</button>
+        <button (click)="sort(comparePlot, 'unload')" mat-menu-item>Unload Angle</button>
+        <button (click)="sort(comparePlot, 'finish')" mat-menu-item>Finish Angle</button>
+    </mat-menu>
 </ng-container>
 <ng-template #loading>
     <div class="loading">
@@ -112,4 +149,3 @@
         </mat-progress-spinner>
         <h3 mat-subheader>Getting Angle Plot</h3></div>
 </ng-template>
-
