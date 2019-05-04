@@ -36,7 +36,7 @@
         background: linear-gradient(135deg, #9dd53a 0%, #a1d54f 50%, #80c217 51%, #7cbc0a 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
         border-radius: 50% 35% 35% 50%;
 
-        &[port] {
+        &[port='true'] {
           align-self: flex-end;
           background: linear-gradient(45deg, #f85032 0%, #f16f5c 50%, #f6290c 51%, #f02f17 71%, #e73827 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
           border-radius: 35% 50% 50% 35%;

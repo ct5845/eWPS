@@ -13,6 +13,7 @@ import {MetricAveragesComponent} from '../sessions/session/metric-averages/metri
 export class MetricsComponent implements OnInit {
     @Input() public $session: Observable<Session>;
     @Input() public $pieces: Observable<Piece[]>;
+    @Input() public showSessionInformation: boolean;
 
     @ViewChild(MetricAveragesComponent) public metrics: MetricAveragesComponent;
 

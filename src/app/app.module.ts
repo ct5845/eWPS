@@ -61,6 +61,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PieceAnalysisListComponent} from './piece-analysis/piece-analysis-list/piece-analysis-list.component';
 import {PieceAnalysisComponent} from './piece-analysis/piece-analysis.component';
 import { PieceListComponent } from './piece/piece-list/piece-list.component';
+import { TelemetryComponent } from './telemetry/telemetry.component';
 
 export const DATE_DISPLAY = 'ddd do, MMMM YYYY';
 
@@ -98,7 +99,8 @@ const MY_FORMATS = {
         AnglePlotCompareComponent,
         PieceAnalysisListComponent,
         PieceAnalysisComponent,
-        PieceListComponent
+        PieceListComponent,
+        TelemetryComponent
     ],
     entryComponents: [
         DeleteDialogComponent

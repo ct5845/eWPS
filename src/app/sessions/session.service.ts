@@ -42,6 +42,40 @@ export class SessionService {
         return this.sessions;
     }
 
+    getByDayAndGroup(): Observable<Map<string, Map<string, Session[]>>> {
+        return this.get().pipe(
+            map(sessions => {
+                const allSessions = new Map<string, Map<string, Session[]>>();
+
+                sessions.forEach((session) => {
+                    const timestampKey = session.timestamp.format('YYYY-MM-DD');
+
+                    if (allSessions.has(timestampKey)) {
+                        const todaysSession = allSessions.get(timestampKey);
+
+                        if (todaysSession.has(session.group)) {
+                            const orderedSessions: Session[] = [...todaysSession.get(session.group), session].sort((s1, s2) => {
+                                return s2.details.oarlock.seat - s1.details.oarlock.seat;
+                            });
+
+                            todaysSession.set(session.group, orderedSessions);
+                        } else {
+                            todaysSession.set(session.group, [session]);
+                        }
+                    } else {
+                        const todaysSession = new Map<string, Session[]>();
+
+                        todaysSession.set(session.group, [session]);
+
+                        allSessions.set(timestampKey, todaysSession);
+                    }
+                });
+
+                return allSessions;
+            })
+        );
+    }
+
     find(id: string): Observable<Session> {
         return this.collection.doc(id).valueChanges().pipe(
             filter(session => !!session),

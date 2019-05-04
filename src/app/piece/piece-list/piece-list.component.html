@@ -1,29 +1,90 @@
-<section class="list">
-  <mat-toolbar>
-    <mat-checkbox (change)="onCheckAllChanged($event)"
-                  [checked]="$checkAllChecked | async"
-                  [indeterminate]="$checkAllIndeterminate | async"></mat-checkbox>
-    <div style="flex: 1 1 auto"></div>
-    <mat-divider [vertical]="true"></mat-divider>
-    <!--<button (click)="mergeSelected()" mat-icon-button [disabled]="$disableMerge | async">-->
-      <!--<mat-icon>merge_type</mat-icon>-->
-    <!--</button>-->
-    <button (click)="deleteSelected()" mat-icon-button color="warn" [disabled]="$disableDelete | async">
-      <mat-icon>delete</mat-icon>
-    </button>
-  </mat-toolbar>
-  <mat-selection-list (selectionChange)="onSelectionChanged($event)" #pieceList>
-    <ng-container *ngFor="let piece of $pieces | async">
-      <mat-list-option [value]="piece">
-        <span matLine>{{ piece.name }}</span>
-        <span matLine>{{ piece.from | date:'HH:mm' }} - {{ piece.distance | number:'1.0-0' }}m - r{{ piece.averages.rate | number:'1.0-0' }}</span>
-      </mat-list-option>
-      <mat-divider></mat-divider>
-    </ng-container>
-  </mat-selection-list>
+<section class="list" *ngIf="$session | async; else sessionPieces">
+    <mat-toolbar>
+        <mat-checkbox (change)="onCheckAllChanged($event)"
+                      [checked]="$checkAllChecked | async"
+                      [indeterminate]="$checkAllIndeterminate | async"></mat-checkbox>
+        <div style="flex: 1 1 auto"></div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <button (click)="deleteSelected()" mat-icon-button color="warn" [disabled]="$disableDelete | async">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-toolbar>
+    <mat-selection-list dense (selectionChange)="onSelectionChanged($event)">
+        <ng-container *ngFor="let piece of $pieces | async">
+            <mat-list-option [value]="piece">
+                <span matLine>{{ piece.name }}</span>
+                <span matLine>{{ piece.from | date:'HH:mm' }} - {{ piece.distance | number:'1.0-0' }}
+                    m - r{{ piece.averages.rate | number:'1.0-0' }}</span>
+            </mat-list-option>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </mat-selection-list>
 </section>
 <mat-divider [vertical]="true"></mat-divider>
 <main>
-  <app-metrics [$pieces]="$selectedPieces">
-  </app-metrics>
+    <mat-toolbar>
+        <button mat-icon-button [matTooltip]="'Table of data'" (click)="appView = 'metrics'" [color]="appView === 'metrics' ? 'primary' : ''">
+            <mat-icon>table_chart</mat-icon>
+        </button>
+        <button mat-icon-button [matTooltip]="'Angle chart'" (click)="appView = 'angles'" [color]="appView === 'angles' ? 'primary' : ''">
+            <mat-icon>insert_chart</mat-icon>
+        </button>
+    </mat-toolbar>
+    <mat-divider></mat-divider>
+    <app-metrics *ngIf="appView === 'metrics'" [showSessionInformation]="!$pieces" [$pieces]="$selectedPieces">
+    </app-metrics>
+    <app-angle-plot *ngIf="appView === 'angles'" [showSessionInformation]="!$pieces" [$pieces]="$selectedPieces"></app-angle-plot>
 </main>
+
+<ng-template #sessionPieces>
+    <mat-list style="overflow: auto; padding-top: 0;" dense>
+        <mat-toolbar>
+            <button mat-icon-button [routerLink]="'../'">
+                <mat-icon>chevron_left</mat-icon>
+            </button>
+            <span>Pieces</span>
+        </mat-toolbar>
+        <mat-divider></mat-divider>
+        <ng-container *ngFor="let dayOfSessions of ($sessions | async | keyvalue:compareKeys)">
+            <mat-toolbar mat-subheader (click)="dayOfSessions.open = !dayOfSessions.open">
+                <mat-icon *ngIf="!dayOfSessions.open">expand_more</mat-icon>
+                <mat-icon *ngIf="dayOfSessions.open">expand_less</mat-icon>
+                <mat-icon style="margin-left: 0.5rem; margin-right: 0.5rem;">calendar_today</mat-icon>
+                <span>{{ dayOfSessions.key | date:'EEEE dd MMM' }}</span></mat-toolbar>
+            <mat-divider></mat-divider>
+            <ng-container *ngIf="dayOfSessions.open">
+                <ng-container *ngFor="let groupedSessions of (dayOfSessions.value | keyvalue:compareKeys)">
+                    <mat-toolbar (click)="groupedSessions.open = !groupedSessions.open" *ngIf="groupedSessions.key.length > 0 || dayOfSessions.value.size > 1" mat-subheader>
+                        <mat-icon style="margin-left: 0.5rem;" *ngIf="!groupedSessions.open">expand_more</mat-icon>
+                        <mat-icon style="margin-left: 0.5rem;" *ngIf="groupedSessions.open">expand_less</mat-icon>
+                        <span>{{ groupedSessions.key.length > 0 ? groupedSessions.key : 'Other Sessions' }}</span>
+                    </mat-toolbar>
+                    <mat-divider></mat-divider>
+                    <ng-container *ngIf="groupedSessions.open || dayOfSessions.value.size === 1">
+                        <ng-container *ngFor="let session of groupedSessions.value">
+                            <mat-toolbar *ngIf="session.pieces.length > 0" (click)="session.open = !session.open"
+                                         mat-subheader>
+                                <mat-icon style="margin-left: 1rem;" *ngIf="!session.open">expand_more</mat-icon>
+                                <mat-icon style="margin-left: 1rem;" *ngIf="session.open">expand_less</mat-icon>
+                                <span style="flex: 1 1 auto;">{{ session.name }}</span>
+                                <div class="seat"
+                                     [attr.port]="!!session.details.oarlock.port">{{ session.details.oarlock.seat }}</div>
+                            </mat-toolbar>
+                            <mat-divider></mat-divider>
+                            <ng-container *ngIf="session.open">
+                                <ng-container *ngFor="let piece of session.pieces">
+                                    <mat-list-item>
+                                        <span matLine>{{ piece.name }}</span>
+                                        <mat-checkbox [checked]="piece.checked"
+                                                      (change)="addPieceFromSession($event, piece); piece.checked = !piece.checked;"
+                                                      matSuffix></mat-checkbox>
+                                    </mat-list-item>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </mat-list>
+</ng-template>

@@ -35,13 +35,11 @@
         </mat-toolbar-row>
     </mat-toolbar>
     <main>
-
-            <plotly-plot [data]="data"
-                         [layout]="layout"
-                         [useResizeHandler]="true"
-                         (update)="plotUpdated($event)"
-                         (relayout)="plotRangeChanged($event)"></plotly-plot>
-
+        <plotly-plot [data]="data"
+                     [layout]="layout"
+                     [useResizeHandler]="true"
+                     (update)="plotUpdated($event)"
+                     (relayout)="plotRangeChanged($event)"></plotly-plot>
     </main>
     <mat-toolbar color="accent">
         <mat-toolbar-row>

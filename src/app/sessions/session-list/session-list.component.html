@@ -14,41 +14,48 @@
         <mat-divider></mat-divider>
 
         <mat-action-list *ngIf="sessions.length > 0; else noSessions;">
-            <ng-container *ngFor="let sessionsByGroup of (sessionsByDay | async | keyvalue:compareKeys)"
+            <ng-container *ngFor="let sessionsByGroup of ($sessionsByDay | async | keyvalue:compareKeys)"
                           class="col-xs-12 day">
-                <mat-toolbar mat-subheader>
-                    <mat-icon style="margin-right: 0.5rem;">calendar_today</mat-icon>
+                <mat-toolbar (click)="sessionsByGroup.open = !sessionsByGroup.open" mat-subheader>
+                    <mat-icon *ngIf="!sessionsByGroup.open">expand_more</mat-icon>
+                    <mat-icon *ngIf="sessionsByGroup.open">expand_less</mat-icon>
+                    <mat-icon style="margin-left: 0.5rem; margin-right: 0.5rem;">calendar_today</mat-icon>
                     <span>{{ sessionsByGroup.key | date:'EEEE dd/MM' }}</span>
                 </mat-toolbar>
                 <mat-divider></mat-divider>
-                <ng-container *ngFor="let sessionList of (sessionsByGroup.value | keyvalue:compareKeys)">
-                    <mat-toolbar *ngIf="sessionsByGroup.value.size > 1" mat-subheader>
-                        <mat-icon
-                                style="margin-left: 1rem; margin-right: 0.5rem;">{{ sessionList.key.length > 0 ? 'local_offer' : 'list' }}</mat-icon>
-                        <span>{{ sessionList.key.length > 0 ? sessionList.key : 'Other Sessions' }}</span>
-                    </mat-toolbar>
-                    <mat-divider></mat-divider>
+                <ng-container *ngIf="sessionsByGroup.open">
+                    <ng-container *ngFor="let sessionList of (sessionsByGroup.value | keyvalue:compareKeys)">
+                        <mat-toolbar (click)="sessionList.open = !sessionList.open" *ngIf="sessionsByGroup.value.size > 1" mat-subheader>
+                            <mat-icon *ngIf="!sessionList.open">expand_more</mat-icon>
+                            <mat-icon *ngIf="sessionList.open">expand_less</mat-icon>
+                            <mat-icon
+                                    style="margin-left: 1rem; margin-right: 0.5rem;">{{ sessionList.key.length > 0 ? 'local_offer' : 'list' }}</mat-icon>
+                            <span>{{ sessionList.key.length > 0 ? sessionList.key : 'Other Sessions' }}</span>
+                        </mat-toolbar>
+                        <mat-divider></mat-divider>
+                        <ng-container *ngIf="sessionList.open || sessionList.key.length === 0">
+                            <ng-container *ngFor="let session of sessionList.value">
+                                <mat-list-item (click)="goTo(session)">
+                                    <div class="boat-seat">
+                                <span class="seat"
+                                      [attr.port]="!!session.details.oarlock.port">{{ session.details.oarlock.seat }}</span>
+                                    </div>
+                                    <div class="name-time">
+                                        <span class="name">{{ session.name || session.details.session.name }}</span>
+                                    </div>
+                                    <div class="work-rate">
+                    <span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}
+                        - {{ session.entireSession.to | date:'HH:mm'}}</span>
+                                    </div>
+                                    <button mat-icon-button color="warn" (click)="delete(session, $event)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </mat-list-item>
+                                <mat-divider></mat-divider>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
                 </ng-container>
-
-                <!--<ng-container *ngFor="let session of sessionsByGroup.value">-->
-                <!--<mat-list-item (click)="goTo(session)">-->
-                <!--<div class="boat-seat">-->
-                <!--<span class="seat"-->
-                <!--[attr.port]="session.details.oarlock.port || null">{{ session.details.oarlock.seat }}</span>-->
-                <!--</div>-->
-                <!--<div class="name-time">-->
-                <!--<span class="name">{{ session.name || session.details.session.name }}</span>-->
-                <!--</div>-->
-                <!--<div class="work-rate">-->
-                <!--<span class="mat-small time">{{ session.entireSession.from | date:'HH:mm' }}-->
-                <!-- - {{ session.entireSession.to | date:'HH:mm'}}</span>-->
-                <!--</div>-->
-                <!--<button mat-icon-button color="warn" (click)="delete(session, $event)">-->
-                <!--<mat-icon>delete</mat-icon>-->
-                <!--</button>-->
-                <!--</mat-list-item>-->
-                <!--<mat-divider></mat-divider>-->
-                <!--</ng-container>-->
             </ng-container>
         </mat-action-list>
     </ng-container>

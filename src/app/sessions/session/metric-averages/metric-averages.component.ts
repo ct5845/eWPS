@@ -7,6 +7,7 @@ import {DatePipe, DecimalPipe} from '@angular/common';
 
 import {STROKE_COLUMNS} from '../../../strokes/stroke-columns';
 import {ButtonRendererComponent} from '../../../ag-grid/button-renderer/button-renderer.component';
+import {SessionService} from '../../session.service';
 
 @Component({
     selector: 'app-metric-averages',
@@ -19,18 +20,19 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
     @Input() public $footerPiece: Observable<Piece>;
     @Input() public selection: string;
     @Input() public allowDelete: boolean;
+    @Input() public includeSession: boolean;
 
     @Output() public onDelete = new EventEmitter<Piece>();
 
     public columnDefs: ColDef[];
     public frameworkComponents: any;
 
-    public api        = new ReplaySubject<GridApi>(1);
+    public api         = new ReplaySubject<GridApi>(1);
     private columnApi  = new ReplaySubject<ColumnApi>(1);
     private numberPipe = new DecimalPipe('en-GB');
     private datePipe   = new DatePipe('en-GB');
 
-    constructor() {
+    constructor(private sessionService: SessionService) {
     }
 
     ngOnInit() {
@@ -93,14 +95,54 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
             }
         }];
 
-        combineLatest(this.api, this.$pieces)
-            .pipe(untilComponentDestroyed(this))
-            .subscribe(values => {
-                const api    = values[0];
-                const pieces = values[1];
+        if (this.includeSession) {
+            this.columnDefs = [
+                {
+                    field: 'date',
+                    valueFormatter: (params: ValueFormatterParams) => {
+                        return this.datePipe.transform(params.value, 'EEEE dd MMMM');
+                    }
+                },
+                {
+                    field: 'session'
+                },
+                {
+                    field: 'athlete'
+                },
+                ...this.columnDefs
+            ];
 
-                api.setRowData(pieces);
-            });
+            combineLatest(this.api, this.$pieces, this.sessionService.get())
+                .pipe(untilComponentDestroyed(this))
+                .subscribe(values => {
+                    const api      = values[0];
+                    const pieces   = values[1];
+                    const sessions = values[2];
+
+                    const rows = pieces.map(p => {
+                        const row: any = {...p};
+                        const session  = sessions.find(s => s.id === p.sessionId);
+
+                        row.date    = session.timestamp.toISOString();
+                        row.athlete = session.name;
+                        row.session = session.group;
+
+                        return row;
+                    });
+
+                    api.setRowData(rows);
+                });
+        } else {
+            combineLatest(this.api, this.$pieces)
+                .pipe(untilComponentDestroyed(this))
+                .subscribe(values => {
+                    const api    = values[0];
+                    const pieces = values[1];
+
+                    api.setRowData(pieces);
+                });
+        }
+
 
         if (!!this.$footerPiece) {
             combineLatest(this.api, this.$footerPiece)

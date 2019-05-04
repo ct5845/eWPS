@@ -1,32 +1,50 @@
 <ng-container *ngIf="$pieces | async as pieces; else loading">
     <ng-container *ngIf="pieces.length > 0; else noPieces">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>Angles</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <plotly-plot [data]="data | async"
+        <!--<mat-toolbar color="primary">-->
+            <!--<button mat-icon-button-->
+                    <!--[matMenuTriggerFor]="alignMenu"-->
+                    <!--[matTooltip]="'Align'">-->
+                <!--<mat-icon>format_align_left</mat-icon>-->
+            <!--</button>-->
+            <!--<button mat-icon-button-->
+                    <!--[matMenuTriggerFor]="sortMenu"-->
+                    <!--[matTooltip]="'Sort'">-->
+                <!--<mat-icon>sort</mat-icon>-->
+            <!--</button>-->
+        <!--</mat-toolbar>-->
+        <!--<mat-divider></mat-divider>-->
+        <div class="graph-container">
+            <div>
+                <plotly-plot [data]="$data | async"
                              [layout]="layout"
-                             [useResizeHandler]="false"></plotly-plot>
-            </mat-card-content>
-        </mat-card>
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>Metrics</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <app-metric-averages
-                        [$pieces]="$pieces"></app-metric-averages>
-            </mat-card-content>
-        </mat-card>
+                             [useResizeHandler]="true"></plotly-plot>
+            </div>
+        </div>
     </ng-container>
 </ng-container>
+
+<!--<mat-menu #alignMenu>-->
+    <!--<button mat-menu-item>None</button>-->
+    <!--<button mat-menu-item>Catch</button>-->
+    <!--<button mat-menu-item>Peak</button>-->
+    <!--<button mat-menu-item>Finish</button>-->
+<!--</mat-menu>-->
+
+<!--<mat-menu #sortMenu>-->
+    <!--<button (click)="sort('total')" mat-menu-item>Total Angle</button>-->
+    <!--<button (click)="sort('effective')" mat-menu-item>Effective Angle</button>-->
+    <!--<button (click)="sort('catch')" mat-menu-item>Catch Angle</button>-->
+    <!--<button (click)="sort('load')" mat-menu-item>Load Angle</button>-->
+    <!--<button (click)="sort('peak')" mat-menu-item>Peak Angle</button>-->
+    <!--<button (click)="sort('unload')" mat-menu-item>Unload Angle</button>-->
+    <!--<button (click)="sort('finish')" mat-menu-item>Finish Angle</button>-->
+<!--</mat-menu>-->
 
 <ng-template #noPieces>
     <div class="no-pieces">
         <h4 mat-subheader>No data!</h4>
         <mat-icon svgIcon="shelves"></mat-icon>
-        <h4 mat-subheader>Go to "Pieces" to create and save pieces to view here.</h4></div>
+        <h4 mat-subheader>Select some pieces to view angle plots here.</h4></div>
 </ng-template>
 
 <ng-template #loading>

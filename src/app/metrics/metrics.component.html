@@ -1,6 +1,7 @@
 <ng-container *ngIf="$pieces | async as pieces; else loading">
     <ng-container *ngIf="pieces.length > 0; else noPieces">
         <app-metric-averages
+                [includeSession]="showSessionInformation"
                 [$pieces]="$pieces"></app-metric-averages>
     </ng-container>
 </ng-container>

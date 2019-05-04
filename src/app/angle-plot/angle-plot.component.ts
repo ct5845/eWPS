@@ -1,8 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {combineLatest, Observable} from 'rxjs';
 import {Piece} from '../piece/piece';
-import {map, pluck} from 'rxjs/operators';
-import {Session} from '../sessions/session';
+import {map, tap} from 'rxjs/operators';
+import {SessionService} from '../sessions/session.service';
+import {Plotly} from 'angular-plotly.js/src/app/shared/plotly.interface';
+import {PlotComponent} from 'angular-plotly.js';
 
 export function targetLine(x: number) {
     return {
@@ -45,53 +47,80 @@ function indexToTarget(index: number) {
     styleUrls: ['./angle-plot.component.scss']
 })
 export class AnglePlotComponent implements OnInit {
-    @Input() public $session: Observable<Session>;
-    public $pieces: Observable<Piece[]>;
+    @Input() public $pieces: Observable<Piece[]>;
+    @Input() public showSessionInformation: boolean;
 
-    public data: Observable<any>;
+    public $data: Observable<any>;
     public layout: any;
 
-    constructor() {
+    @ViewChild(PlotComponent) public plot: PlotComponent;
+
+    constructor(private sessionService: SessionService) {
     }
 
     ngOnInit() {
-        this.$pieces = this.$session.pipe(pluck('pieces'));
-
         this.layout = {
             showlegend: true,
+            autosize: true,
             xaxis: {
                 title: 'Oar Angle',
-                zeroline: false
+                zeroline: false,
+                showgrid: false,
+                tickvals: [-55, -50, -21, 20, 35],
+                ticktext: ['Catch (-55)', 'Load (-50)', 'Peak (-21)', 'Unload (20)', 'Finish (35)']
             },
             shapes: [targetLine(-55),
                      targetLine(-50),
-                     targetLine(-22),
+                     targetLine(-21),
                      targetLine(19),
                      targetLine(35)
             ]
         };
 
-        if (!!this.$pieces) {
-            this.data = this.$pieces.pipe(
+        if (!!this.$pieces && !this.showSessionInformation) {
+            this.$data = this.$pieces.pipe(
                 map(pieces => {
                     return [...pieces.map((piece: Piece) => {
                         const x = [
                             piece.averages.catch.toFixed(),
                             (piece.averages.catch + piece.averages.slip).toFixed(),
+                            (piece.averages.catch + piece.averages.slip).toFixed(),
                             piece.averages.forceMaxDeg.toFixed(),
+                            (piece.averages.finish - piece.averages.wash).toFixed(),
                             (piece.averages.finish - piece.averages.wash).toFixed(),
                             piece.averages.finish.toFixed()];
 
-                        const text = x.map((v, i) => {
-                            return `${indexToTarget(i)} ${v}°`;
-                        });
-
                         return {
-                            x, text, type: 'box', name: piece.name, hoverinfo: 'text'
+                            x, type: 'box', name: piece.name
                         };
                     })];
                 })
             );
+        } else if (!!this.$pieces) {
+            this.$data = combineLatest(this.$pieces, this.sessionService.get())
+                .pipe(
+                    map(values => {
+                        const pieces   = values[0];
+                        const sessions = values[1];
+
+                        return [...pieces.map((piece: Piece) => {
+                            const session = sessions.find(s => s.id === piece.sessionId);
+
+                            const x = [
+                                piece.averages.catch.toFixed(),
+                                (piece.averages.catch + piece.averages.slip).toFixed(),
+                                (piece.averages.catch + piece.averages.slip).toFixed(),
+                                piece.averages.forceMaxDeg.toFixed(),
+                                (piece.averages.finish - piece.averages.wash).toFixed(),
+                                (piece.averages.finish - piece.averages.wash).toFixed(),
+                                piece.averages.finish.toFixed()];
+
+                            return {
+                                x, type: 'box', name: `${session.name}`
+                            };
+                        })];
+                    })
+                );
         }
     }
 }

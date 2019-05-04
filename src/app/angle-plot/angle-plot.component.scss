@@ -5,11 +5,28 @@
   flex-flow: column;
   flex: 1 1 auto;
   height: 100%;
-  padding: $gutter-width;
   box-sizing: border-box;
 
-  mat-card {
-    margin-bottom: $gutter-width;
+  mat-toolbar {
+    flex: 0 0 auto;
+  }
+
+  .graph-container {
+    flex: 1 1 auto;
+    position: relative;
+
+    > div {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+  }
+
+  plotly-plot {
+    width: 100%;
+    height: 100%;
   }
 
   .loading, .no-pieces {

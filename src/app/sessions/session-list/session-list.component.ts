@@ -16,7 +16,7 @@ import {SessionService} from '../session.service';
 export class SessionListComponent implements OnInit {
     public $saving = new BehaviorSubject(false);
     public $sessions: Observable<Session[]>;
-    public sessionsByDay: Observable<Map<string, Map<string, Session[]>>>;
+    public $sessionsByDay: Observable<Map<string, Map<string, Session[]>>>;
 
     constructor(private sessionService: SessionService,
                 private router: Router,
@@ -28,37 +28,7 @@ export class SessionListComponent implements OnInit {
     ngOnInit() {
         this.$sessions = this.sessionService.get();
 
-        this.sessionsByDay = this.$sessions.pipe(
-            map(sessions => {
-                const allSessions = new Map<string, Map<string, Session[]>>();
-
-                sessions.forEach((session) => {
-                    const timestampKey = session.timestamp.format('YYYY-MM-DD');
-
-                    if (allSessions.has(timestampKey)) {
-                        const todaysSession = allSessions.get(timestampKey);
-
-                        if (todaysSession.has(session.group)) {
-                            const orderedSessions: Session[] = [ ...todaysSession.get(session.group), session ].sort((s1, s2) => {
-                                return s2.details.oarlock.seat - s1.details.oarlock.seat;
-                            });
-
-                            todaysSession.set(session.group, orderedSessions);
-                        } else {
-                            todaysSession.set(session.group, [ session ]);
-                        }
-                    } else {
-                        const todaysSession = new Map<string, Session[]>();
-
-                        todaysSession.set(session.group, [ session ]);
-
-                        allSessions.set(timestampKey, todaysSession);
-                    }
-                });
-
-                return allSessions;
-            })
-        );
+        this.$sessionsByDay = this.sessionService.getByDayAndGroup();
     }
 
     delete(session: Session, $event: Event) {

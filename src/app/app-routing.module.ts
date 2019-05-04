@@ -6,9 +6,11 @@ import {TrainingSpeedsComponent} from './training-speeds/training-speeds.compone
 import {SessionListComponent} from './sessions/session-list/session-list.component';
 import {SessionComponent} from './sessions/session/session.component';
 import {HomeComponent} from './home/home.component';
+import {TelemetryComponent} from './telemetry/telemetry.component';
 
 const routes: Routes = [
     {path: 'training-speeds', component: TrainingSpeedsComponent, data: {toolbarName: 'Training Speeds'}},
+    {path: 'telemetry', component: TelemetryComponent, data: { toolbarName: 'Telemetry' }},
     {path: 'sessions', component: SessionListComponent, data: {toolbarName: 'Sessions'}},
     {path: 'session/:id', component: SessionComponent, data: {toolbarName: 'Session', back: ['/sessions']}},
     {path: 'angle-plots', component: AnglePlotListComponent, data: {toolbarName: 'Angle Plots'}},

@@ -14,7 +14,7 @@
 
     <!--<mat-action-list *ngIf="sessions.length > 0; else noSessions;">-->
       <!--<div class="row around-md middle-md">-->
-        <!--&lt;!&ndash;<div *ngFor="let day of (sessionsByDay | async | keyvalue:compareMapDates)" class="col-xs-12 day">&ndash;&gt;-->
+        <!--&lt;!&ndash;<div *ngFor="let day of ($sessionsByDay | async | keyvalue:compareMapDates)" class="col-xs-12 day">&ndash;&gt;-->
           <!--&lt;!&ndash;<h3 mat-subheader>&ndash;&gt;-->
             <!--&lt;!&ndash;<span>{{ day.key | date:'EEEE dd/MM' }}</span>&ndash;&gt;-->
           <!--&lt;!&ndash;</h3>&ndash;&gt;-->
@@ -80,7 +80,7 @@
 
     <!--<mat-action-list *ngIf="sessions.length > 0; else noSessions;">-->
       <!--<div class="row around-md middle-md">-->
-        <!--&lt;!&ndash;<div *ngFor="let day of (sessionsByDay | async | keyvalue:compareMapDates)" class="col-xs-12 day">&ndash;&gt;-->
+        <!--&lt;!&ndash;<div *ngFor="let day of ($sessionsByDay | async | keyvalue:compareMapDates)" class="col-xs-12 day">&ndash;&gt;-->
           <!--&lt;!&ndash;<h3 mat-subheader>&ndash;&gt;-->
             <!--&lt;!&ndash;<span>{{ day.key | date:'EEEE dd/MM' }}</span>&ndash;&gt;-->
           <!--&lt;!&ndash;</h3>&ndash;&gt;-->
