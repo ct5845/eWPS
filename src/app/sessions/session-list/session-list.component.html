@@ -25,7 +25,7 @@
                 <mat-divider></mat-divider>
                 <ng-container *ngIf="sessionsByGroup.open">
                     <ng-container *ngFor="let sessionList of (sessionsByGroup.value | keyvalue:compareKeys)">
-                        <mat-toolbar (click)="sessionList.open = !sessionList.open" *ngIf="sessionsByGroup.value.size > 1" mat-subheader>
+                        <mat-toolbar (click)="sessionList.open = !sessionList.open" mat-subheader>
                             <mat-icon *ngIf="!sessionList.open">expand_more</mat-icon>
                             <mat-icon *ngIf="sessionList.open">expand_less</mat-icon>
                             <mat-icon
