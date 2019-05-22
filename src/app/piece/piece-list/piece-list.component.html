@@ -29,6 +29,10 @@
         <button mat-icon-button [matTooltip]="'Angle chart'" (click)="appView = 'angles'" [color]="appView === 'angles' ? 'primary' : ''">
             <mat-icon>insert_chart</mat-icon>
         </button>
+        <div style="flex: 1 1 auto;"></div>
+        <button (click)="appView === 'metrics'? metricsCmp.export() : anglesCmp.export()" mat-button>
+            Export
+        </button>
     </mat-toolbar>
     <mat-divider></mat-divider>
     <app-metrics *ngIf="appView === 'metrics'"

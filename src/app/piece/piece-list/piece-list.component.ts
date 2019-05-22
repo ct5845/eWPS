@@ -3,6 +3,8 @@ import {MatCheckboxChange, MatSelectionList, MatSelectionListChange, MatSnackBar
 import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {map, pluck, take} from 'rxjs/operators';
+import {AnglePlotComponent} from '../../angle-plot/angle-plot.component';
+import {MetricsComponent} from '../../metrics/metrics.component';
 import {Session} from '../../sessions/session';
 import {SessionService} from '../../sessions/session.service';
 import {Piece} from '../piece';
@@ -27,6 +29,8 @@ export class PieceListComponent implements OnInit, OnDestroy {
     public $disableDelete: Observable<boolean>;
 
     @ViewChild(MatSelectionList) public pieceList: MatSelectionList;
+    @ViewChild(MetricsComponent) public metricsCmp: MetricsComponent;
+    @ViewChild(AnglePlotComponent) public anglesCmp: AnglePlotComponent;
 
     public $checkAllChecked: Observable<boolean>;
     public $checkAllIndeterminate: Observable<boolean>;

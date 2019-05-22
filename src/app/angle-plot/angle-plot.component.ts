@@ -123,4 +123,8 @@ export class AnglePlotComponent implements OnInit {
                 );
         }
     }
+
+    export() {
+        console.log('export');
+    }
 }
