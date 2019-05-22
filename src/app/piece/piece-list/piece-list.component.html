@@ -9,7 +9,7 @@
             <mat-icon>delete</mat-icon>
         </button>
     </mat-toolbar>
-    <mat-selection-list dense (selectionChange)="onSelectionChanged($event)">
+    <mat-selection-list dense [(ngModel)]="selectedPieces" (selectionChange)="onSelectionChanged($event)">
         <ng-container *ngFor="let piece of $pieces | async">
             <mat-list-option [value]="piece">
                 <span matLine>{{ piece.name }}</span>
@@ -31,7 +31,10 @@
         </button>
     </mat-toolbar>
     <mat-divider></mat-divider>
-    <app-metrics *ngIf="appView === 'metrics'" [showSessionInformation]="!$pieces" [$pieces]="$selectedPieces">
+    <app-metrics *ngIf="appView === 'metrics'"
+                 (updated)="pieceUpdated()"
+                 [showSessionInformation]="!$pieces"
+                 [$pieces]="$selectedPieces">
     </app-metrics>
     <app-angle-plot *ngIf="appView === 'angles'" [showSessionInformation]="!$pieces" [$pieces]="$selectedPieces"></app-angle-plot>
 </main>

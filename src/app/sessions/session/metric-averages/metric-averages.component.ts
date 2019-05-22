@@ -1,18 +1,28 @@
+import {DatePipe, DecimalPipe} from '@angular/common';
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
+import {
+    CellValueChangedEvent,
+    ColDef,
+    ColumnApi,
+    ColumnGroupOpenedEvent,
+    GridApi,
+    GridReadyEvent,
+    RowNode,
+    ValueFormatterParams
+} from 'ag-grid-community';
 import {combineLatest, Observable, ReplaySubject} from 'rxjs';
+import {take} from 'rxjs/operators';
+import {ButtonRendererComponent} from '../../../ag-grid/button-renderer/button-renderer.component';
 import {Piece} from '../../../piece/piece';
-import {ColDef, ColumnApi, ColumnGroupOpenedEvent, GridApi, GridReadyEvent, RowNode, ValueFormatterParams} from 'ag-grid-community';
-import {DatePipe, DecimalPipe} from '@angular/common';
 
 import {STROKE_COLUMNS} from '../../../strokes/stroke-columns';
-import {ButtonRendererComponent} from '../../../ag-grid/button-renderer/button-renderer.component';
 import {SessionService} from '../../session.service';
 
 @Component({
     selector: 'app-metric-averages',
     templateUrl: './metric-averages.component.html',
-    styleUrls: ['./metric-averages.component.scss']
+    styleUrls: [ './metric-averages.component.scss' ]
 })
 export class MetricAveragesComponent implements OnInit, OnDestroy {
     @Input() public $pieces: Observable<Piece[]>;
@@ -23,14 +33,15 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
     @Input() public includeSession: boolean;
 
     @Output() public onDelete = new EventEmitter<Piece>();
+    @Output() public updated = new EventEmitter();
 
     public columnDefs: ColDef[];
     public frameworkComponents: any;
 
-    public api         = new ReplaySubject<GridApi>(1);
-    private columnApi  = new ReplaySubject<ColumnApi>(1);
+    public api = new ReplaySubject<GridApi>(1);
+    private columnApi = new ReplaySubject<ColumnApi>(1);
     private numberPipe = new DecimalPipe('en-GB');
-    private datePipe   = new DatePipe('en-GB');
+    private datePipe = new DatePipe('en-GB');
 
     constructor(private sessionService: SessionService) {
     }
@@ -40,13 +51,14 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
             'buttonRenderer': ButtonRendererComponent
         };
 
-        this.columnDefs = [...STROKE_COLUMNS.map(group => {
+        this.columnDefs = [ ...STROKE_COLUMNS.map(group => {
             return {
                 headerName: group.name,
                 children: group.children.map(child => {
                     const col = {...child};
 
                     col.headerName = col.name;
+                    col.editable = col.name === 'Name';
 
                     if (col.type === 'numericColumn') {
                         col.valueFormatter = (params: ValueFormatterParams) => {
@@ -70,7 +82,7 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
                         col.sort = child.defaultSort;
                     }
 
-                    col.sortable          = true;
+                    col.sortable = true;
                     col.checkboxSelection = col.field === 'name' && this.selection === 'multiple';
 
                     return col;
@@ -82,7 +94,7 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
             hide: !this.allowDelete,
             cellRenderer: 'buttonRenderer',
             cellRendererParams: {
-                buttons: [{
+                buttons: [ {
                     icon: 'delete',
                     color: 'warn',
                     onClick: (params: any) => {
@@ -91,9 +103,9 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
                     show: (params: RowNode) => {
                         return !params.isRowPinned();
                     }
-                }]
+                } ]
             }
-        }];
+        } ];
 
         if (this.includeSession) {
             this.columnDefs = [
@@ -115,15 +127,15 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
             combineLatest(this.api, this.$pieces, this.sessionService.get())
                 .pipe(untilComponentDestroyed(this))
                 .subscribe(values => {
-                    const api      = values[0];
-                    const pieces   = values[1];
-                    const sessions = values[2];
+                    const api = values[ 0 ];
+                    const pieces = values[ 1 ];
+                    const sessions = values[ 2 ];
 
                     const rows = pieces.map(p => {
                         const row: any = {...p};
-                        const session  = sessions.find(s => s.id === p.sessionId);
+                        const session = sessions.find(s => s.id === p.sessionId);
 
-                        row.date    = session.timestamp.toISOString();
+                        row.date = session.timestamp.toISOString();
                         row.athlete = session.name;
                         row.session = session.group;
 
@@ -136,8 +148,8 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
             combineLatest(this.api, this.$pieces)
                 .pipe(untilComponentDestroyed(this))
                 .subscribe(values => {
-                    const api    = values[0];
-                    const pieces = values[1];
+                    const api = values[ 0 ];
+                    const pieces = values[ 1 ];
 
                     api.setRowData(pieces);
                 });
@@ -148,10 +160,10 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
             combineLatest(this.api, this.$footerPiece)
                 .pipe(untilComponentDestroyed(this))
                 .subscribe(values => {
-                    const api   = values[0];
-                    const piece = values[1];
+                    const api = values[ 0 ];
+                    const piece = values[ 1 ];
 
-                    api.setPinnedBottomRowData([piece]);
+                    api.setPinnedBottomRowData([ piece ]);
                 });
         }
 
@@ -159,10 +171,10 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
             combineLatest(this.api, this.$headerPiece)
                 .pipe(untilComponentDestroyed(this))
                 .subscribe(values => {
-                    const api   = values[0];
-                    const piece = values[1];
+                    const api = values[ 0 ];
+                    const piece = values[ 1 ];
 
-                    api.setPinnedTopRowData([piece]);
+                    api.setPinnedTopRowData([ piece ]);
                 });
         }
     }
@@ -182,5 +194,21 @@ export class MetricAveragesComponent implements OnInit, OnDestroy {
 
     public gridGroupChanged(event: ColumnGroupOpenedEvent) {
         event.columnApi.autoSizeAllColumns();
+    }
+
+    gridUpdated($event: CellValueChangedEvent) {
+        // console.log($event);
+
+        if (!!$event.data.sessionId) {
+            this.sessionService.find($event.data.sessionId)
+                .pipe(take(1))
+                .subscribe(session => {
+                    session.pieces.splice(
+                        session.pieces.findIndex(piece => piece.id === $event.data.id),
+                        1, $event.data);
+
+                    this.sessionService.update(session);
+                });
+        }
     }
 }

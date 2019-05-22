@@ -2,10 +2,12 @@
         [rowData]="[]"
         [getRowNodeId]="getRowNodeId"
         [deltaRowDataMode]="true"
+        [singleClickEdit]="true"
         [frameworkComponents]="frameworkComponents"
         [overlayNoRowsTemplate]="'No saved pieces.'"
         [columnDefs]="columnDefs"
         [rowSelection]="selection"
         (gridReady)="gridReady($event)"
+        (cellValueChanged)="gridUpdated($event)"
         (columnGroupOpened)="gridGroupChanged($event)"
         class="ag-theme-material"></ag-grid-angular>

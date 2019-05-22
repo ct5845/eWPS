@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs';
 import {pluck, take} from 'rxjs/operators';
 import {Piece} from '../piece/piece';
@@ -17,6 +17,8 @@ export class MetricsComponent implements OnInit {
 
     @ViewChild(MetricAveragesComponent) public metrics: MetricAveragesComponent;
 
+    @Output() public updated = new EventEmitter();
+
     constructor() {
     }
 
@@ -30,4 +32,7 @@ export class MetricsComponent implements OnInit {
         this.metrics.api.pipe(take(1)).subscribe(api => api.exportDataAsCsv({allColumns: true}));
     }
 
+    updatePiece() {
+        this.updated.emit();
+    }
 }

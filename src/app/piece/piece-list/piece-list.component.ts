@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {MatCheckboxChange, MatSelectionList, MatSelectionListChange, MatSnackBar} from '@angular/material';
+import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {map, pluck, take} from 'rxjs/operators';
 import {Session} from '../../sessions/session';
@@ -9,9 +10,9 @@ import {Piece} from '../piece';
 @Component({
     selector: 'app-piece-list',
     templateUrl: './piece-list.component.html',
-    styleUrls: ['./piece-list.component.scss']
+    styleUrls: [ './piece-list.component.scss' ]
 })
-export class PieceListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PieceListComponent implements OnInit, OnDestroy {
     @Input() public $session: Observable<Session>;
 
     @Output() public changed = new EventEmitter<Session>();
@@ -19,6 +20,8 @@ export class PieceListComponent implements OnInit, AfterViewInit, OnDestroy {
     public $pieces: Observable<Piece[]>;
     public $sessions: Observable<Map<string, Map<string, Session[]>>>;
     public $selectedPieces = new BehaviorSubject<Piece[]>([]);
+
+    public selectedPieces: Piece[];
 
     public $disableMerge: Observable<boolean>;
     public $disableDelete: Observable<boolean>;
@@ -45,36 +48,28 @@ export class PieceListComponent implements OnInit, AfterViewInit, OnDestroy {
             this.$sessions = this.sessionService.getByDayAndGroup();
         }
 
+        this.$pieces.pipe(untilComponentDestroyed(this))
+            .subscribe(pieces => {
+                this.selectedPieces = pieces;
+                this.onSelectionChanged();
+            });
+
         this.$disableMerge = this.$selectedPieces.pipe(map(pieces => pieces.length < 2));
 
         this.$disableDelete = this.$selectedPieces.pipe(map(pieces => pieces.length === 0));
 
         this.$checkAllChecked = combineLatest(this.$selectedPieces, this.$pieces)
-            .pipe(map(values => values[0].length === values[1].length));
+            .pipe(map(values => values[ 0 ].length === values[ 1 ].length));
 
         this.$checkAllIndeterminate = combineLatest(this.$selectedPieces, this.$pieces)
-            .pipe(map(values => values[0].length > 0 && values[0].length !== values[1].length));
-    }
-
-    ngAfterViewInit() {
-        setTimeout(() => {
-            if (!!this.$pieces) {
-                this.$pieces.pipe(take(1))
-                    .subscribe(() => {
-                        this.pieceList.selectAll();
-                        this.onSelectionChanged();
-                    });
-            }
-        });
+            .pipe(map(values => values[ 0 ].length > 0 && values[ 0 ].length !== values[ 1 ].length));
     }
 
     ngOnDestroy(): void {
     }
 
     onSelectionChanged($event?: MatSelectionListChange) {
-        const selectedOptions = !!$event ? $event.source.selectedOptions : this.pieceList.selectedOptions;
-
-        this.$selectedPieces.next(selectedOptions.selected.map(s => s.value));
+        this.$selectedPieces.next(this.selectedPieces);
     }
 
     onCheckAllChanged($event: MatCheckboxChange) {
@@ -91,8 +86,8 @@ export class PieceListComponent implements OnInit, AfterViewInit, OnDestroy {
         combineLatest(this.$session, this.$selectedPieces)
             .pipe(take(1))
             .subscribe(values => {
-                const session: Session = values[0];
-                const pieces: Piece[]  = values[1];
+                const session: Session = values[ 0 ];
+                const pieces: Piece[] = values[ 1 ];
 
                 pieces.forEach(piece => {
                     session.pieces.splice(session.pieces.findIndex(p => p.id === piece.id), 1);

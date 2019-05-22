@@ -20,7 +20,7 @@
                     <mat-icon *ngIf="!sessionsByGroup.open">expand_more</mat-icon>
                     <mat-icon *ngIf="sessionsByGroup.open">expand_less</mat-icon>
                     <mat-icon style="margin-left: 0.5rem; margin-right: 0.5rem;">calendar_today</mat-icon>
-                    <span>{{ sessionsByGroup.key | date:'EEEE dd/MM' }}</span>
+                    <span>{{ sessionsByGroup.key | date:'EEEE dd MMM' }}</span>
                 </mat-toolbar>
                 <mat-divider></mat-divider>
                 <ng-container *ngIf="sessionsByGroup.open">

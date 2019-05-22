@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Session} from './session';
 import {Observable} from 'rxjs';
-import {filter, map, shareReplay} from 'rxjs/operators';
+import {filter, map, shareReplay, tap} from 'rxjs/operators';
 import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
 import {Stroke} from '../strokes/stroke';
 import {chunkArray} from '../../shared/chunk-array';
