@@ -1,5 +1,5 @@
 import {Component, ElementRef, HostBinding, HostListener, Input, OnDestroy, Optional, Self} from '@angular/core';
-import {MatFormFieldControl} from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import {Subject} from 'rxjs';
 import {ControlValueAccessor, FormControl, FormGroup, NgControl, Validators} from '@angular/forms';
 import {FocusMonitor} from '@angular/cdk/a11y';

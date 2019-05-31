@@ -1,5 +1,6 @@
 import {Component, HostListener, OnInit} from '@angular/core';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {Papa} from 'ngx-papaparse';
 import {BehaviorSubject, Observable} from 'rxjs';

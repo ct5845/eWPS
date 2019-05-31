@@ -1,5 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {MatButtonModule, MatIconModule, MatTooltipModule} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {IconComponent} from '../../icon/icon.component';
 import {Component, ViewChild} from '@angular/core';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
@@ -38,7 +40,7 @@ class ButtonTestParams implements ButtonRendererParams {
         </ad-button-renderer>`
 })
 class TestHostComponent {
-    @ViewChild(ButtonRendererComponent) public buttonRendererComponent: ButtonRendererComponent;
+    @ViewChild(ButtonRendererComponent, /* TODO: add static flag */ {}) public buttonRendererComponent: ButtonRendererComponent;
 }
 
 describe('ButtonHeaderComponent', () => {

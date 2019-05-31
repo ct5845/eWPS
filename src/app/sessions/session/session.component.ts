@@ -1,7 +1,9 @@
 import {DecimalPipe} from '@angular/common';
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {MatDialog, MatSelectionListChange, MatSnackBar} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSelectionListChange } from '@angular/material/list';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
 
 import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';

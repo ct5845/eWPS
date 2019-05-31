@@ -1,5 +1,7 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {MatCheckboxChange, MatSelectionList, MatSelectionListChange, MatSnackBar} from '@angular/material';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {map, pluck, take} from 'rxjs/operators';

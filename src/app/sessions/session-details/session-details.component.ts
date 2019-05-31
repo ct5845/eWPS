@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MatSnackBar} from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Piece} from '../../piece/piece';

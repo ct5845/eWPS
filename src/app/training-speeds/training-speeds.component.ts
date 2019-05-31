@@ -7,7 +7,7 @@ import {debounceTime, map} from 'rxjs/operators';
 import {until} from 'selenium-webdriver';
 import {BoatTypes} from '../../shared/boat-types';
 import {CustomValidators} from 'ngx-custom-validators';
-import {MatHorizontalStepper} from '@angular/material';
+import { MatHorizontalStepper } from '@angular/material/stepper';
 import {TrainingSpeed} from './training-speed';
 
 const defaultConfig = {

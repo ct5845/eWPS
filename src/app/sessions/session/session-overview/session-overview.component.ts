@@ -1,6 +1,6 @@
 import {DecimalPipe} from '@angular/common';
 import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatSnackBar} from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {PlotComponent} from 'angular-plotly.js';
 import {DateTime} from 'luxon';
 import {BehaviorSubject, combineLatest, Observable, ReplaySubject} from 'rxjs';
