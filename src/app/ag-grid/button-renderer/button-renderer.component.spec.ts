@@ -38,7 +38,7 @@ class ButtonTestParams implements ButtonRendererParams {
         </ad-button-renderer>`
 })
 class TestHostComponent {
-    @ViewChild(ButtonRendererComponent) public buttonRendererComponent: ButtonRendererComponent;
+    @ViewChild(ButtonRendererComponent, /* TODO: add static flag */ {}) public buttonRendererComponent: ButtonRendererComponent;
 }
 
 describe('ButtonHeaderComponent', () => {

@@ -1,5 +1,6 @@
 @import "./variables";
 @import "~@angular/material/theming";
+@import "~angular-calendar/css/angular-calendar.css";
 @import "./ag-grid";
 
 @include mat-core();
@@ -36,22 +37,6 @@ body {
 
 [no-padding] {
   padding: 0 !important;
-}
-
-@media only screen and (max-width: nth($media-sm, 2)) {
-
-}
-
-@media only screen and (min-width: nth($media-sm, 2)) {
-
-}
-
-@media only screen and (min-width: nth($media-md, 2)) {
-
-}
-
-@media only screen and (min-width: nth($media-lg, 2)) {
-
 }
 
 .mat-tab-body-wrapper {

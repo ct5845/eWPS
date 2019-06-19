@@ -66,7 +66,7 @@ export class TrainingSpeedsComponent implements OnInit, OnDestroy {
     public tableColumns = [ 'rate', 'time', 'split' ];
     public trainingSpeeds: TrainingSpeed[] = [];
 
-    @ViewChild(MatHorizontalStepper) public m: MatHorizontalStepper;
+    @ViewChild(MatHorizontalStepper, { static: false }) public m: MatHorizontalStepper;
 
     constructor(private breakpointObserver: BreakpointObserver) {
     }

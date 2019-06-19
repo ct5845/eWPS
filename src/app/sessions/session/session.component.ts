@@ -37,7 +37,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     private _session: Session;
 
     private _getSessionSubscription: Subscription;
-    @ViewChild(SessionOverviewComponent) sessionOverview: SessionOverviewComponent;
+    @ViewChild(SessionOverviewComponent, { static: false }) sessionOverview: SessionOverviewComponent;
 
     constructor(private route: ActivatedRoute,
                 private snackBar: MatSnackBar,

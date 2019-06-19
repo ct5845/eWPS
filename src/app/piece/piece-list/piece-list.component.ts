@@ -28,9 +28,9 @@ export class PieceListComponent implements OnInit, OnDestroy {
     public $disableMerge: Observable<boolean>;
     public $disableDelete: Observable<boolean>;
 
-    @ViewChild(MatSelectionList) public pieceList: MatSelectionList;
-    @ViewChild(MetricsComponent) public metricsCmp: MetricsComponent;
-    @ViewChild(AnglePlotComponent) public anglesCmp: AnglePlotComponent;
+    @ViewChild(MatSelectionList, { static: false }) public pieceList: MatSelectionList;
+    @ViewChild(MetricsComponent, { static: false }) public metricsCmp: MetricsComponent;
+    @ViewChild(AnglePlotComponent, { static: false }) public anglesCmp: AnglePlotComponent;
 
     public $checkAllChecked: Observable<boolean>;
     public $checkAllIndeterminate: Observable<boolean>;

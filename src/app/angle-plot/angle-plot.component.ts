@@ -53,7 +53,7 @@ export class AnglePlotComponent implements OnInit {
     public $data: Observable<any>;
     public layout: any;
 
-    @ViewChild(PlotComponent) public plot: PlotComponent;
+    @ViewChild(PlotComponent, { static: false }) public plot: PlotComponent;
 
     constructor(private sessionService: SessionService) {
     }

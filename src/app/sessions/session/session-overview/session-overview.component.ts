@@ -18,7 +18,7 @@ import {SessionService} from '../../session.service';
 export class SessionOverviewComponent implements OnInit, OnDestroy {
     @Input() public $session: Observable<Session>;
 
-    @ViewChild(PlotComponent) plotCmp: PlotComponent;
+    @ViewChild(PlotComponent, { static: false }) plotCmp: PlotComponent;
 
     public $data: Observable<any[]>;
     public layout: any;

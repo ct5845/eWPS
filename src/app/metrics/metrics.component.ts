@@ -15,7 +15,7 @@ export class MetricsComponent implements OnInit {
     @Input() public $pieces: Observable<Piece[]>;
     @Input() public showSessionInformation: boolean;
 
-    @ViewChild(MetricAveragesComponent) public metrics: MetricAveragesComponent;
+    @ViewChild(MetricAveragesComponent, { static: false }) public metrics: MetricAveragesComponent;
 
     @Output() public updated = new EventEmitter();
 
