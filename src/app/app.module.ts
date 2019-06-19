@@ -63,6 +63,8 @@ import {SessionOverviewComponent} from './legacy/sessions/session/session-overvi
 import {SessionComponent} from './legacy/sessions/session/session.component';
 import {TelemetryComponent} from './legacy/telemetry/telemetry.component';
 import {TrainingSpeedsComponent} from './legacy/training-speeds/training-speeds.component';
+import {PagesRoutingModule} from './pages/pages-routing.module';
+import {PreloadAllModules, RouterModule} from '@angular/router';
 
 export const DATE_DISPLAY = 'ddd Do, MMMM YYYY';
 
@@ -108,7 +110,8 @@ const MY_FORMATS = {
     imports: [
         BrowserModule,
         AgGridModule.withComponents([ ButtonRendererComponent ]),
-        AppRoutingModule,
+        RouterModule.forRoot([], { useHash: true, preloadingStrategy: PreloadAllModules }),
+        PagesRoutingModule,
         MatToolbarModule,
         MatListModule,
         MatCheckboxModule,
