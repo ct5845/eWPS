@@ -1,0 +1,37 @@
+@import "~@angular/material/theming";
+
+$app-green: map_merge($mat-green,
+        (
+                contrast: (
+                        500: $light-primary-text
+                )
+        ));
+
+$primaryPalette: mat-palette($app-green);
+$accentPalette: mat-palette($mat-amber, A400, A200, A600);
+$warnPalette: mat-palette($mat-red);
+$greyPalette: mat-palette($mat-gray);
+
+$gutter: 0.5rem;
+$gutter-width: $gutter;
+
+$media-sm: 46rem;
+$media-md: 61rem;
+$media-lg: 71rem;
+
+$primary: mat-color($primaryPalette);
+$accent: mat-color($accentPalette);
+$warn: mat-color($warnPalette);
+$grey-light: mat-color($greyPalette, 0.1);
+$grey-normal: mat-color($greyPalette, 0.3);
+
+$readableWidth: 35rem;
+
+$breakpoints: sm $media-sm,
+md $media-md,
+lg $media-lg;
+
+$grid-columns: 12 !default;
+$outer-margin: $gutter * 2;
+$gutter-compensation: $gutter * .5 * -1;
+$half-gutter-width: $gutter * .5;

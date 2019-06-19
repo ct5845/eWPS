@@ -1,44 +1,18 @@
-@import "./variables";
-@import "~@angular/material/theming";
 @import "~angular-calendar/css/angular-calendar.css";
-@import "./ag-grid";
-
-@include mat-core();
-@include angular-material-theme(mat-light-theme($primaryPalette, $accentPalette, $warnPalette));
-
-$custom-typography: mat-typography-config(
-        $caption: mat-typography-level(11px, 11px, 500)
-);
-
-mat-list-item {
-  &[appearance='fill'] {
-    .mat-list-item-content {
-      padding-left: 0.75em;
-    }
-  }
-}
-
-/* You can add global styles to this file, and also import other style files */
-
-@import "~flexboxgrid-sass/flexboxgrid.scss";
-
-.col- {
-  flex: 0 0 auto;
-}
+@import "styles/variables";
+@import "styles/ag-grid";
+@import "styles/material";
+@import "styles/layout";
 
 html, body {
   height: 100%;
-}
-
-body {
+  overflow: hidden;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  padding: 0;
 }
 
-[no-padding] {
-  padding: 0 !important;
+* {
+  box-sizing: border-box;
 }
 
-.mat-tab-body-wrapper {
-  flex: 1 1 auto;
-}
+@include create-layouts();

@@ -9,10 +9,5 @@ if (environment.production) {
     enableProdMode();
 }
 
-// import {create} from 'rxjs-spy';
-
-// const spy = create();
-// spy.log('getSession');
-
 platformBrowserDynamic().bootstrapModule(AppModule)
     .catch(err => console.error(err));

@@ -1,0 +1,269 @@
+@import "variables";
+@import '~@angular/material/theming';
+
+@mixin global-styleWithName($style, $breakpoint) {
+  @if ($breakpoint) {
+    [#{nth($style, 1)}-#{$breakpoint}]:not([#{nth($style, 1)}-#{$breakpoint}='force']) {
+      #{nth($style, 2)}: #{nth($style, 3)};
+    }
+    [#{nth($style, 1)}-#{$breakpoint}='force'] {
+      #{nth($style, 2)}: #{nth($style, 3)} !important;
+    }
+  } @else {
+    [#{nth($style, 1)}]:not([#{nth($style, 1)}='force']) {
+      #{nth($style, 2)}: #{nth($style, 3)};
+    }
+    [#{nth($style, 1)}='force'] {
+      #{nth($style, 2)}: #{nth($style, 3)} !important;
+    }
+  }
+}
+
+@mixin global-stylesWithName($styles, $breakpoint) {
+  @each $style in $styles {
+    @include global-styleWithName($style, $breakpoint);
+  }
+}
+
+@mixin global-flex-layout($breakpoint) {
+  $styles: flex-row display flex,
+  flex-row flex-flow row,
+  flex-row flex-wrap wrap;
+
+  @include global-stylesWithName($styles, $breakpoint);
+
+  $styles: flex-column display flex,
+  flex-column flex-flow column;
+
+  @include global-stylesWithName($styles, $breakpoint);
+
+  @include global-styleWithName(wrap flex-wrap wrap, $breakpoint);
+  @include global-styleWithName(nowrap flex-wrap nowrap, $breakpoint);
+}
+
+@mixin global-flex-alignment($breakpoint) {
+  @include global-styleWithName(align-center align-items center, $breakpoint);
+  @include global-styleWithName(align-start align-items flex-start, $breakpoint);
+  @include global-styleWithName(align-end align-items flex-end, $breakpoint);
+  @include global-styleWithName(align-stretch align-items stretch, $breakpoint);
+
+  @include global-styleWithName(align-self-center align-self center, $breakpoint);
+  @include global-styleWithName(align-self-start align-self flex-start, $breakpoint);
+  @include global-styleWithName(align-self-end align-self flex-end, $breakpoint);
+  @include global-styleWithName(align-self-stretch align-self stretch, $breakpoint);
+
+  @include global-styleWithName(justify-center justify-content center, $breakpoint);
+  @include global-styleWithName(justify-start justify-content flex-start, $breakpoint);
+  @include global-styleWithName(justify-end justify-content flex-end, $breakpoint);
+  @include global-styleWithName(justify-stretch justify-content stretch, $breakpoint);
+  @include global-styleWithName(justify-around justify-content space-around, $breakpoint);
+  @include global-styleWithName(justify-between justify-content space-between, $breakpoint);
+
+  @include global-styleWithName(justify-self-center justify-self center, $breakpoint);
+  @include global-styleWithName(justify-self-start justify-self flex-start, $breakpoint);
+  @include global-styleWithName(justify-self-end justify-self flex-end, $breakpoint);
+  @include global-styleWithName(justify-self-stretch justify-self stretch, $breakpoint);
+
+  @include global-styleWithName(flex-0 flex '0 0 auto', $breakpoint);
+  @include global-styleWithName(flex-1 flex '1 1 auto', $breakpoint);
+}
+
+@mixin global-text($breakpoint) {
+  @include global-styleWithName(text-left text-align left, $breakpoint);
+  @include global-styleWithName(text-right text-align right, $breakpoint);
+  @include global-styleWithName(text-center text-align center, $breakpoint);
+  @include global-styleWithName(text-justify text-align justify, $breakpoint);
+
+  @include global-styleWithName(text-small-caps font-variant all-small-caps, $breakpoint);
+  @include global-styleWithName(text-italic font-style italic, $breakpoint);
+  @include global-styleWithName(text-bold font-weight bold, $breakpoint);
+  @include global-styleWithName(text-normal font-weight normal, $breakpoint);
+
+  @include global-styleWithName(text-clip text-overflow ellipsis, $breakpoint);
+}
+
+@mixin global-display($breakpoint) {
+  @include global-styleWithName(display-none display none, $breakpoint);
+  @include global-styleWithName(display-flex display flex, $breakpoint);
+  @include global-styleWithName(display-block display block, $breakpoint);
+  @include global-styleWithName(hide opacity 0, $breakpoint);
+  @include global-styleWithName(show opacity 1, $breakpoint);
+}
+
+@mixin global-position($breakpoint) {
+  @include global-styleWithName(relative position relative, $breakpoint);
+  @include global-styleWithName(absolute position absolute, $breakpoint);
+
+  $topLeft: absolute-tl position absolute,
+  absolute-tl top 0,
+  absolute-tl left 0;
+
+  @include global-stylesWithName($topLeft, $breakpoint);
+
+  $topRight: absolute-tr position absolute,
+  absolute-tr top 0,
+  absolute-tr right 0;
+
+  @include global-stylesWithName($topRight, $breakpoint);
+}
+
+@mixin global-scroll($breakpoint) {
+  @include global-styleWithName(no-scroll overflow hidden, $breakpoint);
+  @include global-styleWithName(scroll overflow auto, $breakpoint);
+}
+
+@mixin global-padding($breakpoint) {
+  @include global-styleWithName(padding padding $gutter, $breakpoint);
+  @include global-styleWithName(no-padding padding 0, $breakpoint);
+  @include global-styleWithName(v-padding padding '#{$gutter} 0', $breakpoint);
+  @include global-styleWithName(h-padding padding '0 #{$gutter}', $breakpoint);
+  @include global-styleWithName(t-padding padding-top $gutter, $breakpoint);
+  @include global-styleWithName(l-padding padding-left $gutter, $breakpoint);
+  @include global-styleWithName(b-padding padding-bottom $gutter, $breakpoint);
+  @include global-styleWithName(r-padding padding-right $gutter, $breakpoint);
+}
+
+@mixin global-margin($breakpoint) {
+  @include global-styleWithName(margin margin $gutter, $breakpoint);
+  @include global-styleWithName(no-margin margin 0, $breakpoint);
+  @include global-styleWithName(v-margin margin '#{$gutter} 0', $breakpoint);
+  @include global-styleWithName(h-margin margin '0 #{$gutter}', $breakpoint);
+  @include global-styleWithName(t-margin margin-top $gutter, $breakpoint);
+  @include global-styleWithName(l-margin margin-left $gutter, $breakpoint);
+  @include global-styleWithName(b-margin margin-bottom $gutter, $breakpoint);
+  @include global-styleWithName(r-margin margin-right $gutter, $breakpoint);
+}
+
+@mixin global-overflow($breakpoint) {
+  @include global-styleWithName(overflow-hidden overflow hidden, $breakpoint);
+  @include global-styleWithName(overflow-visible overflow visible, $breakpoint);
+  @include global-styleWithName(overflow-auto overflow auto, $breakpoint);
+}
+
+@mixin global-cell($breakpoint, $size, $maxColumns) {
+  @if ($size == 0) {
+    $styles: cell-fit flex '0 0 auto',
+    cell-fit overflow hidden,
+    cell-fit padding $gutter;
+    @include global-stylesWithName($styles, $breakpoint)
+  } @else if ($size > $maxColumns) {
+    $styles: cell-flex flex '1 1 auto',
+    cell-flex overflow hidden,
+    cell-flex padding $gutter;
+    @include global-stylesWithName($styles, $breakpoint)
+  } @else {
+    $width: (0 0 (100% / $maxColumns * $size));
+    $styles: cell-#{$size} flex $width,
+    cell-#{$size} overflow hidden,
+    cell-#{$size} padding $gutter;
+    @include global-stylesWithName($styles, $breakpoint)
+  }
+}
+
+@mixin global-cell-readable($breakpoint, $maxColumns) {
+  $styles: cell-readable flex '0 1 36rem',
+  cell-readable padding $gutter;
+
+  @include global-stylesWithName($styles, $breakpoint);
+
+  $styles: cell-readable-small flex '0 1 18rem',
+  cell-readable-small padding $gutter;
+
+  @include global-stylesWithName($styles, $breakpoint);
+}
+
+@mixin global-elevation($breakpoint, $level) {
+  @if ($breakpoint) {
+    [elevation-#{$level}-#{$breakpoint}] {
+      @include mat-elevation($level);
+    }
+  } @else {
+    [elevation-#{$level}] {
+      @include mat-elevation($level);
+    }
+  }
+}
+
+@mixin global-order($breakpoint, $order) {
+  @include global-styleWithName(order-#{$order} order $order, $breakpoint);
+}
+
+@mixin global-shapes($breakpoint) {
+  $shapes: (
+          triangle: (polygon: polygon(50% 0%, 0% 100%, 100% 100%), padding: 0),
+          trapezoid: (polygon: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%), padding: 0),
+          trapezoid-right: (polygon: polygon(0 0, 100% 20%, 100% 80%, 0% 100%), padding: 0),
+          trapezoid-left: (polygon: polygon(0 20%, 100% 0, 100% 100%, 0 80%), padding: 0),
+          parallelogram: (polygon: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%), padding: 0),
+          rhombus: (polygon: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%), padding: 0),
+          pentagram: (polygon: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%), padding: 0),
+          hexagon: (polygon: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%), padding: 0),
+          heptagon: (polygon: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%), padding: 0),
+          octagon: (polygon: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%), padding: 0),
+          nonagon: (polygon: polygon(50% 0%, 83% 12%, 100% 43%, 94% 78%, 68% 100%, 32% 100%, 6% 78%, 0% 43%, 17% 12%), padding: 0),
+          bevel: (polygon: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%), padding: 0),
+          rabbet: (polygon: polygon(0% 15%, 15% 15%, 15% 0%, 85% 0%, 85% 15%, 100% 15%, 100% 85%, 85% 85%, 85% 100%, 15% 100%, 15% 85%, 0% 85%), padding: 0),
+          left-point: (polygon: polygon(25% 0%, 100% 1%, 100% 100%, 25% 100%, 0% 50%), padding: 0),
+          right-point: (polygon: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%), padding: 0),
+          left-chevron: (polygon: polygon(100% 0%, 75% 50%, 100% 100%, 25% 100%, 0% 50%, 25% 0%), padding: 0 (2 * $gutter) 0 0),
+          right-chevron: (polygon: polygon(75% 0%, 100% 50%, 75% 100%, 0% 100%, 25% 50%, 0% 0%), padding: 0 0 0 2 * $gutter),
+          message: (polygon: polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%), padding: 0),
+          circle: (polygon: circle(50% at 50% 50%), padding: 0),
+          rectangle-br: (polygon: polygon(0 0, 100% 0, 100% 80%, 0% 100%), padding: 0),
+          rectangle-tr: (polygon: polygon(0 0, 100% 20%, 100% 100%, 0 100%), padding: 2rem $gutter $gutter $gutter),
+          rectangle-bl: (polygon: polygon(0 0, 100% 0, 100% 100%, 0 80%), padding: 0),
+          rectangle-tl: (polygon: polygon(0 20%, 100% 0, 100% 100%, 0 100%), padding: 0)
+  );
+
+  @each $key, $shape in $shapes {
+    @include global-styleWithName($key clip-path map-get($shape, polygon), $breakpoint);
+    @include global-styleWithName($key padding map-get($shape, padding), $breakpoint);
+  }
+}
+
+@mixin global-bg-color($breakpoint) {
+  $styles: bg-color-primary background-color $primary,
+  bg-color-primary color mat-contrast($primaryPalette, 500);
+  @include global-stylesWithName($styles, $breakpoint);
+
+  $styles: bg-color-accent background-color $accent,
+  bg-color-accent color mat-contrast($accentPalette, 500);
+  @include global-stylesWithName($styles, $breakpoint);
+
+  $styles: bg-color-warn background-color $warn,
+  bg-color-warn color mat-contrast($warnPalette, 500);
+  @include global-stylesWithName($styles, $breakpoint);
+
+  $styles: bg-color-grey background-color $grey-light,
+  bg-color-grey color mat-contrast($greyPalette, 50);
+  @include global-stylesWithName($styles, $breakpoint);
+
+  $styles: bg-color-white background-color #fff,
+  bg-color-white color mat-contrast($greyPalette, 50);
+  @include global-stylesWithName($styles, $breakpoint);
+
+  $styles: bg-color-none background-color transparent,
+  bg-color-none color mat-contrast($greyPalette, 50);
+  @include global-stylesWithName($styles, $breakpoint);
+}
+
+@mixin global-border($breakpoint) {
+
+}
+
+@mixin global-page() {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+
+  row-header {
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
+
+  main {
+    flex: 1 1 auto;
+    overflow: auto;
+  }
+}

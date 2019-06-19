@@ -1,0 +1,61 @@
+@import "variables";
+@import "./layout-mixins";
+
+@mixin create-layout-for-breakpoint($breakpoint) {
+  @include global-flex-layout($breakpoint);
+  @include global-flex-alignment($breakpoint);
+  @include global-text($breakpoint);
+  @include global-display($breakpoint);
+  @include global-shapes($breakpoint);
+  @include global-position($breakpoint);
+  @include global-scroll($breakpoint);
+  @include global-bg-color($breakpoint);
+
+  @for $j from 0 through 10 {
+    @include global-order($breakpoint, $j);
+  }
+
+  @for $i from 0 through $grid-columns + 1 {
+    @include global-cell($breakpoint, $i, $grid-columns);
+  }
+
+  @for $e from 0 through 8 {
+    @include global-elevation($breakpoint, $e);
+  }
+
+  @include global-cell-readable($breakpoint, $grid-columns);
+
+  @include global-margin($breakpoint);
+  @include global-padding($breakpoint);
+  @include global-overflow($breakpoint);
+}
+
+@mixin create-layouts() {
+  @include create-layout-for-breakpoint(null);
+
+  @each $breakpoint in $breakpoints {
+    $name: nth($breakpoint, 1);
+    $size: nth($breakpoint, 2);
+
+    @media screen and (min-width: $size) {
+      @include create-layout-for-breakpoint($name);
+    }
+  }
+}
+
+@mixin responsive($breakpoint, $prop, $value) {
+    @if ($breakpoint) {
+      @each $bp in $breakpoints {
+        $name: nth($bp, 1);
+        $size: nth($bp, 2);
+
+        @if ($name == $breakpoint) {
+          @media screen and (min-width: $size) {
+            #{$prop}: #{$value};
+          }
+        }
+      }
+    } @else {
+        #{$prop}: #{$value};
+    }
+}

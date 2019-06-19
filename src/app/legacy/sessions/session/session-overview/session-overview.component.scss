@@ -1,0 +1,62 @@
+@import '~src/styles/variables';
+
+:host {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+  height: 100%;
+  box-sizing: border-box;
+
+  mat-toolbar {
+    flex: 0 0 auto;
+    overflow: auto;
+  }
+
+  main {
+    flex: 1 1 auto;
+    padding: 0 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .wrapper {
+      flex: 0 0 auto;
+    }
+
+    plotly-plot {
+      width: 100%;
+    }
+  }
+
+  .piece-summary {
+    flex: 1 1 auto;
+    display: flex;
+    overflow: auto;
+
+
+    & > div {
+      display: flex;
+      flex-flow: column;
+      padding: 0 0.5rem;
+      flex: 1 1 auto;
+
+      &.number {
+        text-align: right;
+      }
+    }
+  }
+
+  .loading {
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    flex: 1 1 auto;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+
+    h3 {
+      font-variant: all-petite-caps;
+    }
+  }
+}

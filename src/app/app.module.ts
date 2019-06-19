@@ -7,34 +7,30 @@ import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {
-    MAT_DATE_FORMATS,
-    MAT_DATE_LOCALE,
-    MAT_SNACK_BAR_DEFAULT_OPTIONS,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatStepperModule,
-    MatTableModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule} from '@angular/material-moment-adapter';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -44,29 +40,29 @@ import {PlotlyModule} from 'angular-plotly.js';
 import {MomentModule} from 'ngx-moment';
 import {PapaParseModule} from 'ngx-papaparse';
 import {environment} from '../environments/environment';
-import {ButtonRendererComponent} from './ag-grid/button-renderer/button-renderer.component';
-import {AnglePlotCompareComponent} from './angle-plot/angle-plot-compare/angle-plot-compare.component';
-import {AnglePlotListComponent} from './angle-plot/angle-plot-list/angle-plot-list.component';
-import {AnglePlotComponent} from './angle-plot/angle-plot.component';
+import {ButtonRendererComponent} from './legacy/ag-grid/button-renderer/button-renderer.component';
+import {AnglePlotCompareComponent} from './legacy/angle-plot/angle-plot-compare/angle-plot-compare.component';
+import {AnglePlotListComponent} from './legacy/angle-plot/angle-plot-list/angle-plot-list.component';
+import {AnglePlotComponent} from './legacy/angle-plot/angle-plot.component';
 
-import {AppRoutingModule} from './app-routing.module';
+import {AppRoutingModule} from './legacy/app-routing.module';
 import {AppComponent} from './app.component';
-import {DeleteDialogComponent} from './delete-dialog/delete-dialog.component';
-import {DurationInputComponent} from './duration-input/duration-input.component';
-import {DurationPipe} from './duration/duration.pipe';
-import {HomeComponent} from './home/home.component';
-import {MetricsComponent} from './metrics/metrics.component';
-import {PieceAnalysisListComponent} from './piece-analysis/piece-analysis-list/piece-analysis-list.component';
-import {PieceAnalysisComponent} from './piece-analysis/piece-analysis.component';
-import {PieceListComponent} from './piece/piece-list/piece-list.component';
-import {SessionDetailsComponent} from './sessions/session-details/session-details.component';
-import {SessionListComponent} from './sessions/session-list/session-list.component';
-import {ForceCurveComponent} from './sessions/session/force-curve/force-curve.component';
-import {MetricAveragesComponent} from './sessions/session/metric-averages/metric-averages.component';
-import {SessionOverviewComponent} from './sessions/session/session-overview/session-overview.component';
-import {SessionComponent} from './sessions/session/session.component';
-import {TelemetryComponent} from './telemetry/telemetry.component';
-import {TrainingSpeedsComponent} from './training-speeds/training-speeds.component';
+import {DeleteDialogComponent} from './legacy/delete-dialog/delete-dialog.component';
+import {DurationInputComponent} from './legacy/duration-input/duration-input.component';
+import {DurationPipe} from './legacy/duration/duration.pipe';
+import {HomeComponent} from './legacy/home/home.component';
+import {MetricsComponent} from './legacy/metrics/metrics.component';
+import {PieceAnalysisListComponent} from './legacy/piece-analysis/piece-analysis-list/piece-analysis-list.component';
+import {PieceAnalysisComponent} from './legacy/piece-analysis/piece-analysis.component';
+import {PieceListComponent} from './legacy/piece/piece-list/piece-list.component';
+import {SessionDetailsComponent} from './legacy/sessions/session-details/session-details.component';
+import {SessionListComponent} from './legacy/sessions/session-list/session-list.component';
+import {ForceCurveComponent} from './legacy/sessions/session/force-curve/force-curve.component';
+import {MetricAveragesComponent} from './legacy/sessions/session/metric-averages/metric-averages.component';
+import {SessionOverviewComponent} from './legacy/sessions/session/session-overview/session-overview.component';
+import {SessionComponent} from './legacy/sessions/session/session.component';
+import {TelemetryComponent} from './legacy/telemetry/telemetry.component';
+import {TrainingSpeedsComponent} from './legacy/training-speeds/training-speeds.component';
 
 export const DATE_DISPLAY = 'ddd Do, MMMM YYYY';
 
