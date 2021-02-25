@@ -42,7 +42,6 @@
     "ngx-moment": "^3.4.0",
     "ngx-papaparse": "^3.0.2",
     "ngx-take-until-destroy": "^5.4.0",
-    "npm": "^6.14.6",
     "plotly.js": "^1.45.0",
     "rxjs": "~6.6.3",
     "shortid": "^2.2.14",
